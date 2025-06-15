@@ -1,0 +1,5 @@
+spring:
+  application:
+    name: shoppe-be
+  profiles:
+    active: dev

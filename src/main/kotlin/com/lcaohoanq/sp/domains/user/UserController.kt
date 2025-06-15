@@ -1,0 +1,128 @@
+package com.lcaohoanq.sp.domains.user
+
+import com.lcaohoanq.sp.apis.MyApiResponse
+import com.lcaohoanq.sp.apis.PageResponse
+import com.lcaohoanq.sp.bases.BaseController
+import com.lcaohoanq.sp.configs.OpenAPIConfig
+import com.lcaohoanq.sp.domains.auth.IAuthService
+import com.lcaohoanq.sp.extension.toUserResponse
+import com.lcaohoanq.sp.metadata.QueryCriteria
+import com.lcaohoanq.sp.utils.SortOrder
+import com.lcaohoanq.sp.utils.Sortable
+import io.swagger.v3.oas.annotations.Operation
+import io.swagger.v3.oas.annotations.security.SecurityRequirement
+import io.swagger.v3.oas.annotations.tags.Tag
+import org.springframework.data.domain.PageRequest
+import org.springframework.http.ResponseEntity
+import org.springframework.web.bind.annotation.*
+import java.security.Principal
+
+@RestController
+@RequestMapping("\${api.prefix}/users")
+@Tag(name = "User", description = "User API")
+class UserController(
+    private val userService: IUserService,
+    private val authService: IAuthService,
+//    private val apiQuotaService: ApiQuotaService
+) : BaseController() {
+
+    @GetMapping("/all")
+    fun getAllUsers(): ResponseEntity<MyApiResponse<List<UserPort.UserResponse>>> {
+        val endpoint = "/users/all"
+
+//        return if(apiQuotaService.isRequestAllowed(authService.getCurrentAuthenticatedUser(), endpoint)) {
+//            ResponseEntity.ok(
+//                ApiResponse(
+//                    message = "Get all users successfully",
+//                    data = userService.getAll()
+//                )
+//            )
+//        } else {
+//            ResponseEntity.status(429).body(
+//                ApiResponse(
+//                    message = "Too many requests",
+//                    data = null
+//                )
+//            )
+//        }
+
+        return ok("Get all users successfully", userService.getAll())
+    }
+
+    @GetMapping("")
+    fun getUserPaged(
+        @RequestParam(required = false, defaultValue = "0") page: Int,
+        @RequestParam(required = false, defaultValue = "10") limit: Int,
+        @RequestParam(required = false, defaultValue = "") search: String,
+        @RequestParam(required = false, defaultValue = "ID") sortBy: Sortable.UserSortField,
+        @RequestParam(required = false, defaultValue = "ASC") sortOrder: SortOrder,
+    )
+            : ResponseEntity<PageResponse<UserPort.UserResponse>> {
+
+        val pageable = PageRequest.of(page, limit)
+        val queryCriteria = QueryCriteria(search, sortBy, sortOrder)
+
+        return ResponseEntity.ok(userService.getAll(pageable, queryCriteria))
+    }
+
+    @GetMapping("/details/{id}")
+    fun getUserById(@PathVariable id: Long): ResponseEntity<MyApiResponse<UserPort.UserResponse>> =
+        ok("Get user info successfully", userService.getById(id))
+
+    /**
+     * Get current authenticated user via Spring Security JWT
+     * @return User
+     */
+    @Operation(
+        summary = "Get user details from token",
+        description = "Provide access token to get user details on the Header"
+    )
+    @Deprecated("Use /me instead")
+    @PatchMapping("/details")
+    fun takeUserDetailsFromToken(): ResponseEntity<MyApiResponse<UserPort.UserResponse>> =
+        ok(
+            "Get user details successfully",
+            authService.getCurrentAuthenticatedUser().toUserResponse()
+        )
+
+
+    @Operation(summary = "Disable user account", description = "Disable user account")
+    @DeleteMapping("/disable-account/{id}")
+    fun disableAccount(@PathVariable("id") id: Long): ResponseEntity<MyApiResponse<Unit>> {
+        userService.doDisableUser(id)
+        return ok("Disable account successfully")
+    }
+
+    @Operation(
+        summary = "Get user extra information for the authenticated user",
+        security = [SecurityRequirement(name = OpenAPIConfig.BEARER_KEY_SECURITY_SCHEME)])
+    @GetMapping("/me")
+    fun getUserExtra(principal: Principal): User {
+        return userService.validateAndGetUserExtra(principal.name)
+    }
+
+    @Operation(
+        summary = "Get user extra information for the authenticated user",
+        security = [SecurityRequirement(name = OpenAPIConfig.BEARER_KEY_SECURITY_SCHEME)]
+    )
+    @GetMapping("/me-v2")
+    fun getUserExtraV2(@RequestHeader("X-User-Id") userId: String): User {
+        return userService.validateAndGetUserExtra(userId)
+    }
+
+//    @Operation(
+//        summary = "Update user extra information for the authenticated user",
+//        security = [SecurityRequirement(name = OpenAPIConfig.BEARER_KEY_SECURITY_SCHEME)])
+//    @PostMapping("/me")
+//    fun saveUserExtra(
+//        @RequestBody updateUserExtraRequest: @Valid UserExtraDTO.UserExtraRequest,
+//        principal: Principal
+//    ): User {
+//        val userExtraOptional = userService.getUserExtra(principal.name)
+//        val userExtra = userExtraOptional.orElseGet { UserExtra(principal.name) }
+//        userExtra.avatar = updateUserExtraRequest.avatar
+//        return userService.saveUserExtra(userExtra)
+//    }
+
+
+}

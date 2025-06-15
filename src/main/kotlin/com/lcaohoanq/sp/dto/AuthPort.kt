@@ -1,0 +1,43 @@
+package com.lcaohoanq.sp.dto
+
+import com.fasterxml.jackson.annotation.JsonProperty
+import com.lcaohoanq.sp.enums.UserEnum
+
+interface AuthPort {
+
+    data class AuthRequest(
+        val email: String,
+        val password: String
+    )
+
+    data class AuthResponse(
+        @JsonProperty("token") val token: TokenPort.TokenResponse
+    )
+
+    data class SignUpReq(
+        val name: String,
+        val email: String,
+        val address: String,
+        val phoneNumber: String,
+        val gender: UserEnum.Gender? = UserEnum.Gender.FEMALE,
+        val password: String,
+        val status: UserEnum.Status? = UserEnum.Status.UNVERIFIED,
+    )
+
+    data class VerifyEmailReq(
+        val email: String,
+    )
+
+    data class Verify2FAReq(
+        val secret: String,
+        val code: String,
+    )
+
+    data class ChangePasswordReq(
+        val email: String,
+        val password: String,
+
+       @JsonProperty("new_password") val newPassword: String
+    )
+
+}
