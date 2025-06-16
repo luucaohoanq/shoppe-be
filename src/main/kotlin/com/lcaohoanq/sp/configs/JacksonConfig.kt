@@ -24,6 +24,7 @@ class JacksonConfig {
     fun objectMapper(): ObjectMapper {
         return ObjectMapper()
             .registerModule(KotlinModule.Builder().build())
+            .registerModule(JavaTimeModule())
             .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
     }
 

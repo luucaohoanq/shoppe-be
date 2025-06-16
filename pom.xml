@@ -174,8 +174,8 @@
 
     <dependency>
       <groupId>io.github.lcaohoanq</groupId>
-      <artifactId>kotlin-browser-launcher</artifactId>
-      <version>1.0.0</version>
+      <artifactId>brlc</artifactId>
+      <version>1.0.1</version>
     </dependency>
 
     <!-- Testing -->

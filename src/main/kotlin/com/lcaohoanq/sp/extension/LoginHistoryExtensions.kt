@@ -10,6 +10,6 @@ fun LoginHistory.toLoginHistoryResponse(): LoginHistoryPort.LoginHistoryResponse
         ipAddress = this.ipAddress!!,
         userAgent = this.userAgent!!,
         createdAt = this.createdAt,
-        updatedAt = this.updatedAt
+        updatedAt = this.lastModifiedOn
     )
 }

@@ -1,6 +1,6 @@
 package com.lcaohoanq.sp
 
-import io.github.hoangclw.kotlinbrowserlauncher.openHomePage
+import io.github.lcaohoanq.BrowserLauncher
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
 import org.springframework.cache.annotation.EnableCaching
@@ -17,6 +17,9 @@ fun main(args: Array<String>) {
     val activeProfiles = env.activeProfiles
 
     if (!activeProfiles.contains("docker")) {
-        openHomePage("http://localhost:4006/swagger-ui/index.html")
+        BrowserLauncher.doHealthCheckThenOpenHomePage(
+            "http://localhost:4006/actuator/health",
+            "http://localhost:4006/swagger-ui/index.html"
+        )
     }
 }

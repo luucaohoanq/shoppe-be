@@ -28,7 +28,7 @@ class User(
     @Column(name = "password")
     var hashedPassword: String,
 
-    val role: UserEnum.Role? = UserEnum.Role.MEMBER,
+    val role: UserEnum.Role? = UserEnum.Role.CUSTOMER,
     val phone: String = "",
     val name: String = "New User",
 

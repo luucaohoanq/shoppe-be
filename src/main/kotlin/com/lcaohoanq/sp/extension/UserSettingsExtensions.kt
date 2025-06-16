@@ -12,5 +12,5 @@ fun UserSettings.toUserSettingsResponse() = UserPort.UserSettingsResponse(
     loginAlerts = this.loginAlerts,
     requestDisableAccount = this.requestDisableAccount,
     createdAt = this.createdAt,
-    updatedAt = this.updatedAt
+    updatedAt = this.lastModifiedOn
 )

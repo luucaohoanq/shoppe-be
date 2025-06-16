@@ -130,7 +130,7 @@ class AuthService(
         val newUser = User(
             email = newAccount.email,
             hashedPassword = passwordEncoder.encode(newAccount.password),
-            role = UserEnum.Role.MEMBER,
+            role = UserEnum.Role.CUSTOMER,
             name = newAccount.name,
             status = UserEnum.Status.UNVERIFIED,
             userName = "",

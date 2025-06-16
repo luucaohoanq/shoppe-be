@@ -7,7 +7,7 @@ class UserEnum {
     }
 
     enum class Role {
-        MEMBER, STAFF, ADMIN
+        CUSTOMER, SHOP, STAFF, ADMIN, MANAGER
     }
 
     enum class Gender {

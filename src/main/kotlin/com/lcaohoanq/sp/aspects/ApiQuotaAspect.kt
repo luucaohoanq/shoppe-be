@@ -50,7 +50,7 @@ class ApiQuotaAspect(
         val endpoint = dynamicApiQuotable.endpoint
 
         val maxRequests = when (user.role) {
-            UserEnum.Role.MEMBER -> dynamicApiQuotable.memberMaxRequests
+            UserEnum.Role.CUSTOMER -> dynamicApiQuotable.memberMaxRequests
             UserEnum.Role.STAFF -> dynamicApiQuotable.staffMaxRequests
             UserEnum.Role.ADMIN -> dynamicApiQuotable.adminMaxRequests
             else -> throw IllegalArgumentException("Unknown role: ${user.role}")

@@ -1,6 +1,7 @@
 package com.lcaohoanq.sp.dto
 
 import com.fasterxml.jackson.annotation.JsonFormat
+import java.sql.Timestamp
 import java.time.LocalDateTime
 
 interface LoginHistoryPort {
@@ -14,11 +15,11 @@ interface LoginHistoryPort {
         @JsonFormat(
             pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'",
             timezone = "Asia/Ho_Chi_Minh"
-        ) val createdAt: LocalDateTime?,
+        ) val createdAt: Timestamp?,
         @JsonFormat(
             pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'",
             timezone = "Asia/Ho_Chi_Minh"
-        ) val updatedAt: LocalDateTime?
+        ) val updatedAt: Timestamp?
     )
 
 }

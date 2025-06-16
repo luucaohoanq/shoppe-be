@@ -38,6 +38,6 @@ fun User.toUserResponse(
         avatar = avatar,
         address = address.map { it.toAddressResponse() }.toMutableList(),
         createdAt = createdAt,
-        updatedAt = updatedAt
+        updatedAt = lastModifiedOn
     )
 }

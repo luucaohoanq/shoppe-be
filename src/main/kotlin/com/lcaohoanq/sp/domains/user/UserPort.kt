@@ -7,6 +7,7 @@ import com.lcaohoanq.sp.domains.settings.notifications.NotificationSettings
 import com.lcaohoanq.sp.dto.AddressPort
 import com.lcaohoanq.sp.dto.LoginHistoryPort
 import com.lcaohoanq.sp.enums.UserEnum
+import java.sql.Timestamp
 import java.time.LocalDateTime
 
 interface UserPort {
@@ -30,8 +31,8 @@ interface UserPort {
         val settings: UserSettingsResponse?,
         @JsonIgnore val password: String,
         val phone: String,
-        @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", timezone = "Asia/Ho_Chi_Minh") @JsonIgnore val createdAt: LocalDateTime?,
-        @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", timezone = "Asia/Ho_Chi_Minh") @JsonIgnore val updatedAt: LocalDateTime?
+        @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", timezone = "Asia/Ho_Chi_Minh") @JsonIgnore val createdAt: Timestamp?,
+        @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", timezone = "Asia/Ho_Chi_Minh") @JsonIgnore val updatedAt: Timestamp?
     )
 
     data class UserSettingsResponse(
@@ -43,8 +44,8 @@ interface UserPort {
         val notificationSettings: NotificationSettings = NotificationSettings(),
         val loginAlerts: Boolean = true,
         val requestDisableAccount: Boolean = false,
-        @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", timezone = "Asia/Ho_Chi_Minh") @JsonIgnore val createdAt: LocalDateTime? = null,
-        @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", timezone = "Asia/Ho_Chi_Minh") @JsonIgnore val updatedAt: LocalDateTime? = null
+        @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", timezone = "Asia/Ho_Chi_Minh") @JsonIgnore val createdAt: Timestamp? = null,
+        @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", timezone = "Asia/Ho_Chi_Minh") @JsonIgnore val updatedAt: Timestamp? = null
     )
 
 }

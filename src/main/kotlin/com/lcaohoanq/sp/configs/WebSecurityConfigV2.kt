@@ -47,53 +47,67 @@ class WebSecurityConfigV2(
     @Bean
     @Throws(Exception::class)
     fun securityFilterChain(http: HttpSecurity): SecurityFilterChain {
+//        return http
+//            .cors { cors ->
+//                cors.configurationSource(corsConfigurationSource())
+//            }
+//            // .addFilter(jwtTokenFilter)
+//            // We remove the JWT filter since it's handled by the Gateway now
+//            .authorizeHttpRequests { auth ->
+//                // Public authentication endpoints
+//                auth.requestMatchers(
+//                    "$apiPrefix/auth/**",
+////                    "$apiPrefix/users/**",
+//                    "$apiPrefix/students/**",
+//                    "$apiPrefix/categories/**",
+//                    "$apiPrefix/experiments/**",
+//                    "$apiPrefix/otp/**",
+//                    "$apiPrefix/tokens/**",
+//                    "$apiPrefix/oauth2/**",
+//                    "$apiPrefix/ip/**",
+//                    "$apiPrefix/user-settings/**",
+//                    "$apiPrefix/keycloak/**",
+//                ).permitAll()
+//
+//                auth.requestMatchers("$apiPrefix/users/all")
+//                    .hasAnyRole(SHOPPE_MEMBER, SHOPPE_STAFF, SHOPPE_ADMIN)
+//                auth.requestMatchers("$apiPrefix/users/details")
+//                    .hasAnyRole(SHOPPE_MEMBER, SHOPPE_STAFF, SHOPPE_ADMIN)
+//
+//                // Swagger and public documentation endpoints
+//                auth.requestMatchers(*PUBLIC_ENDPOINTS).permitAll()
+//
+//                // Role-based security for specific user roles
+////                auth.requestMatchers("$apiPrefix/users/**").hasAnyRole("ADMIN", "STAFF")
+////                auth.requestMatchers("$apiPrefix/categories/**").hasAnyRole("ADMIN", "MANAGER")
+////                auth.requestMatchers("$apiPrefix/experiments/**").hasRole("USER")
+//
+//                // All other endpoints require authentication
+//                auth.anyRequest().authenticated()
+//            }
+//            .oauth2ResourceServer {
+//                it.jwt { jwt ->
+//                    jwt.jwtAuthenticationConverter(jwtAuthConverter)
+//                }
+//            }
+//            .sessionManagement {
+//                it.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+//            }
+//            .csrf { it.disable() }
+//            .build()
+
         return http
-            .cors { cors ->
-                cors.configurationSource(corsConfigurationSource())
-            }
-            // .addFilter(jwtTokenFilter)
-            // We remove the JWT filter since it's handled by the Gateway now
+            .cors { it.configurationSource(corsConfigurationSource()) }
+            .csrf { it.disable() }
             .authorizeHttpRequests { auth ->
-                // Public authentication endpoints
-                auth.requestMatchers(
-                    "$apiPrefix/auth/**",
-//                    "$apiPrefix/users/**",
-                    "$apiPrefix/students/**",
-                    "$apiPrefix/categories/**",
-                    "$apiPrefix/experiments/**",
-                    "$apiPrefix/otp/**",
-                    "$apiPrefix/tokens/**",
-                    "$apiPrefix/oauth2/**",
-                    "$apiPrefix/ip/**",
-                    "$apiPrefix/user-settings/**",
-                    "$apiPrefix/keycloak/**",
-                ).permitAll()
-
-                auth.requestMatchers("$apiPrefix/users/all")
-                    .hasAnyRole(SHOPPE_MEMBER, SHOPPE_STAFF, SHOPPE_ADMIN)
-                auth.requestMatchers("$apiPrefix/users/details")
-                    .hasAnyRole(SHOPPE_MEMBER, SHOPPE_STAFF, SHOPPE_ADMIN)
-
-                // Swagger and public documentation endpoints
-                auth.requestMatchers(*PUBLIC_ENDPOINTS).permitAll()
-
-                // Role-based security for specific user roles
-//                auth.requestMatchers("$apiPrefix/users/**").hasAnyRole("ADMIN", "STAFF")
-//                auth.requestMatchers("$apiPrefix/categories/**").hasAnyRole("ADMIN", "MANAGER")
-//                auth.requestMatchers("$apiPrefix/experiments/**").hasRole("USER")
-
-                // All other endpoints require authentication
-                auth.anyRequest().authenticated()
+                auth.anyRequest().permitAll()
             }
-            .oauth2ResourceServer {
-                it.jwt { jwt ->
+            .sessionManagement { it.sessionCreationPolicy(SessionCreationPolicy.STATELESS) }
+            .oauth2ResourceServer { oauth2 ->
+                oauth2.jwt { jwt ->
                     jwt.jwtAuthenticationConverter(jwtAuthConverter)
                 }
             }
-            .sessionManagement {
-                it.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-            }
-            .csrf { it.disable() }
             .build()
     }
 
