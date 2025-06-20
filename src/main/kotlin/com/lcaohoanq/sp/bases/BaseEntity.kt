@@ -18,10 +18,10 @@ class BaseEntity(
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", timezone = "Asia/Ho_Chi_Minh")
     var createdAt: Timestamp? = null,
 
-    @Column(name = "created_by", nullable = false)
+    @Column(name = "created_by", nullable = true)
     var createdBy: String? = null,
 
-    @Column(name = "last_modified_by", nullable = false)
+    @Column(name = "last_modified_by", nullable = true)
     var lastModifiedBy: String? = null,
 
     @Column(name = "last_modified_on", nullable = false, columnDefinition="TIMESTAMP DEFAULT CURRENT_TIMESTAMP")

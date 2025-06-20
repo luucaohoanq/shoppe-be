@@ -1,6 +1,9 @@
 package com.lcaohoanq.sp.domains.auth
 
+import com.lcaohoanq.sp.annotations.auth.LoginApiResponses
+import com.lcaohoanq.sp.annotations.auth.LoginOperation
 import com.lcaohoanq.sp.apis.MyApiResponse
+import com.lcaohoanq.sp.apis.MyApiResponseV2
 import com.lcaohoanq.sp.bases.BaseController
 import com.lcaohoanq.sp.domains.user.IUserService
 import com.lcaohoanq.sp.dto.AuthPort
@@ -10,9 +13,11 @@ import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.media.Content
 import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.responses.ApiResponse
+import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.validation.Valid
+import mu.KotlinLogging
 import org.springframework.http.ResponseEntity
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.security.core.context.SecurityContextHolder
@@ -21,7 +26,7 @@ import org.springframework.validation.BindingResult
 import org.springframework.web.bind.annotation.*
 
 
-@Tag(name = "Auth", description = "Auth API")
+@Tag(name = "auth", description = "Auth API")
 @RestController
 @RequestMapping("\${api.prefix}/auth")
 class AuthController(
@@ -30,27 +35,13 @@ class AuthController(
     private val request: HttpServletRequest
 ) : BaseController() {
 
-    private val log = mu.KotlinLogging.logger {}
+    private val log = KotlinLogging.logger {}
 
-    @Operation(
-        summary = "Login to the system",
-        description = "Authenticate user and return JWT tokens",
-        responses = [
-            ApiResponse(
-                responseCode = "200",
-                description = "Login successfully",
-                content = [
-                    Content(
-                        mediaType = "application/json",
-                        schema = Schema(implementation = AuthResponseWrapper::class)
-                    )
-                ]
-            )
-        ]
-    )
+    @LoginOperation
+    @LoginApiResponses
     @PostMapping("/login")
-    fun login(@RequestBody req: AuthPort.AuthRequest): ResponseEntity<MyApiResponse<LoginResult>> =
-        ok("Login successfully", authService.login(req))
+    fun login(@RequestBody req: AuthPort.AuthRequest): ResponseEntity<MyApiResponseV2<LoginResult>> =
+        ok(message = "Login successfully", data = authService.login(req))
 
 
     @Operation(summary = "Register", description = "Register")
@@ -58,12 +49,14 @@ class AuthController(
     fun register(
         @Valid @RequestBody user: AuthPort.SignUpReq,
         bindingResult: BindingResult
-    ): ResponseEntity<MyApiResponse<Unit>> {
-
+    ): ResponseEntity<MyApiResponseV2<Nothing?>> {  // Change return type to match actual
         if (bindingResult.hasErrors()) throw MethodArgumentNotValidException(bindingResult)
 
         authService.register(user)
-        return ok("Register successfully")
+        return ok(
+            message = "Register successfully",
+            data = null
+        )
     }
 
     @PreAuthorize("permitAll()")
@@ -72,7 +65,7 @@ class AuthController(
     fun refreshToken(
         @Valid @RequestBody refreshTokenDTO: TokenPort.RefreshTokenDTO,
         result: BindingResult
-    ): ResponseEntity<MyApiResponse<AuthPort.AuthResponse>> {
+    ): ResponseEntity<MyApiResponseV2<AuthPort.AuthResponse>> {  // Change from MyApiResponse to MyApiResponseV2
         if (result.hasErrors()) throw MethodArgumentNotValidException(result)
         return ok(
             message = "Refresh token successfully",
@@ -85,9 +78,9 @@ class AuthController(
     @Operation(
         summary = "Logout from the system",
         description = "Invalidate the current JWT token",
-        security = [io.swagger.v3.oas.annotations.security.SecurityRequirement(name = "JavaInUseSecurityScheme")]
+        security = [SecurityRequirement(name = "JavaInUseSecurityScheme")]
     )
-    fun logout(): ResponseEntity<MyApiResponse<Unit>> {
+    fun logout(): ResponseEntity<MyApiResponseV2<Nothing?>> {
         val authorizationHeader: String = request.getHeader("Authorization")
 
         if (!authorizationHeader.startsWith("Bearer ")) {
@@ -102,7 +95,7 @@ class AuthController(
 
         authService.logout(token, user) //revoke token
 
-        return ok("Logout successfully")
+        return ok(message = "Logout successfully", data = null)
     }
 
     @PreAuthorize("permitAll()")
@@ -114,12 +107,12 @@ class AuthController(
     fun generateTokenFromEmail(
         @Valid @RequestBody data: AuthPort.VerifyEmailReq,
         bindingResult: BindingResult
-    ): ResponseEntity<MyApiResponse<String>> {
+    ): ResponseEntity<MyApiResponseV2<String>> {
 
         if (bindingResult.hasErrors()) throw MethodArgumentNotValidException(bindingResult)
 
         val response = authService.generateTokenFromEmail(data.email)
-        return ok("Generate token successfully", response)
+        return ok(message = "Generate token successfully", data= response)
     }
 
     @PreAuthorize("permitAll()")
@@ -131,11 +124,11 @@ class AuthController(
     fun changePassword(
         @Valid @RequestBody data: AuthPort.ChangePasswordReq,
         bindingResult: BindingResult
-    ): ResponseEntity<MyApiResponse<Unit>> {
+    ): ResponseEntity<MyApiResponseV2<Nothing?>> {
         if (bindingResult.hasErrors()) throw MethodArgumentNotValidException(bindingResult)
 
         authService.changePassword(data)
-        return ok("Change password successfully")
+        return ok(message = "Change password successfully", data = null)
     }
 
 
@@ -144,9 +137,9 @@ class AuthController(
         summary = "Verify account",
         description = "This link will sent via email, user press to verify account",
     )
-    fun verifyAccount(@RequestParam token: String): ResponseEntity<MyApiResponse<Unit>> {
+    fun verifyAccount(@RequestParam token: String): ResponseEntity<MyApiResponseV2<Nothing?>> {
         authService.verifyAccount(token)
-        return ok("Verify account successfully")
+        return ok(message = "Verify account successfully" , data = null)
     }
 
 }
