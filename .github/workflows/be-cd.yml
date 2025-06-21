@@ -6,9 +6,10 @@
 # separate terms of service, privacy policy, and support
 # documentation.
 
-name: gateway-cd-flow
+name: shoppe-cd-flow
 
 on:
+  workflow_dispatch:
   push:
     branches: [ "main-deployment" ]
     paths:
