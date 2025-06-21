@@ -20,7 +20,7 @@ import java.security.Principal
 
 @RestController
 @RequestMapping("\${api.prefix}/users")
-@Tag(name = "User", description = "User API")
+@Tag(name = "users", description = "User API")
 class UserController(
     private val userService: IUserService,
     private val authService: IAuthService,

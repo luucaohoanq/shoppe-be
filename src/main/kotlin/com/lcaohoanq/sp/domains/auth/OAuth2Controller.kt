@@ -1,5 +1,6 @@
 package com.lcaohoanq.sp.domains.auth
 
+import io.swagger.v3.oas.annotations.tags.Tag
 import org.springframework.boot.context.properties.ConfigurationProperties
 import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.http.HttpStatus
@@ -14,7 +15,13 @@ import java.nio.charset.StandardCharsets
 
 @EnableConfigurationProperties(OAuth2ClientProperties::class)
 @RestController
-@RequestMapping("/api/v1/oauth2")
+@RequestMapping("\${api.prefix}/oauth2")
+@Tag(name = "oauth2", description = "OAuth2 API, for third-party authentication")
+@Deprecated(
+    """
+    This controller is deprecated and will be removed in future versions. Use keycloak for OAuth2 authentication.
+    """
+)
 class OAuth2Controller(
     private val props: OAuth2ClientProperties
 ) {

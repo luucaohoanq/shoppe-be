@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @RequestMapping("/api/v1/user-settings")
-@Tag(name = "User settings", description = "User settings APIs")
+@Tag(name = "user-settings", description = "User settings APIs")
 class UserSettingsController(
     private val userSettingsRepository: UserSettingsRepository
 ) {

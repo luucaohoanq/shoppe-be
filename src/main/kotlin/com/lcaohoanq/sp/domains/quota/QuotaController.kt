@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @RequestMapping("\${api.prefix}/quotas")
-@Tag(name = "Quota", description = "Quota API, for managing API quotas")
+@Tag(name = "quotas", description = "Quota API, for managing API quotas")
 class QuotaController(
     private val quotaService: IApiQuotaService
 ) {

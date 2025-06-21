@@ -48,9 +48,16 @@ spring:
           issuer-uri: http://zimacube:9080/realms/shoppe
 #          jwk-set-uri: http://zimacube:9080/realms/shoppe/protocol/openid-connect/certs
 
+# Keycloak configuration
 keycloak:
   url: http://zimacube:9080/realms/shoppe/protocol/openid-connect/token
-  client-id: react-app
+  server-url: http://localhost:9099
+  realm: shoppe
+  client-id: shoppe-be
+  grant-type: password
+  password: genedu-admin
+  username: genedu-admin
+  client-secret: ${KC_GENEDU_ADMIN_CLI_GENEDU_SCRET_KEY:MFV2Vqin54jV8YogelZgxjJFvRiYVRiS}
 
 jwt:
   auth:

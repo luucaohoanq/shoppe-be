@@ -10,8 +10,8 @@ import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.*
 
 @RestController
-@RequestMapping("\${api.prefix}/otp")
-@Tag(name = "OTP", description = "Operations related to OTP")
+@RequestMapping("\${api.prefix}/otps")
+@Tag(name = "otps", description = "Operations related to OTP")
 class OtpController(
     private val userRepository: UserRepository,
     private val otpService: IOtpService

@@ -15,17 +15,16 @@ import org.springframework.context.annotation.Configuration
     ),
     security = [io.swagger.v3.oas.annotations.security.SecurityRequirement(name = "keycloak")],
     servers = [
-        Server(url = "/", description = "Default Server URL"),
-        Server(url = "http://localhost:8080", description = "Local development"),
-        Server(url = "\${API_SERVER_URL:https://api.example.com}", description = "Production Server")
+        Server(url = "\${http://localhost:4006/}", description = "Local server"),
+        Server(url = "\${https://api.shoppe.com}", description = "Production server")
     ]
 )
 @io.swagger.v3.oas.annotations.security.SecurityScheme(
     name = "keycloak",
-    scheme = "bearer",
     type = SecuritySchemeType.OPENIDCONNECT,
+    scheme = "bearer",
     `in` = SecuritySchemeIn.HEADER,
-    openIdConnectUrl = "\${OPENID_CONFIG_URL_PROD}"
+    openIdConnectUrl = "\${KEYCLOAK_OPENID_CONFIG_URL:http://localhost:9098/realms/shoppe/.well-known/openid-configuration}"
 )
 class OpenAPIConfig {
     companion object {

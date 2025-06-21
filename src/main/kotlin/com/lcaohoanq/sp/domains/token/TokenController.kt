@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @RequestMapping("\${api.prefix}/tokens")
-@Tag(name = "Token", description = "Token management")
+@Tag(name = "tokens", description = "\uD83D\uDCB5 Token management")
 class TokenController(
     private val tokenService: ITokenService
 ) {

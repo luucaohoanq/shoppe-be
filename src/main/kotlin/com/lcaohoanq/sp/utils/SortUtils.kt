@@ -25,6 +25,13 @@ interface Sortable {
         CREATED_AT("createdAt")
     }
 
+    enum class CategorySortField(override val field: String) : SortableField {
+        ID("id"),
+        NAME("name"),
+        DESCRIPTION("description"),
+        PARENT_ID("parentId"),
+    }
+
     enum class ProductSortField(override val field: String) : SortableField {
         ID("id"),
         NAME("name"),

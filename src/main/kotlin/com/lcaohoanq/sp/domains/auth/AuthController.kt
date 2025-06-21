@@ -26,7 +26,7 @@ import org.springframework.validation.BindingResult
 import org.springframework.web.bind.annotation.*
 
 
-@Tag(name = "auth", description = "Auth API")
+@Tag(name = "auth", description = "\uD83D\uDD12 Auth API")
 @RestController
 @RequestMapping("\${api.prefix}/auth")
 class AuthController(
