@@ -2,7 +2,6 @@ package com.lcaohoanq.sp.domains.auth
 
 import com.lcaohoanq.sp.annotations.auth.LoginApiResponses
 import com.lcaohoanq.sp.annotations.auth.LoginOperation
-import com.lcaohoanq.sp.apis.MyApiResponse
 import com.lcaohoanq.sp.apis.MyApiResponseV2
 import com.lcaohoanq.sp.bases.BaseController
 import com.lcaohoanq.sp.domains.user.IUserService
@@ -10,9 +9,6 @@ import com.lcaohoanq.sp.dto.AuthPort
 import com.lcaohoanq.sp.dto.TokenPort
 import com.lcaohoanq.sp.exceptions.MethodArgumentNotValidException
 import io.swagger.v3.oas.annotations.Operation
-import io.swagger.v3.oas.annotations.media.Content
-import io.swagger.v3.oas.annotations.media.Schema
-import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.servlet.http.HttpServletRequest

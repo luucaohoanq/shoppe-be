@@ -1,6 +1,5 @@
 package com.lcaohoanq.sp.domains.user
 
-import com.lcaohoanq.sp.apis.MyApiResponse
 import com.lcaohoanq.sp.apis.MyApiResponseV2
 import com.lcaohoanq.sp.apis.PageResponse
 import com.lcaohoanq.sp.bases.BaseController

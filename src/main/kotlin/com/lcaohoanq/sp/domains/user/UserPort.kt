@@ -8,7 +8,6 @@ import com.lcaohoanq.sp.dto.AddressPort
 import com.lcaohoanq.sp.dto.LoginHistoryPort
 import com.lcaohoanq.sp.enums.UserEnum
 import java.sql.Timestamp
-import java.time.LocalDateTime
 
 interface UserPort {
 
