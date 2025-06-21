@@ -10,7 +10,7 @@ name: gateway-cd-flow
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "main-deployment" ]
     paths:
       - "src/**"
       - "be-cd.yml"
