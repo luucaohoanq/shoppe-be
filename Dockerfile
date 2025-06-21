@@ -9,7 +9,7 @@ RUN mvn package -Dspring.profiles.active=docker -DskipTests -f /app/shoppe-be/po
 FROM openjdk:17-slim
 WORKDIR /app
 COPY --from=build /app/shoppe-be/target/shoppe-be-1.0.0.jar app.jar
-COPY --from=build /app/shoppe-be/uploads uploads
+#COPY --from=build /app/shoppe-be/uploads uploads
 
 EXPOSE 4006
 CMD ["java","-jar","app.jar"]
