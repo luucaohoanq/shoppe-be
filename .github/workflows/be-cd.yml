@@ -24,7 +24,7 @@ on:
       - "pom.xml"
 
 jobs:
-  build-gateway:
+  build-and-push:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -34,7 +34,7 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
           cache: maven
-      - name: Build common library with Maven
+      - name: Build project with Maven
         run: mvn clean install -f pom.xml -DskipTests
 
       - name: Log in to the Container registry
