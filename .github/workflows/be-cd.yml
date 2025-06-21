@@ -14,13 +14,13 @@ on:
     branches: [ "main-deployment" ]
     paths:
       - "src/**"
-      - "be-cd.yml"
+      - "./.github/workflows/be-cd.yml"
       - "pom.xml"
   pull_request:
     branches: [ "develop" ]
     paths:
       - "src/**"
-      - "be-cd.yml"
+      - "./.github/workflows/be-cd.yml"
       - "pom.xml"
 
 jobs:
