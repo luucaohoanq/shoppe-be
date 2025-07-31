@@ -424,17 +424,6 @@ class DataInitializer {
                 walletId = "wallet-blocked@gmail.com",
                 cartId = "cart-blocked@gmail.com"
                 // No UserSettings initially
-            ),
-            User(
-                email = "pending@gmail.com",
-                hashedPassword = hashedPassword,
-                name = "Pending User",
-                role = UserEnum.Role.CUSTOMER,
-                status = UserEnum.Status.PENDING,
-                phone = "+84123456789",
-                walletId = "wallet-pending@gmail.com",
-                cartId = "cart-pending@gmail.com"
-                // No UserSettings initially
             )
         )
         

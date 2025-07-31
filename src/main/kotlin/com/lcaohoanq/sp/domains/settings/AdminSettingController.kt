@@ -71,7 +71,7 @@ class AdminSettingController(
     ): ResponseEntity<MyApiResponseV2<AdminSettingPort.AdminSettingResponse>> {
         val updatedSetting = adminSettingService.updateSetting(key, newValue.value)
         return if (updatedSetting != null) {
-            MyApiResponseV2.success("Setting updated successfully", updatedSetting.toAdminSettingResponse())
+            MyApiResponseV2.success(updatedSetting.toAdminSettingResponse())
         } else {
             MyApiResponseV2.notFound("Setting with key '$key' not found")
         }
@@ -86,7 +86,7 @@ class AdminSettingController(
     fun deleteSetting(@PathVariable key: String): ResponseEntity<MyApiResponseV2<Void>> {
         val deleted = adminSettingService.deleteSetting(key)
         return if (deleted) {
-            MyApiResponseV2.success("Setting deleted successfully")
+            MyApiResponseV2.noContent()
         } else {
             MyApiResponseV2.notFound("Setting with key '$key' not found")
         }
