@@ -1,6 +1,6 @@
 package com.lcaohoanq.sp.domains.user
 
-import BaseEntity
+import com.lcaohoanq.sp.bases.BaseEntity
 import com.lcaohoanq.sp.domains.loginhistory.LoginHistory
 import com.lcaohoanq.sp.domains.settings.UserSettings
 import com.lcaohoanq.sp.enums.UserEnum

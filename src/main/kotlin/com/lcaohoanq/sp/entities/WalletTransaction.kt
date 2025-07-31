@@ -1,7 +1,7 @@
 package com.lcaohoanq.sp.entities
 
 import com.fasterxml.jackson.annotation.JsonIgnore
-import BaseEntity
+import com.lcaohoanq.sp.bases.BaseEntity
 import jakarta.persistence.*
 import java.math.BigDecimal
 import java.time.LocalDateTime

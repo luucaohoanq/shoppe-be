@@ -1,6 +1,6 @@
 package com.lcaohoanq.sp.domains.settings
 
-import BaseEntity
+import com.lcaohoanq.sp.bases.BaseEntity
 import com.fasterxml.jackson.annotation.JsonIgnore
 import com.lcaohoanq.sp.domains.settings.notifications.NotificationSettings
 import jakarta.persistence.*

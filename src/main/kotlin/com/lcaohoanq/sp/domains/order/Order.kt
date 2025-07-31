@@ -1,6 +1,6 @@
 package com.lcaohoanq.sp.domains.order
 
-import BaseEntity
+import com.lcaohoanq.sp.bases.BaseEntity
 import com.lcaohoanq.sp.domains.user.User
 import com.lcaohoanq.sp.entities.Addresses
 import com.lcaohoanq.sp.entities.Coupon

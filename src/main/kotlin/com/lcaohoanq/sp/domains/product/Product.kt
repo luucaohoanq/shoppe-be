@@ -1,6 +1,6 @@
 package com.lcaohoanq.sp.domains.product
 
-import BaseEntity
+import com.lcaohoanq.sp.bases.BaseEntity
 import com.lcaohoanq.sp.domains.categories.Category
 import com.lcaohoanq.sp.extension.toProductResponse
 import jakarta.persistence.*

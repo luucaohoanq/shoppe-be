@@ -1,6 +1,6 @@
 package com.lcaohoanq.sp.domains.cart
 
-import BaseEntity
+import com.lcaohoanq.sp.bases.BaseEntity
 import com.lcaohoanq.sp.domains.user.User
 import jakarta.persistence.*
 

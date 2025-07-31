@@ -1,6 +1,6 @@
 package com.lcaohoanq.sp.domains.categories
 
-import BaseEntity
+import com.lcaohoanq.sp.bases.BaseEntity
 import jakarta.persistence.*
 
 @Entity

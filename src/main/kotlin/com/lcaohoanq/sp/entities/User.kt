@@ -1,6 +1,6 @@
 package com.lcaohoanq.sp.entities
 
-import BaseEntity
+import com.lcaohoanq.sp.bases.BaseEntity
 import com.lcaohoanq.sp.enums.UserEnum
 import jakarta.persistence.*
 

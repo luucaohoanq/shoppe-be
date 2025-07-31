@@ -1,6 +1,6 @@
 package com.lcaohoanq.sp.domains.loginhistory
 
-import BaseEntity
+import com.lcaohoanq.sp.bases.BaseEntity
 import com.fasterxml.jackson.annotation.JsonIgnore
 import com.lcaohoanq.sp.domains.user.User
 import jakarta.persistence.*

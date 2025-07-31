@@ -1,6 +1,6 @@
 package com.lcaohoanq.sp.domains.otp
 
-import BaseEntity
+import com.lcaohoanq.sp.bases.BaseEntity
 import com.fasterxml.jackson.annotation.JsonProperty
 import jakarta.persistence.*
 

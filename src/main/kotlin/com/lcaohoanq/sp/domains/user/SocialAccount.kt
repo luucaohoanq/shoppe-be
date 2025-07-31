@@ -1,6 +1,6 @@
 package com.lcaohoanq.sp.domains.user
 
-import BaseEntity
+import com.lcaohoanq.sp.bases.BaseEntity
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.lcaohoanq.sp.enums.ProviderName
 import jakarta.persistence.*
