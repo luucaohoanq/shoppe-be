@@ -8,13 +8,13 @@ import jakarta.persistence.*
 class ShippingMethod(): BaseEntity() {
 
     @Id
-    @SequenceGenerator(name = "shipping_methods_seq", sequenceName = "shipping_methods_id_seq", allocationSize = 1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "shipping_methods_seq")
-    @Column(name = "id", unique = true, nullable = false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", nullable = false)
     var id: Int? = null
 
     var name: String = ""
     var cost: Double? = null
     var estimatedDays: Int = 0
+    var active: Boolean = true
 
 }

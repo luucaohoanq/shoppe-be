@@ -8,9 +8,8 @@ import jakarta.persistence.*
 class Addresses(): BaseEntity() {
 
     @Id
-    @SequenceGenerator(name = "addresses_seq", sequenceName = "addresses_id_seq", allocationSize = 1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "addresses_seq")
-    @Column(name = "id", unique = true, nullable = false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", nullable = false)
     var id: Int? = null
 
     @Column(name = "user_id", nullable = false)

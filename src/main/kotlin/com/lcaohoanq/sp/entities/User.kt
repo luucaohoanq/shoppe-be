@@ -8,10 +8,9 @@ import jakarta.persistence.*
 @Table(name = "users")
 class UserExtra(
     @Id
-    @SequenceGenerator(name = "users_seq", sequenceName = "users_id_seq", allocationSize = 1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "users_seq")
-    @Column(name = "id", unique = true, nullable = false)
-    val id: Int? = null,
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", nullable = false)
+    var id: Int? = null,
 
     @Column(name = "email", unique = true)
     val email: String,

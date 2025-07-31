@@ -8,9 +8,8 @@ import java.security.Timestamp
 class ChatMessage {
 
     @Id
-    @SequenceGenerator(name = "chat_messages_seq", sequenceName = "chat_messages_id_seq", allocationSize = 1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "chat_messages_seq")
-    @Column(name = "id", unique = true, nullable = false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", nullable = false)
     var id: Int? = null
 
     var senderId: Int = 0

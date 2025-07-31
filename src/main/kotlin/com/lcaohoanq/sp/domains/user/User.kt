@@ -14,10 +14,9 @@ import org.springframework.security.core.userdetails.UserDetails
 class User(
 
     @Id
-    @SequenceGenerator(name = "users_seq", sequenceName = "users_id_seq", allocationSize = 1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "users_seq")
-    @Column(name = "id", unique = true, nullable = false)
-    val id: Long? = null,
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", nullable = false)
+    var id: Long? = null,
 
     @Column(name = "email", unique = true)
     val email: String,

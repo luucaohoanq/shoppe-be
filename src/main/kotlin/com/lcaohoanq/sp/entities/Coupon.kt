@@ -9,9 +9,8 @@ import java.util.*
 class Coupon(): BaseEntity() {
 
     @Id
-    @SequenceGenerator(name = "coupons_seq", sequenceName = "coupons_id_seq", allocationSize = 1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "coupons_seq")
-    @Column(name = "id", unique = true, nullable = false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", nullable = false)
     var id: Int? = null
 
     var code: String? = null
@@ -19,5 +18,7 @@ class Coupon(): BaseEntity() {
     var validFrom: Date? = null
     var validTo: Date? = null
     var usageLimit: Double? = null
+    var active: Boolean = true
+    var expiryDate: Date? = null
 
 }

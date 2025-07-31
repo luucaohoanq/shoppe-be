@@ -8,9 +8,8 @@ import jakarta.persistence.*
 class ProductVariant(): BaseEntity() {
 
     @Id
-    @SequenceGenerator(name = "product_variants_seq", sequenceName = "product_variants_id_seq", allocationSize = 1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "product_variants_seq")
-    @Column(name = "id", unique = true, nullable = false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", nullable = false)
     var id: Int? = null
 
     var productId: Int = 0

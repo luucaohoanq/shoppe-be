@@ -26,6 +26,7 @@ spring:
     url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://zimacube:5432/shoppe}
     username: ${SPRING_DATASOURCE_USERNAME:shoppe}
     password: ${SPRING_DATASOURCE_PASSWORD:shoppe}
+    driver-class-name: org.postgresql.Driver
 
   jpa:
     hibernate:

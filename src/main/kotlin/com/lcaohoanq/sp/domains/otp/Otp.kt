@@ -8,15 +8,9 @@ import jakarta.persistence.*
 @Table(name = "otps")
 data class Otp(
     @Id
-    @SequenceGenerator(
-        name = "otps_seq",
-        sequenceName = "otps_id_seq",
-        allocationSize = 1
-    )
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "otps_seq")
-    @Column(name = "id", unique = true, nullable = false)
-    @JsonProperty("id")
-    val id: Long? = null,
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", nullable = false)
+    var id: Long? = null,
 
     @Column(name = "email")
     val email: String,

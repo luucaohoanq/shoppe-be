@@ -10,14 +10,9 @@ import jakarta.persistence.*
 class UserSettings(
 
     @Id
-    @SequenceGenerator(
-        name = "user_settings_seq",
-        sequenceName = "user_settings_id_seq",
-        allocationSize = 1
-    )
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "user_settings_seq")
-    @Column(name = "id", unique = true, nullable = false)
-    val id: Long? = null,
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", nullable = false)
+    var id: Long? = null,
 
     @Column(name = "user_id", nullable = false, unique = true)
     @JsonIgnore
