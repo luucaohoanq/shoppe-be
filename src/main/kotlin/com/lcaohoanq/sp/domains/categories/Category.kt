@@ -9,8 +9,8 @@ class Category (
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
-    var id: Long? = null,
+    @Column(name = "id", nullable = false, unique = true)
+    val id: Long? = null,
 
     val name: String = "New Category",
     val description: String? = null,

@@ -9,8 +9,8 @@ import jakarta.persistence.*
 data class Otp(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
-    var id: Long? = null,
+    @Column(name = "id", nullable = false, unique = true)
+    val id: Long? = null,
 
     @Column(name = "email")
     val email: String,

@@ -2,8 +2,10 @@ package com.lcaohoanq.sp
 
 import io.github.lcaohoanq.annotations.BrowserLauncher
 import org.springframework.boot.autoconfigure.SpringBootApplication
+import org.springframework.boot.autoconfigure.domain.EntityScan
 import org.springframework.boot.runApplication
 import org.springframework.cache.annotation.EnableCaching
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories
 import org.springframework.scheduling.annotation.EnableScheduling
 
 @SpringBootApplication
@@ -13,6 +15,8 @@ import org.springframework.scheduling.annotation.EnableScheduling
     value = "http://localhost:4006/swagger-ui/index.html",
     healthCheckEndpoint = "http://localhost:4006/actuator/health"
 )
+@EnableJpaRepositories(basePackages = ["com.lcaohoanq.sp"])
+@EntityScan(basePackages = ["com.lcaohoanq.sp"])
 class ShoppeBackend
 
 fun main(args: Array<String>) {

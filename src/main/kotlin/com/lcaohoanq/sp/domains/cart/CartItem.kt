@@ -8,8 +8,8 @@ import jakarta.persistence.*
 class CartItem(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
-    var id: Long? = null,
+    @Column(name = "id", nullable = false, unique = true)
+    val id: Long? = null,
 
     @Column(name = "cart_id", nullable = false)
     val cartId: Long,

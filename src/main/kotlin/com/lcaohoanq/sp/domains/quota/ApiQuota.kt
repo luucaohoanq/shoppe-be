@@ -8,8 +8,8 @@ import java.time.LocalDateTime
 class ApiQuota(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
-    var id: Long? = null,
+    @Column(name = "id", nullable = false, unique = true)
+    val id: Long? = null,
     val userId: Long,
     val apiEndpoint: String,
     var requestCount: Int = 0,

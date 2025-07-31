@@ -121,7 +121,7 @@ POST /api/v1/products/search
 #### Get Cart
 
 ```http
-GET /api/v1/cart
+GET /api/v1/carts
 ```
 
 **Response:**
@@ -156,7 +156,7 @@ GET /api/v1/cart
 #### Add Item to Cart
 
 ```http
-POST /api/v1/cart/items
+POST /api/v1/carts/items
 ```
 
 **Request Body:**
@@ -189,7 +189,7 @@ POST /api/v1/cart/items
 #### Update Cart Item
 
 ```http
-PUT /api/v1/cart/items/{productId}
+PUT /api/v1/carts/items/{productId}
 ```
 
 **Request Body:**
@@ -203,19 +203,19 @@ PUT /api/v1/cart/items/{productId}
 #### Remove Cart Item
 
 ```http
-DELETE /api/v1/cart/items/{productId}
+DELETE /api/v1/carts/items/{productId}
 ```
 
 #### Clear Cart
 
 ```http
-DELETE /api/v1/cart
+DELETE /api/v1/carts
 ```
 
 #### Validate Cart
 
 ```http
-GET /api/v1/cart/validate
+GET /api/v1/carts/validate
 ```
 
 **Response:**
@@ -460,7 +460,7 @@ GET /api/v1/products?categoryId=1&minPrice=50&maxPrice=200
 ### Step 2: Add to Cart
 
 ```http
-POST /api/v1/cart/items
+POST /api/v1/carts/items
 {
   "productId": 1,
   "quantity": 2
@@ -470,7 +470,7 @@ POST /api/v1/cart/items
 ### Step 3: Validate Cart
 
 ```http
-GET /api/v1/cart/validate
+GET /api/v1/carts/validate
 ```
 
 ### Step 4: Checkout

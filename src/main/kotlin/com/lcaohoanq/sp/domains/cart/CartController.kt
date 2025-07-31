@@ -17,8 +17,8 @@ import org.springframework.validation.BindingResult
 import org.springframework.web.bind.annotation.*
 
 @RestController
-@RequestMapping("\${api.prefix}/cart")
-@Tag(name = "cart", description = "🛒 Shopping Cart API - Manage user shopping cart")
+@RequestMapping("\${api.prefix}/carts")
+@Tag(name = "carts", description = "🛒 Shopping Cart API - Manage user shopping cart")
 @SecurityRequirement(name = "JavaInUseSecurityScheme")
 class CartController(
     private val cartService: ICartService,

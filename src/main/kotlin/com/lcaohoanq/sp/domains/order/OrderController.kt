@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("/api/v1/orders")
-@Tag(name = "Order Management", description = "APIs for order operations")
+@Tag(name = "orders", description = "APIs for order operations")
 class OrderController(
     private val orderService: IOrderService
 ) : BaseController() {

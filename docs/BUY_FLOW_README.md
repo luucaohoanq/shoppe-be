@@ -124,23 +124,23 @@ GET /api/v1/products/{productId}
 
 ```kotlin
 // Add item to cart
-POST /api/v1/cart/items
+POST /api/v1/carts/items
 {
   "productId": 1,
   "quantity": 2
 }
 
 // Update cart item
-PUT /api/v1/cart/items/{productId}
+PUT /api/v1/carts/items/{productId}
 {
   "quantity": 3
 }
 
 // Validate cart
-GET /api/v1/cart/validate
+GET /api/v1/carts/validate
 
 // Get cart summary
-GET /api/v1/cart/summary
+GET /api/v1/carts/summary
 ```
 
 ### 3. Checkout Process

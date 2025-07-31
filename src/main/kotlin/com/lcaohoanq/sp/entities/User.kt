@@ -9,8 +9,8 @@ import jakarta.persistence.*
 class UserExtra(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
-    var id: Int? = null,
+    @Column(name = "id", nullable = false, unique = true)
+    val id: Int? = null,
 
     @Column(name = "email", unique = true)
     val email: String,

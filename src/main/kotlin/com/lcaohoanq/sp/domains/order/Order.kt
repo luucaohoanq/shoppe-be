@@ -13,8 +13,8 @@ import java.time.LocalDateTime
 class Order(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
-    var id: Long? = null,
+    @Column(name = "id", nullable = false, unique = true)
+    val id: Long? = null,
 
     @Column(name = "user_id", nullable = false)
     val userId: Long,

@@ -10,8 +10,8 @@ import jakarta.persistence.*
 class Product(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
-    var id: Long? = null,
+    @Column(name = "id", nullable = false, unique = true)
+    val id: Long? = null,
 
     @Column(name = "name", nullable = false)
     var name: String = "",

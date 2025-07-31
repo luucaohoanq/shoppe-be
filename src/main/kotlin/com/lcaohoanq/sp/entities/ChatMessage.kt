@@ -9,8 +9,8 @@ class ChatMessage {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
-    var id: Int? = null
+    @Column(name = "id", nullable = false, unique = true)
+    val id: Int? = null
 
     var senderId: Int = 0
     var receiverId: Int = 0

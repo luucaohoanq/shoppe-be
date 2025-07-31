@@ -11,7 +11,7 @@ import java.time.LocalDateTime
 class WalletTransaction : BaseEntity() {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    var id: Long? = null
+    val id: Long? = null
     
     @Column(nullable = false)
     var transactionId: String = ""

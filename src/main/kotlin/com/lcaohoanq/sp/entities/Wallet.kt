@@ -11,7 +11,7 @@ import java.math.BigDecimal
 class Wallet : BaseEntity() {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    var id: Long? = null
+    val id: Long? = null
     
     @Column(nullable = false, unique = true)
     var walletId: String = ""

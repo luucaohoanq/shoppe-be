@@ -10,8 +10,8 @@ class AdminSetting(): BaseEntity() {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
-    var id: Int? = null
+    @Column(name = "id", nullable = false, unique = true)
+    val id: Int? = null
 
     var settingKey: String? = null
     var settingValue: String? = null
