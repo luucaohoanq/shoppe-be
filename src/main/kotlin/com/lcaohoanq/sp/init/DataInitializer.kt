@@ -24,6 +24,7 @@ class DataInitializer {
         categoryRepository: CategoryRepository,
         productRepository: ProductRepository,
         userRepository: UserRepository,
+        userSettingsRepository: UserSettingsRepository,
         shippingMethodRepository: ShippingMethodRepository,
         passwordEncoder: PasswordEncoder,
         paymentRepository: PaymentRepository,
@@ -32,30 +33,62 @@ class DataInitializer {
         walletService: WalletService
     ): CommandLineRunner {
         return CommandLineRunner {
-            // Check if data already exists
-            if (categoryRepository.count() > 0 || productRepository.count() > 0) {
-                println("Database already has data, skipping initialization")
-                return@CommandLineRunner
+            println("Starting data initialization...")
+
+            // Initialize categories first (products depend on categories)
+            val categories = if (categoryRepository.count() == 0L) {
+                println("Initializing categories...")
+                initCategories(categoryRepository)
+            } else {
+                println("Categories already exist, skipping initialization")
+                categoryRepository.findAll()
             }
 
-            println("Initializing sample data...")
+            // Initialize products (depends on categories)
+            if (productRepository.count() == 0L) {
+                println("Initializing products...")
+                initProducts(productRepository, categories)
+            } else {
+                println("Products already exist, skipping initialization")
+            }
 
-            // Create categories
-            val categories = initCategories(categoryRepository)
+            // Initialize users
+            val users = if (userRepository.count() == 0L) {
+                println("Initializing users...")
+                initUsers(userRepository, userSettingsRepository, passwordEncoder)
+            } else {
+                println("Users already exist, skipping initialization")
+                userRepository.findAll()
+            }
 
-            // Create products
-            initProducts(productRepository, categories)
+            // Initialize shipping methods
+            if (shippingMethodRepository.count() == 0L) {
+                println("Initializing shipping methods...")
+                initShippingMethods(shippingMethodRepository)
+            } else {
+                println("Shipping methods already exist, skipping initialization")
+            }
 
-            // Create users
-            initUsers(userRepository, passwordEncoder)
+            // Initialize wallets (depends on users)
+            if (users.isNotEmpty()) {
+                println("Initializing wallets...")
+                initWallets(walletService, userRepository)
+            }
 
-            // Create shipping methods
-            initShippingMethods(shippingMethodRepository)
+            // Skip payment, order, and cart initialization if they already have data
+            if (paymentRepository.count() > 0L) {
+                println("Payments already exist, skipping wallet funding")
+            }
 
-            // Create wallets
-            initWallets(walletService, userRepository)
+            if (orderRepository.count() > 0L) {
+                println("Orders already exist")
+            }
 
-            println("Sample data initialization complete")
+            if (cartRepository.count() > 0L) {
+                println("Carts already exist")
+            }
+
+            println("Data initialization complete")
         }
     }
 
@@ -297,51 +330,101 @@ class DataInitializer {
         productRepository.saveAll(products)
     }
 
-    private fun initUsers(userRepository: UserRepository, passwordEncoder: PasswordEncoder) {
+    private fun initUsers(
+        userRepository: UserRepository,
+        userSettingsRepository: UserSettingsRepository,
+        passwordEncoder: PasswordEncoder
+    ): List<User> {
+        val hashedPassword = passwordEncoder.encode("1")
+
         val users = listOf(
             User(
-                email = "admin@example.com",
-                hashedPassword = passwordEncoder.encode("admin123"),
+                email = "ad@gmail.com",
+                hashedPassword = hashedPassword,
                 name = "Admin User",
                 role = UserEnum.Role.ADMIN,
-                isActive = true,
+                status = UserEnum.Status.VERIFIED,
                 phone = "+84987654321",
-                walletId = "wallet-admin@example.com",
-                preferredLanguage = "en",
-                preferredCurrency = "USD",
-                cartId = "cart-admin@example.com",
-                userSettings = UserSettings(
-                    userId = null,
-                    twoFaEnabled = false,
-                    preferredLanguage = "en",
-                    darkMode = false,
-                    loginAlerts = true,
-                    requestDisableAccount = false,
-                )
+                walletId = "wallet-ad@gmail.com",
+                cartId = "cart-ad@gmail.com"
             ),
             User(
-                email = "user@example.com",
-                hashedPassword = passwordEncoder.encode("user123"),
-                name = "Regular User",
+                email = "cus@gmail.com",
+                hashedPassword = hashedPassword,
                 role = UserEnum.Role.CUSTOMER,
-                isActive = true,
+                status = UserEnum.Status.VERIFIED,
                 phone = "+84123456789",
-                walletId = "wallet-user@example.com",
-                preferredLanguage = "en",
-                preferredCurrency = "USD",
-                cartId = "cart-user@example.com",
-                userSettings = UserSettings(
-                    userId = null,
-                    twoFaEnabled = false,
-                    preferredLanguage = "en",
-                    darkMode = true,
-                    loginAlerts = true,
-                    requestDisableAccount = false,
-                )
+                walletId = "wallet-cus@gmail.com",
+                cartId = "cart-cus@gmail.com"
+            ),
+            User(
+                email = "st@gmail.com",
+                hashedPassword = hashedPassword,
+                name = "STAFF User",
+                role = UserEnum.Role.STAFF,
+                status = UserEnum.Status.VERIFIED,
+                phone = "+84123456789",
+                walletId = "wallet-st@gmail.com",
+                cartId = "cart-st@gmail.com"
+            ),
+            User(
+                email = "sp@gmail.com",
+                hashedPassword = hashedPassword,
+                name = "SHOP User",
+                role = UserEnum.Role.SHOP,
+                status = UserEnum.Status.VERIFIED,
+                phone = "+84123456789",
+                walletId = "wallet-sp@gmail.com",
+                cartId = "cart-sp@gmail.com"
+            ),
+            User(
+                email = "sp2@gmail.com",
+                hashedPassword = hashedPassword,
+                name = "SHOP User 2",
+                role = UserEnum.Role.SHOP,
+                status = UserEnum.Status.DEACTIVATED,
+                phone = "+84123456789",
+                walletId = "wallet-sp2@gmail.com",
+                cartId = "cart-sp2@gmail.com"
+            ),
+            User(
+                email = "manager@gmail.com",
+                hashedPassword = hashedPassword,
+                name = "MANAGER User",
+                role = UserEnum.Role.MANAGER,
+                status = UserEnum.Status.VERIFIED,
+                phone = "+84123456789",
+                walletId = "wallet-manager@gmail.com",
+                cartId = "cart-manager@gmail.com"
             )
         )
 
-        userRepository.saveAll(users)
+        val userSetting = UserSettings(userId = users[0].id)
+        val userSetting2 = UserSettings(userId = users[1].id)
+        val userSetting3 = UserSettings(userId = users[2].id)
+        val userSetting4 = UserSettings(userId = users[3].id)
+        val userSetting5 = UserSettings(userId = users[4].id)
+        val userSetting6 = UserSettings(userId = users[5].id)
+
+        userSettingsRepository.saveAll(
+            listOf(
+                userSetting,
+                userSetting2,
+                userSetting3,
+                userSetting4,
+                userSetting5,
+                userSetting6
+            )
+        )
+
+        users[0].userSettings = userSetting
+        users[1].userSettings = userSetting2
+        users[2].userSettings = userSetting3
+        users[3].userSettings = userSetting4
+        users[4].userSettings = userSetting5
+        users[5].userSettings = userSetting6
+
+        return userRepository.saveAll(users)
     }
 
     private fun initShippingMethods(shippingMethodRepository: ShippingMethodRepository) {
@@ -370,21 +453,105 @@ class DataInitializer {
     }
 
     private fun initWallets(walletService: WalletService, userRepository: UserRepository) {
-        // Find users
-        val adminUser = userRepository.findByEmail("admin@example.com").orElse(null)
-        val regularUser = userRepository.findByEmail("user@example.com").orElse(null)
+        // Find users with corrected email addresses
+        val adminUser = userRepository.findByEmail("ad@gmail.com").orElse(null)
+        val regularUser = userRepository.findByEmail("cus@gmail.com").orElse(null)
+        val staffUser = userRepository.findByEmail("st@gmail.com").orElse(null)
+        val shopUser = userRepository.findByEmail("sp@gmail.com").orElse(null)
+        val shopUser2 = userRepository.findByEmail("sp2@gmail.com").orElse(null)
+        val managerUser = userRepository.findByEmail("manager@gmail.com").orElse(null)
 
         // Create wallets for users
         adminUser?.let {
-            val wallet = walletService.createWallet(it.id!!, it.walletId, "USD")
-            // Add some initial funds to admin wallet
-            walletService.deposit(wallet.walletId, BigDecimal(1000.0), "Initial deposit for admin")
+            try {
+                val wallet = walletService.createWallet(it.id!!, it.walletId, "USD")
+                // Add some initial funds to admin wallet
+                walletService.deposit(
+                    wallet.walletId,
+                    BigDecimal(1000.0),
+                    "Initial deposit for admin"
+                )
+                println("Created wallet for admin user")
+            } catch (e: Exception) {
+                println("Wallet for admin user may already exist: ${e.message}")
+            }
         }
 
         regularUser?.let {
-            val wallet = walletService.createWallet(it.id!!, it.walletId, "USD")
-            // Add some initial funds to regular user wallet
-            walletService.deposit(wallet.walletId, BigDecimal(500.0), "Initial deposit for user")
+            try {
+                val wallet = walletService.createWallet(it.id!!, it.walletId, "USD")
+                // Add some initial funds to regular user wallet
+                walletService.deposit(
+                    wallet.walletId,
+                    BigDecimal(500.0),
+                    "Initial deposit for user"
+                )
+                println("Created wallet for regular user")
+            } catch (e: Exception) {
+                println("Wallet for regular user may already exist: ${e.message}")
+            }
         }
+
+        staffUser?.let {
+            try {
+                val wallet = walletService.createWallet(it.id!!, it.walletId, "USD")
+                // Add some initial funds to staff user wallet
+                walletService.deposit(
+                    wallet.walletId,
+                    BigDecimal(300.0),
+                    "Initial deposit for staff user"
+                )
+                println("Created wallet for staff user")
+            } catch (e: Exception) {
+                println("Wallet for staff user may already exist: ${e.message}")
+            }
+        }
+
+        shopUser?.let {
+            try {
+                val wallet = walletService.createWallet(it.id!!, it.walletId, "USD")
+                // Add some initial funds to shop user wallet
+                walletService.deposit(
+                    wallet.walletId,
+                    BigDecimal(200.0),
+                    "Initial deposit for shop user"
+                )
+                println("Created wallet for shop user")
+            } catch (e: Exception) {
+                println("Wallet for shop user may already exist: ${e.message}")
+            }
+        }
+
+        shopUser2?.let {
+            try {
+                val wallet = walletService.createWallet(it.id!!, it.walletId, "USD")
+                // Add some initial funds to shop user 2 wallet
+                walletService.deposit(
+                    wallet.walletId,
+                    BigDecimal(150.0),
+                    "Initial deposit for shop user 2"
+                )
+                println("Created wallet for shop user 2")
+            } catch (e: Exception) {
+                println("Wallet for shop user 2 may already exist: ${e.message}")
+            }
+        }
+
+        managerUser?.let {
+            try {
+                val wallet = walletService.createWallet(it.id!!, it.walletId, "USD")
+                // Add some initial funds to manager user wallet
+                walletService.deposit(
+                    wallet.walletId,
+                    BigDecimal(800.0),
+                    "Initial deposit for manager user"
+                )
+                println("Created wallet for manager user")
+            } catch (e: Exception) {
+                println("Wallet for manager user may already exist: ${e.message}")
+            }
+        }
+
+
     }
 }

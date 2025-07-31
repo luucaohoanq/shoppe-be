@@ -35,7 +35,7 @@
 //            mediaType = "application/json",
 //            schema = @Schema(implementation = AccountDTOV2.CreateAccountReq.class),
 //            examples = {
-//                @ExampleObject(
+//                @gmailObject(
 //                    name = "New User",
 //                    summary = "Example registration",
 //                    description = "Sample account registration data",

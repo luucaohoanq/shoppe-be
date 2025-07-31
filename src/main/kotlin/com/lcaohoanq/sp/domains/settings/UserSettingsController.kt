@@ -1,6 +1,7 @@
 package com.lcaohoanq.sp.domains.settings
 
-import com.lcaohoanq.sp.apis.MyApiResponse
+import com.lcaohoanq.sp.apis.MyApiResponseV2
+import com.lcaohoanq.sp.bases.BaseController
 import com.lcaohoanq.sp.domains.user.UserPort
 import com.lcaohoanq.sp.extension.toUserSettingsResponse
 import com.lcaohoanq.sp.repositories.UserSettingsRepository
@@ -17,17 +18,13 @@ import org.springframework.web.bind.annotation.RestController
 @Tag(name = "user-settings", description = "User settings APIs")
 class UserSettingsController(
     private val userSettingsRepository: UserSettingsRepository
-) {
+) : BaseController() {
 
     @GetMapping("")
     @Operation(summary = "Get settings of user by id")
-    fun getDetailSettingsOfUser(@RequestParam id: Long): ResponseEntity<MyApiResponse<UserPort.UserSettingsResponse>> {
-        return ResponseEntity.ok(
-            MyApiResponse(
-                message = "User settings of $id has been successfully retrieved",
-                data = userSettingsRepository.findByUserId(id).toUserSettingsResponse()
-            )
-        )
+    fun getDetailSettingsOfUser(@RequestParam id: Long): ResponseEntity<MyApiResponseV2<UserPort.UserSettingsResponse>> {
+        val data = userSettingsRepository.findByUserId(id).toUserSettingsResponse()
+        return ok(message = "User settings of $id has been successfully retrieved", data = data)
     }
 
 }

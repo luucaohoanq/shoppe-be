@@ -21,9 +21,6 @@ class UserSettings(
     @Column(name = "two_fa_enabled")
     var twoFaEnabled: Boolean = false,
 
-    @Column(name = "preferred_language")
-    var preferredLanguage: String = "en",
-
     @Column(name = "dark_mode")
     var darkMode: Boolean = false,
 

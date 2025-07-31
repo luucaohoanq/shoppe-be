@@ -61,6 +61,9 @@ class AuthService(
         val existUser = userRepository.findByEmail(email).orElse(null)
             ?: throw BadCredentialsException("Wrong email or password")
 
+        if (existUser.status == UserEnum.Status.DEACTIVATED)
+            throw UnauthorizedException("Your account has been deactivated. Please contact support.")
+
         if (existUser.status == UserEnum.Status.BLOCKED)
             throw DisabledException("Your account has been disabled.")
 

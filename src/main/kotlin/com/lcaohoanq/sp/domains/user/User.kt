@@ -35,7 +35,6 @@ class User(
 
     @Enumerated(EnumType.ORDINAL)
     val gender: UserEnum.Gender? = UserEnum.Gender.FEMALE,
-    val isActive: Boolean = true,
 
     @Enumerated(EnumType.ORDINAL)
     var status: UserEnum.Status? = UserEnum.Status.UNVERIFIED,
@@ -51,9 +50,8 @@ class User(
 
     val walletId: String,
 
-    val preferredLanguage: String? = "vi",
-
-    val preferredCurrency: String? = "VND",
+    @Embedded
+    var preference: UserPreference = UserPreference(),
 
     @OneToMany(mappedBy = "user", cascade = [CascadeType.ALL], orphanRemoval = true)
     val loginHistory: MutableList<LoginHistory> = mutableListOf(),

@@ -1,6 +1,7 @@
 package com.lcaohoanq.sp.domains.otp
 
-import com.lcaohoanq.sp.apis.MyApiResponse
+import com.lcaohoanq.sp.apis.MyApiResponseV2
+import com.lcaohoanq.sp.bases.BaseController
 import com.lcaohoanq.sp.dto.OtpPort
 import com.lcaohoanq.sp.repositories.UserRepository
 import io.swagger.v3.oas.annotations.tags.Tag
@@ -14,29 +15,30 @@ import org.springframework.web.bind.annotation.*
 class OtpController(
     private val userRepository: UserRepository,
     private val otpService: IOtpService
-) {
+) : BaseController() {
 
     @GetMapping("")
     @PreAuthorize("permitAll()")
-    fun getAll(): ResponseEntity<MyApiResponse<List<OtpPort.OtpRes>>> {
+    fun getAll(): ResponseEntity<MyApiResponseV2<List<OtpPort.OtpRes>>> {
         val otps = otpService.getAllOtps()
-        return ResponseEntity.ok(
-            MyApiResponse(
-                message = "Get All Otps successfully",
-                data = otps
-            )
+        return ok(
+            message = "Get all OTPs successfully",
+            data = otps
         )
     }
 
     @PostMapping("")
     @PreAuthorize("permitAll()")
-    fun createOtp(@RequestBody otp: OtpPort.OtpReq): ResponseEntity<String> {
+    fun createOtp(@RequestBody otp: OtpPort.OtpReq): ResponseEntity<MyApiResponseV2<String>> {
         val user = userRepository.findByEmail(otp.email).orElse(null)
         if (user != null) {
             otpService.createOtpFor(user, otp)
-            return ResponseEntity.ok("OTP created successfully")
+            return ok(
+                message = "OTP created successfully",
+                data = "OTP has been sent to ${otp.email}"
+            )
         } else {
-            return ResponseEntity.notFound().build()
+            return notFound("User with email ${otp.email} not found")
         }
     }
 
