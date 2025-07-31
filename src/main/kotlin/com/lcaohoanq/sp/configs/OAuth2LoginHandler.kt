@@ -53,7 +53,7 @@ class OAuth2LoginHandler(
             else -> throw IllegalArgumentException("Unsupported OAuth2 provider: $provider")
         }
 
-        val user = userRepository.findByEmail(email) ?: run {
+        val user = userRepository.findByEmail(email).orElse(null) ?: run {
             authService.register(
                 AuthPort.SignUpReq(
                     email = email,
@@ -64,7 +64,7 @@ class OAuth2LoginHandler(
                     status = UserEnum.Status.VERIFIED
                 )
             )
-            userRepository.findByEmail(email) ?: throw IllegalStateException("User not found after registration")
+            userRepository.findByEmail(email).orElseThrow { IllegalStateException("User not found after registration") }
         }
 
         // Record login

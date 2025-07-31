@@ -14,7 +14,10 @@ class Category (
 
     val name: String = "New Category",
     val description: String? = null,
-    val parentId: Long? = null, // null if it's a top-level category
+    val parentId: Long? = null,
+    val slug: String, // null if it's a top-level category
+    val imageUrl: String? = null,
+    val active: Boolean = true,
 
 ): BaseEntity() {
 }

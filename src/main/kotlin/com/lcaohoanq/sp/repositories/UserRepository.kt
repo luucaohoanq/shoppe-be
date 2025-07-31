@@ -9,5 +9,5 @@ interface UserRepository: JpaRepository<User, Long>, JpaSpecificationExecutor<Us
     fun findByUserName(userName: String): Optional<User>
     fun existsByEmail(email: String): Boolean
     fun findByEmailAndHashedPassword(email: String, password: String): User?
-    fun findByEmail(email: String): User?
+    fun findByEmail(email: String): Optional<User>
 }

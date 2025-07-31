@@ -21,7 +21,7 @@ class SecurityConfig(
     @Bean
     fun userDetailsService(): UserDetailsService =
         UserDetailsService { email ->
-            userRepository.findByEmail(email)
+            userRepository.findByEmail(email).orElse(null)
                 ?: throw UsernameNotFoundException("Cannot find user with email $email")
         }
 

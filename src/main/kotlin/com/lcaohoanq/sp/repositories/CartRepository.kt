@@ -22,24 +22,3 @@ interface CartRepository : JpaRepository<Cart, Long> {
     @Query("SELECT SUM(ci.quantity * ci.priceAtTime) FROM CartItem ci WHERE ci.cartId = :cartId")
     fun getTotalAmountByCartId(@Param("cartId") cartId: Long): Double?
 }
-
-@Repository
-interface CartItemRepository : JpaRepository<CartItem, Long> {
-    
-    fun findByCartId(cartId: Long): List<CartItem>
-    
-    fun findByCartIdAndProductId(cartId: Long, productId: Long): CartItem?
-    
-    fun deleteByCartIdAndProductId(cartId: Long, productId: Long)
-    
-    fun deleteByCartId(cartId: Long)
-    
-    @Query("SELECT ci FROM CartItem ci WHERE ci.cartId = :cartId AND ci.productId IN :productIds")
-    fun findByCartIdAndProductIdIn(@Param("cartId") cartId: Long, @Param("productIds") productIds: List<Long>): List<CartItem>
-    
-    @Query("SELECT COUNT(ci) FROM CartItem ci WHERE ci.cartId = :cartId")
-    fun countByCartId(@Param("cartId") cartId: Long): Long
-    
-    @Query("SELECT SUM(ci.quantity) FROM CartItem ci WHERE ci.cartId = :cartId")
-    fun getTotalQuantityByCartId(@Param("cartId") cartId: Long): Int?
-}

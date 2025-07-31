@@ -53,6 +53,12 @@ class Product(
     @Column(name = "dimensions")
     var dimensions: String? = null,
 
+    var sku: String? = null,
+
+    var featured: Boolean? = false,
+
+    var active: Boolean? = true,
+
     // Relationship with Category
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id", insertable = false, updatable = false)
