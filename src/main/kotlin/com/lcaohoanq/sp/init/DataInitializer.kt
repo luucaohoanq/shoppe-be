@@ -5,6 +5,7 @@ import com.lcaohoanq.sp.domains.product.Product
 import com.lcaohoanq.sp.domains.settings.UserSettings
 import com.lcaohoanq.sp.domains.user.User
 import com.lcaohoanq.sp.domains.wallet.WalletService
+import com.lcaohoanq.sp.entities.AdminSetting
 import com.lcaohoanq.sp.entities.ShippingMethod
 import com.lcaohoanq.sp.enums.UserEnum
 import com.lcaohoanq.sp.repositories.*
@@ -30,7 +31,8 @@ class DataInitializer {
         paymentRepository: PaymentRepository,
         orderRepository: OrderRepository,
         cartRepository: CartRepository,
-        walletService: WalletService
+        walletService: WalletService,
+        adminSettingRepository: AdminSettingRepository
     ): CommandLineRunner {
         return CommandLineRunner {
             println("Starting data initialization...")
@@ -86,6 +88,14 @@ class DataInitializer {
 
             if (cartRepository.count() > 0L) {
                 println("Carts already exist")
+            }
+
+            // Initialize admin settings
+            if (adminSettingRepository.count() == 0L) {
+                println("Initializing admin settings...")
+                initAdminSettings(adminSettingRepository)
+            } else {
+                println("Admin settings already exist, skipping initialization")
             }
 
             println("Data initialization complete")
@@ -337,6 +347,7 @@ class DataInitializer {
     ): List<User> {
         val hashedPassword = passwordEncoder.encode("1")
 
+        // First, create users without UserSettings
         val users = listOf(
             User(
                 email = "ad@gmail.com",
@@ -347,6 +358,7 @@ class DataInitializer {
                 phone = "+84987654321",
                 walletId = "wallet-ad@gmail.com",
                 cartId = "cart-ad@gmail.com"
+                // No UserSettings initially
             ),
             User(
                 email = "cus@gmail.com",
@@ -356,6 +368,7 @@ class DataInitializer {
                 phone = "+84123456789",
                 walletId = "wallet-cus@gmail.com",
                 cartId = "cart-cus@gmail.com"
+                // No UserSettings initially
             ),
             User(
                 email = "st@gmail.com",
@@ -366,6 +379,7 @@ class DataInitializer {
                 phone = "+84123456789",
                 walletId = "wallet-st@gmail.com",
                 cartId = "cart-st@gmail.com"
+                // No UserSettings initially
             ),
             User(
                 email = "sp@gmail.com",
@@ -376,6 +390,7 @@ class DataInitializer {
                 phone = "+84123456789",
                 walletId = "wallet-sp@gmail.com",
                 cartId = "cart-sp@gmail.com"
+                // No UserSettings initially
             ),
             User(
                 email = "sp2@gmail.com",
@@ -386,6 +401,7 @@ class DataInitializer {
                 phone = "+84123456789",
                 walletId = "wallet-sp2@gmail.com",
                 cartId = "cart-sp2@gmail.com"
+                // No UserSettings initially
             ),
             User(
                 email = "manager@gmail.com",
@@ -396,35 +412,48 @@ class DataInitializer {
                 phone = "+84123456789",
                 walletId = "wallet-manager@gmail.com",
                 cartId = "cart-manager@gmail.com"
+                // No UserSettings initially
+            ),
+            User(
+                email = "blocked@gmail.com",
+                hashedPassword = hashedPassword,
+                name = "Blocked User",
+                role = UserEnum.Role.CUSTOMER,
+                status = UserEnum.Status.BLOCKED,
+                phone = "+84123456789",
+                walletId = "wallet-blocked@gmail.com",
+                cartId = "cart-blocked@gmail.com"
+                // No UserSettings initially
+            ),
+            User(
+                email = "pending@gmail.com",
+                hashedPassword = hashedPassword,
+                name = "Pending User",
+                role = UserEnum.Role.CUSTOMER,
+                status = UserEnum.Status.PENDING,
+                phone = "+84123456789",
+                walletId = "wallet-pending@gmail.com",
+                cartId = "cart-pending@gmail.com"
+                // No UserSettings initially
             )
         )
-
-        val userSetting = UserSettings(userId = users[0].id)
-        val userSetting2 = UserSettings(userId = users[1].id)
-        val userSetting3 = UserSettings(userId = users[2].id)
-        val userSetting4 = UserSettings(userId = users[3].id)
-        val userSetting5 = UserSettings(userId = users[4].id)
-        val userSetting6 = UserSettings(userId = users[5].id)
-
-        userSettingsRepository.saveAll(
-            listOf(
-                userSetting,
-                userSetting2,
-                userSetting3,
-                userSetting4,
-                userSetting5,
-                userSetting6
-            )
-        )
-
-        users[0].userSettings = userSetting
-        users[1].userSettings = userSetting2
-        users[2].userSettings = userSetting3
-        users[3].userSettings = userSetting4
-        users[4].userSettings = userSetting5
-        users[5].userSettings = userSetting6
-
-        return userRepository.saveAll(users)
+        
+        // Step 1: Save users first without UserSettings to get their IDs
+        val savedUsers = userRepository.saveAll(users)
+        
+        // Step 2: Create and save UserSettings separately
+        savedUsers.forEach { user ->
+            val settings = UserSettings(userId = user.id)
+            // Establish bidirectional relationship
+            settings.user = user
+            val savedSettings = userSettingsRepository.save(settings)
+            
+            // Update user with the saved settings reference
+            user.userSettings = savedSettings
+        }
+        
+        // Step 3: Save users again with the updated userSettings references
+        return userRepository.saveAll(savedUsers)
     }
 
     private fun initShippingMethods(shippingMethodRepository: ShippingMethodRepository) {
@@ -450,6 +479,53 @@ class DataInitializer {
         )
 
         shippingMethodRepository.saveAll(shippingMethods)
+    }
+
+    private fun initAdminSettings(adminSettingRepository: AdminSettingRepository): List<AdminSetting> {
+        val adminSettings = listOf(
+            AdminSetting().apply {
+                settingKey = "site.name"
+                settingValue = "Shoppe"
+            },
+            AdminSetting().apply {
+                settingKey = "site.description"
+                settingValue = "An e-commerce platform"
+            },
+            AdminSetting().apply {
+                settingKey = "site.contact.email"
+                settingValue = "contact@shoppe.com"
+            },
+            AdminSetting().apply {
+                settingKey = "site.contact.phone"
+                settingValue = "+84123456789"
+            },
+            AdminSetting().apply {
+                settingKey = "payment.currency"
+                settingValue = "USD"
+            },
+            AdminSetting().apply {
+                settingKey = "payment.methods"
+                settingValue = "Credit Card,PayPal,Bank Transfer"
+            },
+            AdminSetting().apply {
+                settingKey = "order.auto_confirm"
+                settingValue = "false"
+            },
+            AdminSetting().apply {
+                settingKey = "user.registration.enabled"
+                settingValue = "true"
+            },
+            AdminSetting().apply {
+                settingKey = "user.verification.required"
+                settingValue = "true"
+            },
+            AdminSetting().apply {
+                settingKey = "maintenance.mode"
+                settingValue = "false"
+            }
+        )
+
+        return adminSettingRepository.saveAll(adminSettings)
     }
 
     private fun initWallets(walletService: WalletService, userRepository: UserRepository) {

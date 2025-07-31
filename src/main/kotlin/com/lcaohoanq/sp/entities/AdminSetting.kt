@@ -13,7 +13,9 @@ class AdminSetting(): BaseEntity() {
     @Column(name = "id", nullable = false, unique = true)
     val id: Int? = null
 
+    @Column(name = "setting_key")
     var settingKey: String? = null
+    @Column(name = "setting_value")
     var settingValue: String? = null
 
 }

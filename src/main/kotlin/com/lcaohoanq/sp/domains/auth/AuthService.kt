@@ -148,6 +148,8 @@ class AuthService(
 
         // Then create settings with the user ID
         val settings = UserSettings(userId = savedUser.id!!)
+        // Establish bidirectional relationship
+        settings.user = savedUser
         val savedSettings = userSettingsRepository.save(settings)
 
         // Now assign the settings to the user and save again

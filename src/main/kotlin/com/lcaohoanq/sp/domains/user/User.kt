@@ -56,9 +56,9 @@ class User(
     @OneToMany(mappedBy = "user", cascade = [CascadeType.ALL], orphanRemoval = true)
     val loginHistory: MutableList<LoginHistory> = mutableListOf(),
 
-    @OneToOne
+    @OneToOne(cascade = [CascadeType.ALL])
     @JoinColumn(name = "user_settings_id", referencedColumnName = "id")
-    var userSettings: UserSettings = UserSettings(),
+    var userSettings: UserSettings? = null,
 
     ) : BaseEntity(), UserDetails {
 

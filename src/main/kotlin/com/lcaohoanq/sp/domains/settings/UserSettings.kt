@@ -3,6 +3,7 @@ package com.lcaohoanq.sp.domains.settings
 import com.lcaohoanq.sp.bases.BaseEntity
 import com.fasterxml.jackson.annotation.JsonIgnore
 import com.lcaohoanq.sp.domains.settings.notifications.NotificationSettings
+import com.lcaohoanq.sp.domains.user.User
 import jakarta.persistence.*
 
 @Entity
@@ -17,6 +18,10 @@ class UserSettings(
     @Column(name = "user_id", nullable = false, unique = true)
     @JsonIgnore
     var userId: Long? = null,
+    
+    @OneToOne(mappedBy = "userSettings")
+    @JsonIgnore
+    var user: User? = null,
 
     @Column(name = "two_fa_enabled")
     var twoFaEnabled: Boolean = false,
