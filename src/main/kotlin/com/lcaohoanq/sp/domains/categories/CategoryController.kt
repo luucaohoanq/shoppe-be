@@ -9,7 +9,9 @@ import com.lcaohoanq.sp.utils.SortOrder
 import com.lcaohoanq.sp.utils.Sortable
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag
+import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
+import org.springframework.data.domain.Sort
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
@@ -53,6 +55,23 @@ class CategoryController(
 
         return ResponseEntity.ok(categoryService.getAll(pageable, queryCriteria))
     }
+
+    @GetMapping("/paged")
+    fun getPageable(
+        @RequestParam(defaultValue = "0") page: Int,
+        @RequestParam(defaultValue = "20") size: Int,
+        @RequestParam(defaultValue = "id,asc") sort: String
+    ): ResponseEntity<MyApiResponse<Page<Category>>> {
+        val parts = sort.split(",")
+        val sortOrder = if (parts.size == 2 && parts[1].equals("desc", true)) {
+            Sort.by(parts[0]).descending()
+        } else {
+            Sort.by(parts[0]).ascending()
+        }
+        val pageable = PageRequest.of(page, size, sortOrder)
+        return ok(data = categoryService.getAll(pageable))
+    }
+
 
 
 }

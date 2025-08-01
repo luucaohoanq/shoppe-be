@@ -8,6 +8,7 @@ import com.lcaohoanq.sp.repositories.CategoryRepository
 import com.lcaohoanq.sp.utils.SortCriterion
 import com.lcaohoanq.sp.utils.SortOrder
 import com.lcaohoanq.sp.utils.Sortable
+import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.Sort
@@ -57,5 +58,9 @@ class CategoryServiceImpl(
 
     override fun getById(id: Long): Category? {
         TODO("Not yet implemented")
+    }
+
+    override fun getAll(pageable: Pageable): Page<Category> {
+        return categoryRepository.findAll(pageable)
     }
 }
