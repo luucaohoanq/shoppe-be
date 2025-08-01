@@ -1,4 +1,4 @@
-package com.lcaohoanq.sp.clients
+package com.lcaohoanq.sp.domains.thirdparty
 
 import com.lcaohoanq.sp.dto.AuthPort
 import com.lcaohoanq.sp.dto.MailPort

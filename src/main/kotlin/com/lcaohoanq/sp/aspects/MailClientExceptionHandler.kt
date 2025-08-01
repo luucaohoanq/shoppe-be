@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component
 class MailClientExceptionHandler {
     private val log = KotlinLogging.logger {}
 
-    @Around("execution(* com.lcaohoanq.sp.clients.MailFeignClient.*(..))")
+    @Around("execution(* com.lcaohoanq.sp.domains.thirdparty.MailFeignClient.*(..))")
     fun handleMailClientException(joinPoint: ProceedingJoinPoint): Any? {
         return try {
             joinPoint.proceed()

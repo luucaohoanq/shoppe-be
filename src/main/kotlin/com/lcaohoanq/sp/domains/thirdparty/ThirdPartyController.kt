@@ -24,7 +24,7 @@ class ThirdPartyController(
         description = "Get the exchange rates for a specific base currency"
     )
     @GetMapping("/base/{base}")
-    fun getBaseCurrencyRate(@PathVariable base: Currency): ResponseEntity<MyApiResponse<Any>> {
+    suspend fun getBaseCurrencyRate(@PathVariable base: Currency): ResponseEntity<MyApiResponse<Any>> {
         val data = thirdPartyService.getBaseCurrencyRate(base)
 
         return ok(

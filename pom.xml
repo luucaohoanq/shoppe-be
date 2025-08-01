@@ -232,6 +232,17 @@
       <artifactId>firebase-admin</artifactId>
       <version>9.2.0</version>
     </dependency>
+    <dependency>
+      <groupId>org.jetbrains.kotlinx</groupId>
+      <artifactId>kotlinx-coroutines-core</artifactId>
+      <version>1.10.2</version>
+    </dependency>
+    <!-- https://mvnrepository.com/artifact/org.jetbrains.kotlinx/kotlinx-coroutines-reactor -->
+    <dependency>
+      <groupId>org.jetbrains.kotlinx</groupId>
+      <artifactId>kotlinx-coroutines-reactor</artifactId>
+      <version>1.8.1</version>
+    </dependency>
   </dependencies>
 
   <build>

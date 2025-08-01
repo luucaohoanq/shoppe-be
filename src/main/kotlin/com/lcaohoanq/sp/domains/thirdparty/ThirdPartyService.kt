@@ -6,5 +6,5 @@ import com.lcaohoanq.sp.enums.Currency
 interface ThirdPartyService {
 
     //https://api.exchangerate-api.com/v4/latest/vnd
-    fun getBaseCurrencyRate(base: Currency): ExchangeRateResponse
+    suspend fun getBaseCurrencyRate(base: Currency): ExchangeRateResponse
 }
