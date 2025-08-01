@@ -7,6 +7,7 @@ import com.lcaohoanq.sp.metadata.QueryCriteria
 import com.lcaohoanq.sp.repositories.CategoryRepository
 import com.lcaohoanq.sp.utils.SortOrder
 import com.lcaohoanq.sp.utils.Sortable
+import com.lcaohoanq.sp.utils.createPageRequest
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag
 import org.springframework.data.domain.Page
@@ -59,14 +60,7 @@ class CategoryController(
         @RequestParam(defaultValue = "20") size: Int,
         @RequestParam(defaultValue = "id,asc") sort: String
     ): ResponseEntity<MyApiResponse<Page<Category>>> {
-        val parts = sort.split(",")
-        val sortOrder = if (parts.size == 2 && parts[1].equals("desc", true)) {
-            Sort.by(parts[0]).descending()
-        } else {
-            Sort.by(parts[0]).ascending()
-        }
-        val pageable = PageRequest.of(page, size, sortOrder)
-        return ok(data = categoryService.getAll(pageable))
+        return ok(data = categoryService.getAll(createPageRequest(page, size, sort)))
     }
 
     @GetMapping("/parents")

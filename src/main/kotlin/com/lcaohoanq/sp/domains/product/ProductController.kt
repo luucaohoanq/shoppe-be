@@ -7,13 +7,16 @@ import com.lcaohoanq.sp.exceptions.MethodArgumentNotValidException
 import com.lcaohoanq.sp.metadata.QueryCriteria
 import com.lcaohoanq.sp.utils.SortOrder
 import com.lcaohoanq.sp.utils.Sortable
+import com.lcaohoanq.sp.utils.createPageRequest
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.Parameter
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.responses.ApiResponses
 import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.validation.Valid
+import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
+import org.springframework.data.domain.Sort
 import org.springframework.http.ResponseEntity
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.validation.BindingResult
@@ -77,6 +80,15 @@ class ProductController(
     fun getAllProducts(): ResponseEntity<MyApiResponse<List<ProductPort.ProductResponse>>> {
         val response = productService.getAllProducts()
         return ok("Get all products successfully", response)
+    }
+
+    @GetMapping("/paged")
+    fun getProductsPaged(
+        @RequestParam(defaultValue = "0") page: Int,
+        @RequestParam(defaultValue = "20") size: Int,
+        @RequestParam(defaultValue = "id,asc") sort: String
+    ): ResponseEntity<MyApiResponse<Page<Product>>> {
+        return ok(data = productService.getAll(createPageRequest(page, size, sort)))
     }
 
     @Operation(

@@ -13,6 +13,7 @@ import com.lcaohoanq.sp.utils.SortCriterion
 import com.lcaohoanq.sp.utils.SortOrder
 import com.lcaohoanq.sp.utils.Sortable
 import mu.KotlinLogging
+import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.Sort
@@ -58,6 +59,8 @@ class ProductService(
         log.info { "Fetching all products" }
         return productRepository.findAll().map { it.toProductResponse() }
     }
+
+    override fun getAll(pageable: Pageable): Page<Product> = productRepository.findAll(pageable)
 
     @Transactional(readOnly = true)
     override fun getAllProducts(pageable: Pageable): PageResponse<ProductPort.ProductResponse> {

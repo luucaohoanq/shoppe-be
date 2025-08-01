@@ -3,6 +3,7 @@ package com.lcaohoanq.sp.domains.product
 import com.lcaohoanq.sp.apis.PageResponse
 import com.lcaohoanq.sp.metadata.QueryCriteria
 import com.lcaohoanq.sp.utils.Sortable
+import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 
 interface IProductService {
@@ -11,6 +12,7 @@ interface IProductService {
     fun createProduct(request: ProductPort.ProductRequest): ProductPort.ProductResponse
     fun getProductById(id: Long): ProductPort.ProductResponse
     fun getAllProducts(): List<ProductPort.ProductResponse>
+    fun getAll(pageable: Pageable): Page<Product>
     fun getAllProducts(pageable: Pageable): PageResponse<ProductPort.ProductResponse>
     fun getAllProducts(pageable: Pageable, queryCriteria: QueryCriteria<Sortable.ProductSortField>): PageResponse<ProductPort.ProductResponse>
     fun updateProduct(id: Long, request: ProductPort.ProductUpdateRequest): ProductPort.ProductResponse
