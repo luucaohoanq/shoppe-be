@@ -63,4 +63,18 @@ class CategoryServiceImpl(
     override fun getAll(pageable: Pageable): Page<Category> {
         return categoryRepository.findAll(pageable)
     }
+
+    override fun getParentCategories(): List<Category> {
+        val children = categoryRepository.findByParentId(-1)
+        return children.ifEmpty {
+            throw NoSuchElementException("No parent categories found")
+        }
+    }
+
+    override fun getChildCategories(parentId: Long): List<Category> {
+        val children = categoryRepository.findByParentId(parentId)
+        return children.ifEmpty {
+            throw NoSuchElementException("No child categories found for parent ID: $parentId")
+        }
+    }
 }

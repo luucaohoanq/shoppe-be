@@ -12,5 +12,7 @@ interface CategoryService {
     fun getAll(pageable: Pageable, queryCriteria: QueryCriteria<Sortable.CategorySortField>):  PageResponse<CategoryPort.CategoryRes>;
     fun getById(id: Long): Category?
     fun getAll(pageable: Pageable): Page<Category>
+    fun getParentCategories(): List<Category>
+    fun getChildCategories(parentId: Long): List<Category>
 
 }
