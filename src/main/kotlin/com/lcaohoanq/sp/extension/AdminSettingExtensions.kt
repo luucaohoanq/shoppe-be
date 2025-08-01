@@ -1,10 +1,9 @@
 package com.lcaohoanq.sp.extension
 
 import com.lcaohoanq.sp.domains.settings.AdminSettingPort
-import com.lcaohoanq.sp.entities.AdminSetting
-import java.time.LocalDateTime
+import com.lcaohoanq.sp.entities.SystemSetting
 
-fun AdminSetting.toAdminSettingResponse() = AdminSettingPort.AdminSettingResponse(
+fun SystemSetting.toAdminSettingResponse() = AdminSettingPort.AdminSettingResponse(
     id = this.id ?: 0,
     settingKey = this.settingKey ?: "",
     settingValue = this.settingValue ?: "",

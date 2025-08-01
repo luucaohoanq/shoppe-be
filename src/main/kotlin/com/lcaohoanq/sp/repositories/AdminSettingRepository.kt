@@ -1,8 +1,8 @@
 package com.lcaohoanq.sp.repositories
 
-import com.lcaohoanq.sp.entities.AdminSetting
+import com.lcaohoanq.sp.entities.SystemSetting
 import org.springframework.data.jpa.repository.JpaRepository
 
-interface AdminSettingRepository: JpaRepository<AdminSetting, Int> {
-    fun findBySettingKey(settingKey: String): AdminSetting?
+interface AdminSettingRepository: JpaRepository<SystemSetting, Int> {
+    fun findBySettingKey(settingKey: String): SystemSetting?
 }

@@ -7,7 +7,7 @@ import org.springframework.web.context.request.RequestContextHolder
 import org.springframework.web.context.request.ServletRequestAttributes
 import java.time.Instant
 
-sealed interface MyApiResponseV2<T> {
+sealed interface MyApiResponse<T> {
     val statusCode: Int
     val message: String
     val timestamp: Instant
@@ -18,7 +18,7 @@ sealed interface MyApiResponseV2<T> {
         override val message: String,
         val data: T?,
         @JsonIgnore override val timestamp: Instant
-    ) : MyApiResponseV2<T>
+    ) : MyApiResponse<T>
 
     // Error data class with path tracking
     data class Error<T>(
@@ -27,7 +27,7 @@ sealed interface MyApiResponseV2<T> {
         val reason: String,
         val path: String,
         override val timestamp: Instant
-    ) : MyApiResponseV2<T>
+    ) : MyApiResponse<T>
 
     // ValidationError data class with path tracking
     data class ValidationError<T>(
@@ -36,7 +36,7 @@ sealed interface MyApiResponseV2<T> {
         val fieldErrors: Map<String, String>,
         val path: String,
         override val timestamp: Instant
-    ) : MyApiResponseV2<T>
+    ) : MyApiResponse<T>
 
     companion object {
         // Helper method to get current request path
@@ -50,7 +50,7 @@ sealed interface MyApiResponseV2<T> {
         }
 
         // Success response methods
-        fun <T> success(data: T): ResponseEntity<MyApiResponseV2<T>> {
+        fun <T> success(data: T): ResponseEntity<MyApiResponse<T>> {
             return ResponseEntity.ok(
                 Success(
                     statusCode = 200,
@@ -61,7 +61,7 @@ sealed interface MyApiResponseV2<T> {
             )
         }
 
-        fun <T> created(data: T): ResponseEntity<MyApiResponseV2<T>> {
+        fun <T> created(data: T): ResponseEntity<MyApiResponse<T>> {
             return ResponseEntity.status(HttpStatus.CREATED).body(
                 Success(
                     statusCode = 201,
@@ -72,7 +72,7 @@ sealed interface MyApiResponseV2<T> {
             )
         }
 
-        fun <T> created(): ResponseEntity<MyApiResponseV2<T>> {
+        fun <T> created(): ResponseEntity<MyApiResponse<T>> {
             return ResponseEntity.status(HttpStatus.CREATED).body(
                 Success(
                     statusCode = 201,
@@ -83,7 +83,7 @@ sealed interface MyApiResponseV2<T> {
             )
         }
 
-        fun <T> updated(data: T): ResponseEntity<MyApiResponseV2<T>> {
+        fun <T> updated(data: T): ResponseEntity<MyApiResponse<T>> {
             return ResponseEntity.ok(
                 Success(
                     statusCode = 200,
@@ -94,7 +94,7 @@ sealed interface MyApiResponseV2<T> {
             )
         }
 
-        fun <T> updated(): ResponseEntity<MyApiResponseV2<T>> {
+        fun <T> updated(): ResponseEntity<MyApiResponse<T>> {
             return ResponseEntity.ok(
                 Success(
                     statusCode = 200,
@@ -105,7 +105,7 @@ sealed interface MyApiResponseV2<T> {
             )
         }
 
-        fun <T> noContent(): ResponseEntity<MyApiResponseV2<T>> {
+        fun <T> noContent(): ResponseEntity<MyApiResponse<T>> {
             return ResponseEntity.status(HttpStatus.NO_CONTENT).body(
                 Success(
                     statusCode = 204,
@@ -117,7 +117,7 @@ sealed interface MyApiResponseV2<T> {
         }
 
         // Error response methods
-        fun <T> badRequest(reason: String): ResponseEntity<MyApiResponseV2<T>> {
+        fun <T> badRequest(reason: String): ResponseEntity<MyApiResponse<T>> {
             return ResponseEntity.badRequest().body(
                 Error(
                     statusCode = 400,
@@ -129,7 +129,7 @@ sealed interface MyApiResponseV2<T> {
             )
         }
 
-        fun <T> badRequest(reason: String, path: String): ResponseEntity<MyApiResponseV2<T>> {
+        fun <T> badRequest(reason: String, path: String): ResponseEntity<MyApiResponse<T>> {
             return ResponseEntity.badRequest().body(
                 Error(
                     statusCode = 400,
@@ -141,7 +141,7 @@ sealed interface MyApiResponseV2<T> {
             )
         }
 
-        fun validationError(errors: Map<String, String>): ResponseEntity<MyApiResponseV2<Any>> {
+        fun validationError(errors: Map<String, String>): ResponseEntity<MyApiResponse<Any>> {
             return ResponseEntity.badRequest().body(
                 ValidationError(
                     statusCode = 400,
@@ -153,7 +153,7 @@ sealed interface MyApiResponseV2<T> {
             )
         }
 
-        fun validationError(errors: Map<String, String>, path: String): ResponseEntity<MyApiResponseV2<Any>> {
+        fun validationError(errors: Map<String, String>, path: String): ResponseEntity<MyApiResponse<Any>> {
             return ResponseEntity.badRequest().body(
                 ValidationError(
                     statusCode = 400,
@@ -165,7 +165,7 @@ sealed interface MyApiResponseV2<T> {
             )
         }
 
-        fun <T> notFound(reason: String): ResponseEntity<MyApiResponseV2<T>> {
+        fun <T> notFound(reason: String): ResponseEntity<MyApiResponse<T>> {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
                 Error(
                     statusCode = 404,
@@ -177,7 +177,7 @@ sealed interface MyApiResponseV2<T> {
             )
         }
 
-        fun <T> notFound(reason: String, path: String): ResponseEntity<MyApiResponseV2<T>> {
+        fun <T> notFound(reason: String, path: String): ResponseEntity<MyApiResponse<T>> {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
                 Error(
                     statusCode = 404,
@@ -189,7 +189,7 @@ sealed interface MyApiResponseV2<T> {
             )
         }
 
-        fun <T> unauthorized(reason: String): ResponseEntity<MyApiResponseV2<T>> {
+        fun <T> unauthorized(reason: String): ResponseEntity<MyApiResponse<T>> {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(
                 Error(
                     statusCode = 401,
@@ -201,7 +201,7 @@ sealed interface MyApiResponseV2<T> {
             )
         }
 
-        fun <T> serverError(reason: String): ResponseEntity<MyApiResponseV2<T>> {
+        fun <T> serverError(reason: String): ResponseEntity<MyApiResponse<T>> {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
                 Error(
                     statusCode = 500,
@@ -213,7 +213,7 @@ sealed interface MyApiResponseV2<T> {
             )
         }
 
-        fun <T> error(status: HttpStatus, message: String, reason: String): ResponseEntity<MyApiResponseV2<T>> {
+        fun <T> error(status: HttpStatus, message: String, reason: String): ResponseEntity<MyApiResponse<T>> {
             return ResponseEntity.status(status).body(
                 Error(
                     statusCode = status.value(),
@@ -225,7 +225,7 @@ sealed interface MyApiResponseV2<T> {
             )
         }
 
-        fun <T> error(status: HttpStatus, message: String, reason: String, path: String): ResponseEntity<MyApiResponseV2<T>> {
+        fun <T> error(status: HttpStatus, message: String, reason: String, path: String): ResponseEntity<MyApiResponse<T>> {
             return ResponseEntity.status(status).body(
                 Error(
                     statusCode = status.value(),

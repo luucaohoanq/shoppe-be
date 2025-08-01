@@ -1,12 +1,15 @@
 package com.lcaohoanq.sp.init
 
 import com.lcaohoanq.sp.domains.categories.Category
+import com.lcaohoanq.sp.domains.currency.CurrencyRate
 import com.lcaohoanq.sp.domains.product.Product
 import com.lcaohoanq.sp.domains.settings.UserSettings
+import com.lcaohoanq.sp.domains.thirdparty.ThirdPartyService
 import com.lcaohoanq.sp.domains.user.User
 import com.lcaohoanq.sp.domains.wallet.WalletService
-import com.lcaohoanq.sp.entities.AdminSetting
+import com.lcaohoanq.sp.entities.SystemSetting
 import com.lcaohoanq.sp.entities.ShippingMethod
+import com.lcaohoanq.sp.enums.Currency
 import com.lcaohoanq.sp.enums.UserEnum
 import com.lcaohoanq.sp.repositories.*
 import org.springframework.boot.CommandLineRunner
@@ -15,10 +18,13 @@ import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Profile
 import org.springframework.security.crypto.password.PasswordEncoder
 import java.math.BigDecimal
+import java.math.RoundingMode
 
 @Configuration
 @Profile(value = ["dev", "test"]) // Only run in development environment
-class DataInitializer {
+class DataInitializer(
+    private val thirdPartyService: ThirdPartyService
+) {
 
     @Bean
     fun initData(
@@ -32,10 +38,19 @@ class DataInitializer {
         orderRepository: OrderRepository,
         cartRepository: CartRepository,
         walletService: WalletService,
-        adminSettingRepository: AdminSettingRepository
+        adminSettingRepository: AdminSettingRepository,
+        currencyRateRepository: CurrencyRateRepository
     ): CommandLineRunner {
         return CommandLineRunner {
             println("Starting data initialization...")
+
+            val currencyRateCount = if (currencyRateRepository.count() == 0L) {
+                println("Initializing currency rates...")
+                // Initialize currency rates if needed
+                initCurrencyRates(currencyRateRepository)
+            } else {
+                println("Currency rates already exist, skipping initialization")
+            }
 
             // Initialize categories first (products depend on categories)
             val categories = if (categoryRepository.count() == 0L) {
@@ -426,21 +441,21 @@ class DataInitializer {
                 // No UserSettings initially
             )
         )
-        
+
         // Step 1: Save users first without UserSettings to get their IDs
         val savedUsers = userRepository.saveAll(users)
-        
+
         // Step 2: Create and save UserSettings separately
         savedUsers.forEach { user ->
             val settings = UserSettings(userId = user.id)
             // Establish bidirectional relationship
             settings.user = user
             val savedSettings = userSettingsRepository.save(settings)
-            
+
             // Update user with the saved settings reference
             user.userSettings = savedSettings
         }
-        
+
         // Step 3: Save users again with the updated userSettings references
         return userRepository.saveAll(savedUsers)
     }
@@ -470,51 +485,66 @@ class DataInitializer {
         shippingMethodRepository.saveAll(shippingMethods)
     }
 
-    private fun initAdminSettings(adminSettingRepository: AdminSettingRepository): List<AdminSetting> {
-        val adminSettings = listOf(
-            AdminSetting().apply {
+    private fun initAdminSettings(adminSettingRepository: AdminSettingRepository): List<SystemSetting> {
+        val systemSettings = listOf(
+            SystemSetting().apply {
                 settingKey = "site.name"
                 settingValue = "Shoppe"
+                description = "Name of the e-commerce site"
             },
-            AdminSetting().apply {
+            SystemSetting().apply {
                 settingKey = "site.description"
                 settingValue = "An e-commerce platform"
+                description = "Description of the e-commerce site"
             },
-            AdminSetting().apply {
+            SystemSetting().apply {
                 settingKey = "site.contact.email"
                 settingValue = "contact@shoppe.com"
+                description = "Contact email for the site"
             },
-            AdminSetting().apply {
+            SystemSetting().apply {
                 settingKey = "site.contact.phone"
                 settingValue = "+84123456789"
+                description = "Contact phone number for the site"
             },
-            AdminSetting().apply {
+            SystemSetting().apply {
                 settingKey = "payment.currency"
                 settingValue = "USD"
+                description = "Default currency for payments"
             },
-            AdminSetting().apply {
+            SystemSetting().apply {
                 settingKey = "payment.methods"
                 settingValue = "Credit Card,PayPal,Bank Transfer"
+                description = "Available payment methods"
             },
-            AdminSetting().apply {
+            SystemSetting().apply {
                 settingKey = "order.auto_confirm"
                 settingValue = "false"
+                description = "Automatically confirm orders after payment"
             },
-            AdminSetting().apply {
+            SystemSetting().apply {
                 settingKey = "user.registration.enabled"
                 settingValue = "true"
+                description = "Enable user registration"
             },
-            AdminSetting().apply {
+            SystemSetting().apply {
                 settingKey = "user.verification.required"
                 settingValue = "true"
+                description = "Require email verification for new users"
             },
-            AdminSetting().apply {
+            SystemSetting().apply {
                 settingKey = "maintenance.mode"
                 settingValue = "false"
+                description = "Enable maintenance mode for the site"
+            },
+            SystemSetting().apply {
+                settingKey = "file.max_upload_size"
+                settingValue = "10485760" // 10 MB in bytes
+                description = "Maximum file upload size in bytes"
             }
         )
 
-        return adminSettingRepository.saveAll(adminSettings)
+        return adminSettingRepository.saveAll(systemSettings)
     }
 
     private fun initWallets(walletService: WalletService, userRepository: UserRepository) {
@@ -619,4 +649,55 @@ class DataInitializer {
 
 
     }
+
+    //App nhỏ, dashboard admin, không cần truy vấn phức tạp	Cách 2 (tính toán khi cần)
+    //App tài chính, API cung cấp tỉ giá đa dạng, cần truy xuất nhanh	Cách 1 (lưu 2 chiều)
+    fun initCurrencyRates(currencyRateRepository: CurrencyRateRepository) {
+        val baseCurrency = Currency.USD
+        val response = thirdPartyService.getBaseCurrencyRate(baseCurrency)
+
+        val supportedCurrencies =
+            listOf(Currency.USD, Currency.VND, Currency.JPY) // hoặc lấy từ enum
+
+        val rates = mutableListOf<CurrencyRate>()
+
+        // Lưu USD → others
+        for (toCurrency in supportedCurrencies) {
+            if (toCurrency != baseCurrency) {
+                val rate = response.rates[toCurrency.name] ?: continue
+                rates.add(
+                    CurrencyRate(
+                        fromCurrency = baseCurrency,
+                        toCurrency = toCurrency,
+                        rate = BigDecimal.valueOf(rate)
+                    )
+                )
+            }
+        }
+
+        // Lưu others → USD
+        for (fromCurrency in supportedCurrencies) {
+            if (fromCurrency != baseCurrency) {
+                val rate = response.rates[fromCurrency.name] ?: continue
+                val reverseRate = BigDecimal.ONE.divide(
+                    BigDecimal.valueOf(rate),
+                    6,
+                    RoundingMode.HALF_UP
+                )
+
+                println("Reverse rate from $fromCurrency to $baseCurrency: $reverseRate")
+
+                rates.add(
+                    CurrencyRate(
+                        fromCurrency = fromCurrency,
+                        toCurrency = baseCurrency,
+                        rate = reverseRate
+                    )
+                )
+            }
+        }
+
+        currencyRateRepository.saveAll(rates)
+    }
+
 }

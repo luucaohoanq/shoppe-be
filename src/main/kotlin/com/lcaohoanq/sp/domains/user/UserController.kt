@@ -1,6 +1,6 @@
 package com.lcaohoanq.sp.domains.user
 
-import com.lcaohoanq.sp.apis.MyApiResponseV2
+import com.lcaohoanq.sp.apis.MyApiResponse
 import com.lcaohoanq.sp.apis.PageResponse
 import com.lcaohoanq.sp.bases.BaseController
 import com.lcaohoanq.sp.configs.OpenAPIConfig
@@ -27,7 +27,7 @@ class UserController(
 ) : BaseController() {
 
     @GetMapping("/all")
-    fun getAllUsers(): ResponseEntity<MyApiResponseV2<List<UserPort.UserResponse>>> {
+    fun getAllUsers(): ResponseEntity<MyApiResponse<List<UserPort.UserResponse>>> {
         val endpoint = "/users/all"
 
 //        return if(apiQuotaService.isRequestAllowed(authService.getCurrentAuthenticatedUser(), endpoint)) {
@@ -66,7 +66,7 @@ class UserController(
     }
 
     @GetMapping("/details/{id}")
-    fun getUserById(@PathVariable id: Long): ResponseEntity<MyApiResponseV2<UserPort.UserResponse?>> =
+    fun getUserById(@PathVariable id: Long): ResponseEntity<MyApiResponse<UserPort.UserResponse?>> =
         ok("Get user info successfully", userService.getById(id))
 
     /**
@@ -79,7 +79,7 @@ class UserController(
     )
     @Deprecated("Use /me instead")
     @PatchMapping("/details")
-    fun takeUserDetailsFromToken(): ResponseEntity<MyApiResponseV2<UserPort.UserResponse>> =
+    fun takeUserDetailsFromToken(): ResponseEntity<MyApiResponse<UserPort.UserResponse>> =
         ok(
             "Get user details successfully",
             authService.getCurrentAuthenticatedUser().toUserResponse()
@@ -88,7 +88,7 @@ class UserController(
 
     @Operation(summary = "Disable user account", description = "Disable user account")
     @DeleteMapping("/disable-account/{id}")
-    fun disableAccount(@PathVariable("id") id: Long): ResponseEntity<MyApiResponseV2<Unit>> {
+    fun disableAccount(@PathVariable("id") id: Long): ResponseEntity<MyApiResponse<Unit>> {
         userService.doDisableUser(id)
         return ok("Disable account successfully" , data = Unit)
     }

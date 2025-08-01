@@ -1,6 +1,6 @@
 package com.lcaohoanq.sp.domains.otp
 
-import com.lcaohoanq.sp.apis.MyApiResponseV2
+import com.lcaohoanq.sp.apis.MyApiResponse
 import com.lcaohoanq.sp.bases.BaseController
 import com.lcaohoanq.sp.dto.OtpPort
 import com.lcaohoanq.sp.repositories.UserRepository
@@ -19,7 +19,7 @@ class OtpController(
 
     @GetMapping("")
     @PreAuthorize("permitAll()")
-    fun getAll(): ResponseEntity<MyApiResponseV2<List<OtpPort.OtpRes>>> {
+    fun getAll(): ResponseEntity<MyApiResponse<List<OtpPort.OtpRes>>> {
         val otps = otpService.getAllOtps()
         return ok(
             message = "Get all OTPs successfully",
@@ -29,7 +29,7 @@ class OtpController(
 
     @PostMapping("")
     @PreAuthorize("permitAll()")
-    fun createOtp(@RequestBody otp: OtpPort.OtpReq): ResponseEntity<MyApiResponseV2<String>> {
+    fun createOtp(@RequestBody otp: OtpPort.OtpReq): ResponseEntity<MyApiResponse<String>> {
         val user = userRepository.findByEmail(otp.email).orElse(null)
         if (user != null) {
             otpService.createOtpFor(user, otp)

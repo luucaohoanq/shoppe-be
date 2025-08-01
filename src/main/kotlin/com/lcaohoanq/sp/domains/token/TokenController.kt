@@ -1,6 +1,6 @@
 package com.lcaohoanq.sp.domains.token
 
-import com.lcaohoanq.sp.apis.MyApiResponseV2
+import com.lcaohoanq.sp.apis.MyApiResponse
 import com.lcaohoanq.sp.bases.BaseController
 import com.lcaohoanq.sp.dto.TokenPort
 import io.swagger.v3.oas.annotations.tags.Tag
@@ -17,7 +17,7 @@ class TokenController(
 ) : BaseController() {
 
     @GetMapping("/all")
-    fun getAllTokens(): ResponseEntity<MyApiResponseV2<List<TokenPort.TokenResponse>>> {
+    fun getAllTokens(): ResponseEntity<MyApiResponse<List<TokenPort.TokenResponse>>> {
         return ok(
             message = "Get all tokens successfully",
             data = tokenService.getAll()

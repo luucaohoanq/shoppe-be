@@ -1,6 +1,6 @@
 package com.lcaohoanq.sp.domains.order
 
-import com.lcaohoanq.sp.apis.MyApiResponseV2
+import com.lcaohoanq.sp.apis.MyApiResponse
 import com.lcaohoanq.sp.apis.PageResponse
 import com.lcaohoanq.sp.bases.BaseController
 import com.lcaohoanq.sp.utils.SecurityUtils
@@ -31,7 +31,7 @@ class OrderController(
     )
     fun createOrder(
         @Valid @RequestBody request: OrderPort.CreateOrderRequest
-    ): ResponseEntity<MyApiResponseV2<OrderPort.OrderResponse>> {
+    ): ResponseEntity<MyApiResponse<OrderPort.OrderResponse>> {
         log.info { "Creating order for user: ${SecurityUtils.getCurrentUserId()}" }
 
         val userId = SecurityUtils.getCurrentUserId()
@@ -47,7 +47,7 @@ class OrderController(
     )
     fun checkoutFromCart(
         @Valid @RequestBody request: OrderPort.CheckoutRequest
-    ): ResponseEntity<MyApiResponseV2<OrderPort.CheckoutResponse>> {
+    ): ResponseEntity<MyApiResponse<OrderPort.CheckoutResponse>> {
         log.info { "Processing checkout for user: ${SecurityUtils.getCurrentUserId()}" }
 
         val userId = SecurityUtils.getCurrentUserId()
@@ -64,7 +64,7 @@ class OrderController(
     fun createOrderFromCartItems(
         @RequestParam cartItemIds: List<Long>,
         @Valid @RequestBody request: OrderPort.CreateOrderRequest
-    ): ResponseEntity<MyApiResponseV2<OrderPort.OrderResponse>> {
+    ): ResponseEntity<MyApiResponse<OrderPort.OrderResponse>> {
         log.info { "Creating order from cart items for user: ${SecurityUtils.getCurrentUserId()}" }
 
         val userId = SecurityUtils.getCurrentUserId()
@@ -77,7 +77,7 @@ class OrderController(
     @Operation(summary = "Get order by ID", description = "Retrieve order details by order ID")
     fun getOrderById(
         @Parameter(description = "Order ID") @PathVariable orderId: Long
-    ): ResponseEntity<MyApiResponseV2<OrderPort.OrderResponse>> {
+    ): ResponseEntity<MyApiResponse<OrderPort.OrderResponse>> {
         log.info { "Getting order: $orderId for user: ${SecurityUtils.getCurrentUserId()}" }
 
         val userId = SecurityUtils.getCurrentUserId()
@@ -93,7 +93,7 @@ class OrderController(
     )
     fun getOrderByNumber(
         @Parameter(description = "Order number") @PathVariable orderNumber: String
-    ): ResponseEntity<MyApiResponseV2<OrderPort.OrderResponse>> {
+    ): ResponseEntity<MyApiResponse<OrderPort.OrderResponse>> {
         log.info { "Getting order by number: $orderNumber for user: ${SecurityUtils.getCurrentUserId()}" }
 
         val userId = SecurityUtils.getCurrentUserId()
@@ -170,7 +170,7 @@ class OrderController(
     fun cancelOrder(
         @Parameter(description = "Order ID") @PathVariable orderId: Long,
         @RequestParam(required = false) reason: String?
-    ): ResponseEntity<MyApiResponseV2<OrderPort.OrderResponse>> {
+    ): ResponseEntity<MyApiResponse<OrderPort.OrderResponse>> {
         log.info { "Cancelling order: $orderId for user: ${SecurityUtils.getCurrentUserId()}" }
 
         val userId = SecurityUtils.getCurrentUserId()
@@ -184,7 +184,7 @@ class OrderController(
         summary = "Get user order statistics",
         description = "Retrieve user's order statistics"
     )
-    fun getUserOrderStats(): ResponseEntity<MyApiResponseV2<OrderPort.OrderStatsResponse>> {
+    fun getUserOrderStats(): ResponseEntity<MyApiResponse<OrderPort.OrderStatsResponse>> {
         log.info { "Getting order stats for user: ${SecurityUtils.getCurrentUserId()}" }
 
         val userId = SecurityUtils.getCurrentUserId()
@@ -197,7 +197,7 @@ class OrderController(
     @Operation(summary = "Validate order", description = "Validate if order is still valid")
     fun validateOrder(
         @Parameter(description = "Order ID") @PathVariable orderId: Long
-    ): ResponseEntity<MyApiResponseV2<Boolean>> {
+    ): ResponseEntity<MyApiResponse<Boolean>> {
         log.info { "Validating order: $orderId" }
 
         val isValid = orderService.validateOrder(orderId)
@@ -252,12 +252,12 @@ class OrderController(
     fun updateOrderStatus(
         @Parameter(description = "Order ID") @PathVariable orderId: Long,
         @Valid @RequestBody request: OrderPort.UpdateOrderStatusRequest
-    ): ResponseEntity<MyApiResponseV2<OrderPort.OrderResponse>> {
+    ): ResponseEntity<MyApiResponse<OrderPort.OrderResponse>> {
         log.info { "Updating order status for order: $orderId to ${request.status}" }
 
         val order = orderService.updateOrderStatus(orderId, request)
 
-        return MyApiResponseV2.success(data = order)
+        return MyApiResponse.success(data = order)
     }
 
     @PutMapping("/admin/{orderId}/confirm")
@@ -265,12 +265,12 @@ class OrderController(
     @Operation(summary = "Confirm order (Admin)", description = "Confirm order for admin/manager")
     fun confirmOrder(
         @Parameter(description = "Order ID") @PathVariable orderId: Long
-    ): ResponseEntity<MyApiResponseV2<OrderPort.OrderResponse>> {
+    ): ResponseEntity<MyApiResponse<OrderPort.OrderResponse>> {
         log.info { "Confirming order: $orderId" }
 
         val order = orderService.confirmOrder(orderId)
 
-        return MyApiResponseV2.success(data = order)
+        return MyApiResponse.success(data = order)
     }
 
     @PutMapping("/admin/{orderId}/ship")
@@ -282,12 +282,12 @@ class OrderController(
     fun shipOrder(
         @Parameter(description = "Order ID") @PathVariable orderId: Long,
         @RequestParam(required = false) trackingNumber: String?
-    ): ResponseEntity<MyApiResponseV2<OrderPort.OrderResponse>> {
+    ): ResponseEntity<MyApiResponse<OrderPort.OrderResponse>> {
         log.info { "Shipping order: $orderId" }
 
         val order = orderService.shipOrder(orderId, trackingNumber)
 
-        return MyApiResponseV2.success(data = order)
+        return MyApiResponse.success(data = order)
 
     }
 
@@ -299,12 +299,12 @@ class OrderController(
     )
     fun deliverOrder(
         @Parameter(description = "Order ID") @PathVariable orderId: Long
-    ): ResponseEntity<MyApiResponseV2<OrderPort.OrderResponse>> {
+    ): ResponseEntity<MyApiResponse<OrderPort.OrderResponse>> {
         log.info { "Delivering order: $orderId" }
 
         val order = orderService.deliverOrder(orderId)
 
-        return MyApiResponseV2.success(data = order)
+        return MyApiResponse.success(data = order)
     }
 
     @GetMapping("/admin/stats")
@@ -313,12 +313,12 @@ class OrderController(
         summary = "Get order statistics (Admin)",
         description = "Retrieve order statistics for admin/manager"
     )
-    fun getOrderStats(): ResponseEntity<MyApiResponseV2<OrderPort.OrderStatsResponse>> {
+    fun getOrderStats(): ResponseEntity<MyApiResponse<OrderPort.OrderStatsResponse>> {
         log.info { "Getting order statistics (admin)" }
 
         val stats = orderService.getOrderStats()
 
-        return MyApiResponseV2.success(
+        return MyApiResponse.success(
             data = stats
         )
     }
@@ -365,12 +365,12 @@ class OrderController(
         summary = "Get overdue orders (Admin)",
         description = "Retrieve overdue orders for admin/manager"
     )
-    fun getOverdueOrders(): ResponseEntity<MyApiResponseV2<List<OrderPort.OrderResponse>>> {
+    fun getOverdueOrders(): ResponseEntity<MyApiResponse<List<OrderPort.OrderResponse>>> {
         log.info { "Getting overdue orders (admin)" }
 
         val orders = orderService.getOverdueOrders()
 
-        return MyApiResponseV2.success(
+        return MyApiResponse.success(
             data = orders
         )
     }

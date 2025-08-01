@@ -1,6 +1,6 @@
 package com.lcaohoanq.sp.annotations.auth
 
-import com.lcaohoanq.sp.apis.MyApiResponseV2
+import com.lcaohoanq.sp.apis.MyApiResponse
 import io.swagger.v3.oas.annotations.media.Content
 import io.swagger.v3.oas.annotations.media.ExampleObject
 import io.swagger.v3.oas.annotations.media.Schema
@@ -16,7 +16,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses
             description = "✅ Login successful - Copy the token value for authorization!",
             content = [Content(
                 mediaType = "application/json",
-                schema = Schema(implementation = MyApiResponseV2::class),
+                schema = Schema(implementation = MyApiResponse::class),
                 examples = [ExampleObject(
                     name = "Success Response",
                     description = "Copy the 'token' value and use it with 'Bearer ' prefix in the Authorize button",

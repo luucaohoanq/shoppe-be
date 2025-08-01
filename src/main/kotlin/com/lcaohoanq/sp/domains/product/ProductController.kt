@@ -1,6 +1,6 @@
 package com.lcaohoanq.sp.domains.product
 
-import com.lcaohoanq.sp.apis.MyApiResponseV2
+import com.lcaohoanq.sp.apis.MyApiResponse
 import com.lcaohoanq.sp.apis.PageResponse
 import com.lcaohoanq.sp.bases.BaseController
 import com.lcaohoanq.sp.exceptions.MethodArgumentNotValidException
@@ -9,8 +9,6 @@ import com.lcaohoanq.sp.utils.SortOrder
 import com.lcaohoanq.sp.utils.Sortable
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.Parameter
-import io.swagger.v3.oas.annotations.media.Content
-import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.responses.ApiResponses
 import io.swagger.v3.oas.annotations.tags.Tag
@@ -45,7 +43,7 @@ class ProductController(
     fun createProduct(
         @Valid @RequestBody request: ProductPort.ProductRequest,
         bindingResult: BindingResult
-    ): ResponseEntity<MyApiResponseV2<ProductPort.ProductResponse>> {
+    ): ResponseEntity<MyApiResponse<ProductPort.ProductResponse>> {
         if (bindingResult.hasErrors()) throw MethodArgumentNotValidException(bindingResult)
         
         val response = productService.createProduct(request)
@@ -66,7 +64,7 @@ class ProductController(
     fun getProductById(
         @Parameter(description = "Product ID", required = true)
         @PathVariable id: Long
-    ): ResponseEntity<MyApiResponseV2<ProductPort.ProductResponse>> {
+    ): ResponseEntity<MyApiResponse<ProductPort.ProductResponse>> {
         val response = productService.getProductById(id)
         return ok("Get product successfully", response)
     }
@@ -76,7 +74,7 @@ class ProductController(
         description = "Retrieve all products without pagination"
     )
     @GetMapping("/all")
-    fun getAllProducts(): ResponseEntity<MyApiResponseV2<List<ProductPort.ProductResponse>>> {
+    fun getAllProducts(): ResponseEntity<MyApiResponse<List<ProductPort.ProductResponse>>> {
         val response = productService.getAllProducts()
         return ok("Get all products successfully", response)
     }
@@ -127,7 +125,7 @@ class ProductController(
         @PathVariable id: Long,
         @Valid @RequestBody request: ProductPort.ProductUpdateRequest,
         bindingResult: BindingResult
-    ): ResponseEntity<MyApiResponseV2<ProductPort.ProductResponse>> {
+    ): ResponseEntity<MyApiResponse<ProductPort.ProductResponse>> {
         if (bindingResult.hasErrors()) throw MethodArgumentNotValidException(bindingResult)
         
         val response = productService.updateProduct(id, request)
@@ -150,7 +148,7 @@ class ProductController(
     fun deleteProduct(
         @Parameter(description = "Product ID", required = true)
         @PathVariable id: Long
-    ): ResponseEntity<MyApiResponseV2<Nothing?>> {
+    ): ResponseEntity<MyApiResponse<Nothing?>> {
         productService.deleteProduct(id)
         return noContent()
     }
@@ -166,7 +164,7 @@ class ProductController(
         @PathVariable id: Long,
         @Valid @RequestBody request: ProductPort.ProductStockUpdateRequest,
         bindingResult: BindingResult
-    ): ResponseEntity<MyApiResponseV2<ProductPort.ProductResponse>> {
+    ): ResponseEntity<MyApiResponse<ProductPort.ProductResponse>> {
         if (bindingResult.hasErrors()) throw MethodArgumentNotValidException(bindingResult)
         
         val response = productService.updateStock(id, request)
@@ -181,7 +179,7 @@ class ProductController(
     fun checkStock(
         @Parameter(description = "Product ID", required = true)
         @PathVariable id: Long
-    ): ResponseEntity<MyApiResponseV2<Int>> {
+    ): ResponseEntity<MyApiResponse<Int>> {
         val stock = productService.checkStock(id)
         return ok("Stock retrieved successfully", stock)
     }
@@ -291,7 +289,7 @@ class ProductController(
     fun activateProduct(
         @Parameter(description = "Product ID", required = true)
         @PathVariable id: Long
-    ): ResponseEntity<MyApiResponseV2<ProductPort.ProductResponse>> {
+    ): ResponseEntity<MyApiResponse<ProductPort.ProductResponse>> {
         val response = productService.activateProduct(id)
         return ok("Product activated successfully", response)
     }
@@ -305,7 +303,7 @@ class ProductController(
     fun deactivateProduct(
         @Parameter(description = "Product ID", required = true)
         @PathVariable id: Long
-    ): ResponseEntity<MyApiResponseV2<ProductPort.ProductResponse>> {
+    ): ResponseEntity<MyApiResponse<ProductPort.ProductResponse>> {
         val response = productService.deactivateProduct(id)
         return ok("Product deactivated successfully", response)
     }
@@ -321,7 +319,7 @@ class ProductController(
         @PathVariable id: Long,
         @Parameter(description = "New product status")
         @RequestParam status: Product.ProductStatus
-    ): ResponseEntity<MyApiResponseV2<ProductPort.ProductResponse>> {
+    ): ResponseEntity<MyApiResponse<ProductPort.ProductResponse>> {
         val response = productService.setProductStatus(id, status)
         return ok("Product status updated successfully", response)
     }
@@ -403,7 +401,7 @@ class ProductController(
     fun getLowStockProducts(
         @Parameter(description = "Stock threshold", example = "10")
         @RequestParam(required = false, defaultValue = "10") threshold: Int
-    ): ResponseEntity<MyApiResponseV2<List<ProductPort.ProductResponse>>> {
+    ): ResponseEntity<MyApiResponse<List<ProductPort.ProductResponse>>> {
         val response = productService.getLowStockProducts(threshold)
         return ok("Low stock products retrieved successfully", response)
     }
@@ -416,7 +414,7 @@ class ProductController(
     fun isProductAvailable(
         @Parameter(description = "Product ID", required = true)
         @PathVariable id: Long
-    ): ResponseEntity<MyApiResponseV2<Boolean>> {
+    ): ResponseEntity<MyApiResponse<Boolean>> {
         val available = productService.isProductAvailable(id)
         return ok("Product availability checked successfully", available)
     }
@@ -432,7 +430,7 @@ class ProductController(
         @PathVariable id: Long,
         @Parameter(description = "Rating value (0-5)")
         @RequestParam rating: Double
-    ): ResponseEntity<MyApiResponseV2<ProductPort.ProductResponse>> {
+    ): ResponseEntity<MyApiResponse<ProductPort.ProductResponse>> {
         val response = productService.updateRating(id, rating)
         return ok("Rating updated successfully", response)
     }
@@ -448,7 +446,7 @@ class ProductController(
         @PathVariable id: Long,
         @Parameter(description = "Quantity sold")
         @RequestParam quantity: Int
-    ): ResponseEntity<MyApiResponseV2<ProductPort.ProductResponse>> {
+    ): ResponseEntity<MyApiResponse<ProductPort.ProductResponse>> {
         val response = productService.incrementSoldCount(id, quantity)
         return ok("Sold count updated successfully", response)
     }
@@ -459,7 +457,7 @@ class ProductController(
     )
     @GetMapping("/summary")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    fun getProductSummary(): ResponseEntity<MyApiResponseV2<ProductPort.ProductSummaryResponse>> {
+    fun getProductSummary(): ResponseEntity<MyApiResponse<ProductPort.ProductSummaryResponse>> {
         val response = productService.getProductSummary()
         return ok("Product summary retrieved successfully", response)
     }
@@ -472,7 +470,7 @@ class ProductController(
     fun getProductCountByCategory(
         @Parameter(description = "Category ID", required = true)
         @PathVariable categoryId: Long
-    ): ResponseEntity<MyApiResponseV2<Long>> {
+    ): ResponseEntity<MyApiResponse<Long>> {
         val count = productService.getProductCountByCategory(categoryId)
         return ok("Product count by category retrieved successfully", count)
     }
@@ -485,7 +483,7 @@ class ProductController(
     fun getProductCountByShop(
         @Parameter(description = "Shop ID", required = true)
         @PathVariable shopId: Long
-    ): ResponseEntity<MyApiResponseV2<Long>> {
+    ): ResponseEntity<MyApiResponse<Long>> {
         val count = productService.getProductCountByShop(shopId)
         return ok("Product count by shop retrieved successfully", count)
     }

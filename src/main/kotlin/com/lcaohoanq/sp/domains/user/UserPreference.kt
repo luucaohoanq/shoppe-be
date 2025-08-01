@@ -6,7 +6,7 @@ import jakarta.persistence.Embeddable
 @Embeddable
 class UserPreference(
     @Column(nullable = false)
-    val preferredLanguage: String? = "vi",
+    val preferredLanguage: String? = "en",
     @Column(nullable = false)
-    val preferredCurrency: String? = "VND",
+    val preferredCurrency: String? = "USD",
 )

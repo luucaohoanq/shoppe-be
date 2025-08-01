@@ -5,7 +5,7 @@ import jakarta.persistence.*
 
 @Entity
 @Table(name = "admin_settings")
-class AdminSetting(): BaseEntity() {
+class SystemSetting(): BaseEntity() {
 
 
     @Id
@@ -17,5 +17,7 @@ class AdminSetting(): BaseEntity() {
     var settingKey: String? = null
     @Column(name = "setting_value")
     var settingValue: String? = null
+
+    var description: String? = null
 
 }

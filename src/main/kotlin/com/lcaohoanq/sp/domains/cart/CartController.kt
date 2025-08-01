@@ -1,6 +1,6 @@
 package com.lcaohoanq.sp.domains.cart
 
-import com.lcaohoanq.sp.apis.MyApiResponseV2
+import com.lcaohoanq.sp.apis.MyApiResponse
 import com.lcaohoanq.sp.bases.BaseController
 import com.lcaohoanq.sp.domains.auth.IAuthService
 import com.lcaohoanq.sp.exceptions.MethodArgumentNotValidException
@@ -37,7 +37,7 @@ class CartController(
     )
     @GetMapping("")
     @PreAuthorize("hasAnyRole('ROLE_MEMBER', 'ROLE_ADMIN')")
-    fun getCart(): ResponseEntity<MyApiResponseV2<CartPort.CartResponse?>> {
+    fun getCart(): ResponseEntity<MyApiResponse<CartPort.CartResponse?>> {
         val currentUser = authService.getCurrentAuthenticatedUser()
         val cart = cartService.getCart(currentUser.id!!)
         return ok("Get cart successfully", cart)
@@ -49,7 +49,7 @@ class CartController(
     )
     @PostMapping("/init")
     @PreAuthorize("hasAnyRole('ROLE_MEMBER', 'ROLE_ADMIN')")
-    fun getOrCreateCart(): ResponseEntity<MyApiResponseV2<CartPort.CartResponse>> {
+    fun getOrCreateCart(): ResponseEntity<MyApiResponse<CartPort.CartResponse>> {
         val currentUser = authService.getCurrentAuthenticatedUser()
         val cart = cartService.getOrCreateCart(currentUser.id!!)
         return ok("Cart initialized successfully", cart)
@@ -71,7 +71,7 @@ class CartController(
     fun addToCart(
         @Valid @RequestBody request: CartPort.AddToCartRequest,
         bindingResult: BindingResult
-    ): ResponseEntity<MyApiResponseV2<CartPort.CartResponse>> {
+    ): ResponseEntity<MyApiResponse<CartPort.CartResponse>> {
         if (bindingResult.hasErrors()) throw MethodArgumentNotValidException(bindingResult)
         
         val currentUser = authService.getCurrentAuthenticatedUser()
@@ -97,7 +97,7 @@ class CartController(
         @PathVariable productId: Long,
         @Valid @RequestBody request: CartPort.UpdateCartItemRequest,
         bindingResult: BindingResult
-    ): ResponseEntity<MyApiResponseV2<CartPort.CartResponse>> {
+    ): ResponseEntity<MyApiResponse<CartPort.CartResponse>> {
         if (bindingResult.hasErrors()) throw MethodArgumentNotValidException(bindingResult)
         
         val currentUser = authService.getCurrentAuthenticatedUser()
@@ -120,7 +120,7 @@ class CartController(
     fun removeFromCart(
         @Parameter(description = "Product ID", required = true)
         @PathVariable productId: Long
-    ): ResponseEntity<MyApiResponseV2<CartPort.CartResponse>> {
+    ): ResponseEntity<MyApiResponse<CartPort.CartResponse>> {
         val currentUser = authService.getCurrentAuthenticatedUser()
         val cart = cartService.removeFromCart(currentUser.id!!, productId)
         return ok("Product removed from cart successfully", cart)
@@ -134,7 +134,7 @@ class CartController(
     @PreAuthorize("hasAnyRole('ROLE_MEMBER', 'ROLE_ADMIN')")
     fun removeMultipleItems(
         @RequestBody productIds: List<Long>
-    ): ResponseEntity<MyApiResponseV2<CartPort.CartResponse>> {
+    ): ResponseEntity<MyApiResponse<CartPort.CartResponse>> {
         val currentUser = authService.getCurrentAuthenticatedUser()
         val cart = cartService.removeMultipleItems(currentUser.id!!, productIds)
         return ok("Items removed from cart successfully", cart)
@@ -146,7 +146,7 @@ class CartController(
     )
     @DeleteMapping("/clear")
     @PreAuthorize("hasAnyRole('ROLE_MEMBER', 'ROLE_ADMIN')")
-    fun clearCart(): ResponseEntity<MyApiResponseV2<Nothing?>> {
+    fun clearCart(): ResponseEntity<MyApiResponse<Nothing?>> {
         val currentUser = authService.getCurrentAuthenticatedUser()
         cartService.clearCart(currentUser.id!!)
         return ok("Cart cleared successfully", null)
@@ -158,7 +158,7 @@ class CartController(
     )
     @GetMapping("/summary")
     @PreAuthorize("hasAnyRole('ROLE_MEMBER', 'ROLE_ADMIN')")
-    fun getCartSummary(): ResponseEntity<MyApiResponseV2<CartPort.CartSummaryResponse>> {
+    fun getCartSummary(): ResponseEntity<MyApiResponse<CartPort.CartSummaryResponse>> {
         val currentUser = authService.getCurrentAuthenticatedUser()
         val summary = cartService.getCartSummary(currentUser.id!!)
         return ok("Cart summary retrieved successfully", summary)
@@ -170,7 +170,7 @@ class CartController(
     )
     @PostMapping("/validate")
     @PreAuthorize("hasAnyRole('ROLE_MEMBER', 'ROLE_ADMIN')")
-    fun validateCartItems(): ResponseEntity<MyApiResponseV2<CartPort.CartSummaryResponse>> {
+    fun validateCartItems(): ResponseEntity<MyApiResponse<CartPort.CartSummaryResponse>> {
         val currentUser = authService.getCurrentAuthenticatedUser()
         val validation = cartService.validateCartItems(currentUser.id!!)
         return ok("Cart validation completed", validation)
@@ -182,7 +182,7 @@ class CartController(
     )
     @PostMapping("/sync-prices")
     @PreAuthorize("hasAnyRole('ROLE_MEMBER', 'ROLE_ADMIN')")
-    fun syncCartPrices(): ResponseEntity<MyApiResponseV2<CartPort.CartResponse>> {
+    fun syncCartPrices(): ResponseEntity<MyApiResponse<CartPort.CartResponse>> {
         val currentUser = authService.getCurrentAuthenticatedUser()
         val cart = cartService.syncCartPrices(currentUser.id!!)
         return ok("Cart prices synchronized successfully", cart)
@@ -194,7 +194,7 @@ class CartController(
     )
     @GetMapping("/count")
     @PreAuthorize("hasAnyRole('ROLE_MEMBER', 'ROLE_ADMIN')")
-    fun getCartItemCount(): ResponseEntity<MyApiResponseV2<Int>> {
+    fun getCartItemCount(): ResponseEntity<MyApiResponse<Int>> {
         val currentUser = authService.getCurrentAuthenticatedUser()
         val count = cartService.getCartItemCount(currentUser.id!!)
         return ok("Cart item count retrieved successfully", count)
@@ -209,7 +209,7 @@ class CartController(
     fun isProductInCart(
         @Parameter(description = "Product ID", required = true)
         @PathVariable productId: Long
-    ): ResponseEntity<MyApiResponseV2<Boolean>> {
+    ): ResponseEntity<MyApiResponse<Boolean>> {
         val currentUser = authService.getCurrentAuthenticatedUser()
         val isInCart = cartService.isProductInCart(currentUser.id!!, productId)
         return ok("Product cart status checked successfully", isInCart)

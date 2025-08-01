@@ -1,6 +1,6 @@
 package com.lcaohoanq.sp.domains.payment
 
-import com.lcaohoanq.sp.apis.MyApiResponseV2
+import com.lcaohoanq.sp.apis.MyApiResponse
 import com.lcaohoanq.sp.apis.PageResponse
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.Parameter
@@ -27,12 +27,12 @@ class PaymentController(
     @PreAuthorize("hasRole('ADMIN') or hasRole('MANAGER')")
     fun createPayment(
         @Valid @RequestBody request: PaymentPort.CreatePaymentRequest
-    ): ResponseEntity<MyApiResponseV2<PaymentPort.PaymentResponse>> {
+    ): ResponseEntity<MyApiResponse<PaymentPort.PaymentResponse>> {
         log.info { "Creating payment for order: ${request.orderId}" }
         
         val payment = paymentService.createPayment(request)
         
-        return MyApiResponseV2.created(
+        return MyApiResponse.created(
                 data = payment
         )
     }
@@ -42,12 +42,12 @@ class PaymentController(
     @PreAuthorize("hasRole('ADMIN') or hasRole('MANAGER')")
     fun processPayment(
         @Parameter(description = "Payment ID") @PathVariable paymentId: Long
-    ): ResponseEntity<MyApiResponseV2<PaymentPort.PaymentResponse>> {
+    ): ResponseEntity<MyApiResponse<PaymentPort.PaymentResponse>> {
         log.info { "Processing payment: $paymentId" }
         
         val payment = paymentService.processPayment(paymentId)
         
-        return MyApiResponseV2.success(
+        return MyApiResponse.success(
                 data = payment
             )
 
@@ -57,12 +57,12 @@ class PaymentController(
     @Operation(summary = "Get payment by ID", description = "Retrieve payment details by payment ID")
     fun getPaymentById(
         @Parameter(description = "Payment ID") @PathVariable paymentId: Long
-    ): ResponseEntity<MyApiResponseV2<PaymentPort.PaymentResponse>> {
+    ): ResponseEntity<MyApiResponse<PaymentPort.PaymentResponse>> {
         log.info { "Getting payment: $paymentId" }
         
         val payment = paymentService.getPaymentById(paymentId)
         
-        return MyApiResponseV2.success(
+        return MyApiResponse.success(
                 data = payment
 
         )
@@ -72,12 +72,12 @@ class PaymentController(
     @Operation(summary = "Get payment by order ID", description = "Retrieve payment details by order ID")
     fun getPaymentByOrderId(
         @Parameter(description = "Order ID") @PathVariable orderId: Long
-    ): ResponseEntity<MyApiResponseV2<PaymentPort.PaymentResponse?>> {
+    ): ResponseEntity<MyApiResponse<PaymentPort.PaymentResponse?>> {
         log.info { "Getting payment for order: $orderId" }
         
         val payment = paymentService.getPaymentByOrderId(orderId)
         
-        return MyApiResponseV2.success(
+        return MyApiResponse.success(
                 data = payment
 
         )
@@ -89,12 +89,12 @@ class PaymentController(
     fun updatePaymentStatus(
         @Parameter(description = "Payment ID") @PathVariable paymentId: Long,
         @Valid @RequestBody request: PaymentPort.UpdatePaymentStatusRequest
-    ): ResponseEntity<MyApiResponseV2<PaymentPort.PaymentResponse>> {
+    ): ResponseEntity<MyApiResponse<PaymentPort.PaymentResponse>> {
         log.info { "Updating payment status for payment: $paymentId to ${request.status}" }
         
         val payment = paymentService.updatePaymentStatus(paymentId, request)
         
-        return MyApiResponseV2.success(
+        return MyApiResponse.success(
                 data = payment
 
         )
@@ -106,12 +106,12 @@ class PaymentController(
     fun refundPayment(
         @Parameter(description = "Payment ID") @PathVariable paymentId: Long,
         @RequestParam(required = false) reason: String?
-    ): ResponseEntity<MyApiResponseV2<PaymentPort.PaymentResponse>> {
+    ): ResponseEntity<MyApiResponse<PaymentPort.PaymentResponse>> {
         log.info { "Refunding payment: $paymentId" }
         
         val payment = paymentService.refundPayment(paymentId, reason)
         
-        return MyApiResponseV2.success(
+        return MyApiResponse.success(
                 data = payment
 
         )
@@ -122,12 +122,12 @@ class PaymentController(
     @PreAuthorize("hasRole('ADMIN') or hasRole('MANAGER')")
     fun cancelPayment(
         @Parameter(description = "Payment ID") @PathVariable paymentId: Long
-    ): ResponseEntity<MyApiResponseV2<PaymentPort.PaymentResponse>> {
+    ): ResponseEntity<MyApiResponse<PaymentPort.PaymentResponse>> {
         log.info { "Cancelling payment: $paymentId" }
         
         val payment = paymentService.cancelPayment(paymentId)
         
-        return MyApiResponseV2.success(
+        return MyApiResponse.success(
                 data = payment
 
         )
@@ -137,12 +137,12 @@ class PaymentController(
     @Operation(summary = "Validate payment", description = "Validate if payment is in a valid state")
     fun validatePayment(
         @Parameter(description = "Payment ID") @PathVariable paymentId: Long
-    ): ResponseEntity<MyApiResponseV2<Boolean>> {
+    ): ResponseEntity<MyApiResponse<Boolean>> {
         log.info { "Validating payment: $paymentId" }
         
         val isValid = paymentService.validatePayment(paymentId)
         
-        return MyApiResponseV2.success(
+        return MyApiResponse.success(
                 data = isValid
 
         )
@@ -153,12 +153,12 @@ class PaymentController(
     fun handlePaymentCallback(
         @RequestParam transactionId: String,
         @RequestParam status: Payment.PaymentStatus
-    ): ResponseEntity<MyApiResponseV2<Boolean>> {
+    ): ResponseEntity<MyApiResponse<Boolean>> {
         log.info { "Handling payment callback for transaction: $transactionId, status: $status" }
         
         val success = paymentService.handlePaymentCallback(transactionId, status)
         
-        return MyApiResponseV2.success(data = success)
+        return MyApiResponse.success(data = success)
     }
 
     // Admin endpoints
@@ -196,12 +196,12 @@ class PaymentController(
     @GetMapping("/admin/stats")
     @PreAuthorize("hasRole('ADMIN') or hasRole('MANAGER')")
     @Operation(summary = "Get payment statistics (Admin)", description = "Retrieve payment statistics for admin/manager")
-    fun getPaymentStats(): ResponseEntity<MyApiResponseV2<PaymentPort.PaymentStatsResponse>> {
+    fun getPaymentStats(): ResponseEntity<MyApiResponse<PaymentPort.PaymentStatsResponse>> {
         log.info { "Getting payment statistics (admin)" }
         
         val stats = paymentService.getPaymentStats()
         
-        return MyApiResponseV2.success(data = stats)
+        return MyApiResponse.success(data = stats)
     }
 
     @GetMapping("/admin/failed")

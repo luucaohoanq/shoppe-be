@@ -1,6 +1,6 @@
 package com.lcaohoanq.sp.domains.settings
 
-import com.lcaohoanq.sp.apis.MyApiResponseV2
+import com.lcaohoanq.sp.apis.MyApiResponse
 import com.lcaohoanq.sp.bases.BaseController
 import com.lcaohoanq.sp.domains.user.UserPort
 import com.lcaohoanq.sp.extension.toUserSettingsResponse
@@ -22,7 +22,7 @@ class UserSettingsController(
 
     @GetMapping("")
     @Operation(summary = "Get settings of user by id")
-    fun getDetailSettingsOfUser(@RequestParam id: Long): ResponseEntity<MyApiResponseV2<UserPort.UserSettingsResponse>> {
+    fun getDetailSettingsOfUser(@RequestParam id: Long): ResponseEntity<MyApiResponse<UserPort.UserSettingsResponse>> {
         val data = userSettingsRepository.findByUserId(id).toUserSettingsResponse()
         return ok(message = "User settings of $id has been successfully retrieved", data = data)
     }

@@ -1,8 +1,8 @@
 package com.lcaohoanq.sp.domains.settings
 
-import com.lcaohoanq.sp.apis.MyApiResponseV2
+import com.lcaohoanq.sp.apis.MyApiResponse
 import com.lcaohoanq.sp.bases.BaseController
-import com.lcaohoanq.sp.entities.AdminSetting
+import com.lcaohoanq.sp.entities.SystemSetting
 import com.lcaohoanq.sp.extension.toAdminSettingResponse
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag
@@ -23,9 +23,9 @@ class AdminSettingController(
         summary = "Get all admin settings",
         description = "Retrieve all system-wide admin settings. Requires ADMIN or MANAGER role."
     )
-    fun getAllSettings(): ResponseEntity<MyApiResponseV2<List<AdminSettingPort.AdminSettingResponse>>> {
+    fun getAllSettings(): ResponseEntity<MyApiResponse<List<AdminSettingPort.AdminSettingResponse>>> {
         val settings = adminSettingService.getAllSettings().map { it.toAdminSettingResponse() }
-        return MyApiResponseV2.success(data = settings)
+        return MyApiResponse.success(data = settings)
     }
 
     @GetMapping("/{key}")
@@ -34,12 +34,12 @@ class AdminSettingController(
         summary = "Get admin setting by key",
         description = "Retrieve a specific admin setting by its key. Requires ADMIN or MANAGER role."
     )
-    fun getSettingByKey(@PathVariable key: String): ResponseEntity<MyApiResponseV2<AdminSettingPort.AdminSettingResponse?>> {
+    fun getSettingByKey(@PathVariable key: String): ResponseEntity<MyApiResponse<AdminSettingPort.AdminSettingResponse?>> {
         val setting = adminSettingService.getSettingByKey(key)
         return if (setting != null) {
-            MyApiResponseV2.success(data = setting.toAdminSettingResponse())
+            MyApiResponse.success(data = setting.toAdminSettingResponse())
         } else {
-            MyApiResponseV2.notFound("Setting with key '$key' not found")
+            MyApiResponse.notFound("Setting with key '$key' not found")
         }
     }
 
@@ -49,14 +49,14 @@ class AdminSettingController(
         summary = "Create admin setting",
         description = "Create a new admin setting. Requires ADMIN role."
     )
-    fun createSetting(@RequestBody setting: AdminSetting): ResponseEntity<MyApiResponseV2<AdminSettingPort.AdminSettingResponse>> {
+    fun createSetting(@RequestBody setting: SystemSetting): ResponseEntity<MyApiResponse<AdminSettingPort.AdminSettingResponse>> {
         val existingSetting = adminSettingService.getSettingByKey(setting.settingKey ?: "")
         if (existingSetting != null) {
-            return MyApiResponseV2.badRequest("Setting with key '${setting.settingKey}' already exists")
+            return MyApiResponse.badRequest("Setting with key '${setting.settingKey}' already exists")
         }
         
         val savedSetting = adminSettingService.createSetting(setting)
-        return MyApiResponseV2.created(data = savedSetting.toAdminSettingResponse())
+        return MyApiResponse.created(data = savedSetting.toAdminSettingResponse())
     }
 
     @PutMapping("/{key}")
@@ -68,12 +68,12 @@ class AdminSettingController(
     fun updateSetting(
         @PathVariable key: String,
         @RequestBody newValue: AdminSettingPort.AdminSettingUpdateRequest
-    ): ResponseEntity<MyApiResponseV2<AdminSettingPort.AdminSettingResponse>> {
+    ): ResponseEntity<MyApiResponse<AdminSettingPort.AdminSettingResponse>> {
         val updatedSetting = adminSettingService.updateSetting(key, newValue.value)
         return if (updatedSetting != null) {
-            MyApiResponseV2.success(updatedSetting.toAdminSettingResponse())
+            MyApiResponse.success(updatedSetting.toAdminSettingResponse())
         } else {
-            MyApiResponseV2.notFound("Setting with key '$key' not found")
+            MyApiResponse.notFound("Setting with key '$key' not found")
         }
     }
 
@@ -83,12 +83,12 @@ class AdminSettingController(
         summary = "Delete admin setting",
         description = "Delete an admin setting by its key. Requires ADMIN role."
     )
-    fun deleteSetting(@PathVariable key: String): ResponseEntity<MyApiResponseV2<Void>> {
+    fun deleteSetting(@PathVariable key: String): ResponseEntity<MyApiResponse<Void>> {
         val deleted = adminSettingService.deleteSetting(key)
         return if (deleted) {
-            MyApiResponseV2.noContent()
+            MyApiResponse.noContent()
         } else {
-            MyApiResponseV2.notFound("Setting with key '$key' not found")
+            MyApiResponse.notFound("Setting with key '$key' not found")
         }
     }
 }
