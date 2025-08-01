@@ -115,8 +115,8 @@ class UserService(
     }
 
     override fun findByEmail(email: String): User? {
-        return userRepository.findByEmail(email)
-            ?: throw com.lcaohoanq.sp.exceptions.base.DataNotFoundException(
+        return userRepository.findByEmail(email).orElse(null)
+            ?: throw DataNotFoundException(
                 "Email not found"
             )
     }
@@ -126,15 +126,15 @@ class UserService(
             "Token is expired"
         )
         val email = jwtTokenUtils.extractEmail(at)
-        return userRepository.findByEmail(email)
-            ?: throw com.lcaohoanq.sp.exceptions.base.DataNotFoundException(
+        return userRepository.findByEmail(email).orElse(null)
+            ?: throw DataNotFoundException(
                 "User not found"
             )
     }
 
     override fun getUserDetailsFromRefreshToken(rf: String): User {
         val existingToken = tokenRepository.findByRefreshToken(rf)
-            ?: throw com.lcaohoanq.sp.exceptions.base.DataNotFoundException("Refresh Token not exist")
+            ?: throw DataNotFoundException("Refresh Token not exist")
         return getUserDetailsFromAccessToken(existingToken.token)
     }
 

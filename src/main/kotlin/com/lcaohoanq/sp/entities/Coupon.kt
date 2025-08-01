@@ -1,6 +1,6 @@
 package com.lcaohoanq.sp.entities
 
-import BaseEntity
+import com.lcaohoanq.sp.bases.BaseEntity
 import jakarta.persistence.*
 import java.util.*
 
@@ -9,15 +9,16 @@ import java.util.*
 class Coupon(): BaseEntity() {
 
     @Id
-    @SequenceGenerator(name = "coupons_seq", sequenceName = "coupons_id_seq", allocationSize = 1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "coupons_seq")
-    @Column(name = "id", unique = true, nullable = false)
-    var id: Int? = null
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", nullable = false, unique = true)
+    val id: Int? = null
 
     var code: String? = null
     var discountPercent: Double? = null
     var validFrom: Date? = null
     var validTo: Date? = null
     var usageLimit: Double? = null
+    var active: Boolean = true
+    var expiryDate: Date? = null
 
 }

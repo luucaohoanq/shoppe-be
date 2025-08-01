@@ -58,8 +58,11 @@ class AuthService(
         val (email, rawPassword) = account
 
         // Step 1: Retrieve the user by email
-        val existUser = userRepository.findByEmail(email)
+        val existUser = userRepository.findByEmail(email).orElse(null)
             ?: throw BadCredentialsException("Wrong email or password")
+
+        if (existUser.status == UserEnum.Status.DEACTIVATED)
+            throw UnauthorizedException("Your account has been deactivated. Please contact support.")
 
         if (existUser.status == UserEnum.Status.BLOCKED)
             throw DisabledException("Your account has been disabled.")
@@ -145,6 +148,8 @@ class AuthService(
 
         // Then create settings with the user ID
         val settings = UserSettings(userId = savedUser.id!!)
+        // Establish bidirectional relationship
+        settings.user = savedUser
         val savedSettings = userSettingsRepository.save(settings)
 
         // Now assign the settings to the user and save again
@@ -176,7 +181,7 @@ class AuthService(
             throw ExpiredTokenException("Token is expired")
         }
         val email = jwtTokenUtils.extractEmail(token)
-        val user = userRepository.findByEmail(email)
+        val user = userRepository.findByEmail(email).orElse(null)
         if (user != null) {
             return user.toUserResponse()
         } else {
@@ -208,7 +213,7 @@ class AuthService(
 
     override fun generateTokenFromEmail(email: String): String {
 
-        val user = userRepository.findByEmail(email)
+        val user = userRepository.findByEmail(email).orElse(null)
             ?: throw DataNotFoundException("User not found")
 
         return jwtTokenUtils.generateToken(user)
@@ -219,7 +224,7 @@ class AuthService(
     }
 
     override fun changePassword(req: AuthPort.ChangePasswordReq) {
-        val existUser = userRepository.findByEmail(req.email)
+        val existUser = userRepository.findByEmail(req.email).orElse(null)
             ?: throw DataNotFoundException("User not found")
         if (!passwordEncoder.matches(req.password, existUser.password)) {
             throw BadCredentialsException("Wrong email or password")
@@ -235,7 +240,7 @@ class AuthService(
         }
 
         val email = jwtTokenUtils.extractEmail(token)
-        val user = userRepository.findByEmail(email)
+        val user = userRepository.findByEmail(email).orElse(null)
             ?: throw DataNotFoundException("User not found")
 
         if (user.status == UserEnum.Status.VERIFIED)

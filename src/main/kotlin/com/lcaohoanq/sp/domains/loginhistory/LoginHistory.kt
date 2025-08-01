@@ -1,6 +1,6 @@
 package com.lcaohoanq.sp.domains.loginhistory
 
-import BaseEntity
+import com.lcaohoanq.sp.bases.BaseEntity
 import com.fasterxml.jackson.annotation.JsonIgnore
 import com.lcaohoanq.sp.domains.user.User
 import jakarta.persistence.*
@@ -9,7 +9,9 @@ import java.time.LocalDateTime
 @Entity
 @Table(name = "login_history")
 class LoginHistory(
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", nullable = false, unique = true)
     val id: Long? = null,
 
     @ManyToOne(fetch = FetchType.LAZY)

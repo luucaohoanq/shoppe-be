@@ -1,6 +1,6 @@
 package com.lcaohoanq.sp.domains.user
 
-import BaseEntity
+import com.lcaohoanq.sp.bases.BaseEntity
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.lcaohoanq.sp.enums.ProviderName
 import jakarta.persistence.*
@@ -17,7 +17,7 @@ class SocialAccount : BaseEntity() {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "social_accounts_seq")
     @Column(name = "id", unique = true, nullable = false)
     @JsonProperty("id")
-    private var id: Long? = null
+    private val id: Long? = null
 
     @Column(name = "email", length = 150)
     private var email: String? = null

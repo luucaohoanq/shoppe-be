@@ -1,6 +1,6 @@
 package com.lcaohoanq.sp.domains.user
 
-import BaseEntity
+import com.lcaohoanq.sp.bases.BaseEntity
 import com.lcaohoanq.sp.domains.loginhistory.LoginHistory
 import com.lcaohoanq.sp.domains.settings.UserSettings
 import com.lcaohoanq.sp.enums.UserEnum
@@ -14,9 +14,8 @@ import org.springframework.security.core.userdetails.UserDetails
 class User(
 
     @Id
-    @SequenceGenerator(name = "users_seq", sequenceName = "users_id_seq", allocationSize = 1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "users_seq")
-    @Column(name = "id", unique = true, nullable = false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", nullable = false, unique = true)
     val id: Long? = null,
 
     @Column(name = "email", unique = true)
@@ -36,7 +35,6 @@ class User(
 
     @Enumerated(EnumType.ORDINAL)
     val gender: UserEnum.Gender? = UserEnum.Gender.FEMALE,
-    val isActive: Boolean = true,
 
     @Enumerated(EnumType.ORDINAL)
     var status: UserEnum.Status? = UserEnum.Status.UNVERIFIED,
@@ -52,16 +50,15 @@ class User(
 
     val walletId: String,
 
-    val preferredLanguage: String? = "vi",
-
-    val preferredCurrency: String? = "VND",
+    @Embedded
+    var preference: UserPreference = UserPreference(),
 
     @OneToMany(mappedBy = "user", cascade = [CascadeType.ALL], orphanRemoval = true)
     val loginHistory: MutableList<LoginHistory> = mutableListOf(),
 
-    @OneToOne
+    @OneToOne(cascade = [CascadeType.ALL])
     @JoinColumn(name = "user_settings_id", referencedColumnName = "id")
-    var userSettings: UserSettings = UserSettings(),
+    var userSettings: UserSettings? = null,
 
     ) : BaseEntity(), UserDetails {
 

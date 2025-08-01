@@ -1,6 +1,6 @@
 package com.lcaohoanq.sp.domains.otp
 
-import BaseEntity
+import com.lcaohoanq.sp.bases.BaseEntity
 import com.fasterxml.jackson.annotation.JsonProperty
 import jakarta.persistence.*
 
@@ -8,14 +8,8 @@ import jakarta.persistence.*
 @Table(name = "otps")
 data class Otp(
     @Id
-    @SequenceGenerator(
-        name = "otps_seq",
-        sequenceName = "otps_id_seq",
-        allocationSize = 1
-    )
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "otps_seq")
-    @Column(name = "id", unique = true, nullable = false)
-    @JsonProperty("id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", nullable = false, unique = true)
     val id: Long? = null,
 
     @Column(name = "email")

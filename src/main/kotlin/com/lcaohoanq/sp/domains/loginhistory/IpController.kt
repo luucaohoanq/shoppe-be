@@ -8,8 +8,8 @@ import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
-@RequestMapping("\${api.prefix}/ip")
-@Tag(name = "ip", description = "\uD83C\uDF0E IP API, for getting geo location from IP address")
+@RequestMapping("\${api.prefix}/ips")
+@Tag(name = "ips", description = "\uD83C\uDF0E IP API, for getting geo location from IP address")
 class IpController(
     private val geoLocationService: GeoLocationService
 ) {

@@ -21,30 +21,12 @@ class SecurityConfig(
     @Bean
     fun userDetailsService(): UserDetailsService =
         UserDetailsService { email ->
-            userRepository.findByEmail(email)
+            userRepository.findByEmail(email).orElse(null)
                 ?: throw UsernameNotFoundException("Cannot find user with email $email")
         }
 
     @Bean
     fun passwordEncoder(): PasswordEncoder = BCryptPasswordEncoder()
-
-
-    @Bean
-    fun authenticationProvider(): AuthenticationProvider {
-        val authProvider = DaoAuthenticationProvider()
-        authProvider.setUserDetailsService(userDetailsService())
-        authProvider.setUserDetailsService(UserDetailsService { username ->
-            if ("swagger" == username) {
-                return@UserDetailsService User.withUsername("swagger")
-                    .password(passwordEncoder().encode("swagger123"))
-                    .roles("SWAGGER_USER")
-                    .build()
-            }
-            userDetailsService().loadUserByUsername(username)
-        })
-        authProvider.setPasswordEncoder(passwordEncoder())
-        return authProvider
-    }
 
     @Bean
     @Throws(Exception::class)

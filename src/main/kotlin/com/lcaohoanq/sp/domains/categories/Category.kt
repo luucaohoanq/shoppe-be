@@ -1,6 +1,6 @@
 package com.lcaohoanq.sp.domains.categories
 
-import BaseEntity
+import com.lcaohoanq.sp.bases.BaseEntity
 import jakarta.persistence.*
 
 @Entity
@@ -8,14 +8,16 @@ import jakarta.persistence.*
 class Category (
 
     @Id
-    @SequenceGenerator(name = "categories_seq", sequenceName = "categories_id_seq", allocationSize = 1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "categories_seq")
-    @Column(name = "id", unique = true, nullable = false)
-    var id: Long? = null,
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", nullable = false, unique = true)
+    val id: Long? = null,
 
     val name: String = "New Category",
     val description: String? = null,
-    val parentId: Long? = null, // null if it's a top-level category
+    val parentId: Long? = null,
+    val slug: String, // null if it's a top-level category
+    val imageUrl: String? = null,
+    val active: Boolean = true,
 
 ): BaseEntity() {
 }

@@ -2,7 +2,7 @@ package com.lcaohoanq.sp.domains.auth
 
 import com.lcaohoanq.sp.annotations.auth.LoginApiResponses
 import com.lcaohoanq.sp.annotations.auth.LoginOperation
-import com.lcaohoanq.sp.apis.MyApiResponseV2
+import com.lcaohoanq.sp.apis.MyApiResponse
 import com.lcaohoanq.sp.bases.BaseController
 import com.lcaohoanq.sp.domains.user.IUserService
 import com.lcaohoanq.sp.dto.AuthPort
@@ -36,7 +36,7 @@ class AuthController(
     @LoginOperation
     @LoginApiResponses
     @PostMapping("/login")
-    fun login(@RequestBody req: AuthPort.AuthRequest): ResponseEntity<MyApiResponseV2<LoginResult>> =
+    fun login(@RequestBody req: AuthPort.AuthRequest): ResponseEntity<MyApiResponse<LoginResult>> =
         ok(message = "Login successfully", data = authService.login(req))
 
 
@@ -45,7 +45,7 @@ class AuthController(
     fun register(
         @Valid @RequestBody user: AuthPort.SignUpReq,
         bindingResult: BindingResult
-    ): ResponseEntity<MyApiResponseV2<Nothing?>> {  // Change return type to match actual
+    ): ResponseEntity<MyApiResponse<Nothing?>> {  // Change return type to match actual
         if (bindingResult.hasErrors()) throw MethodArgumentNotValidException(bindingResult)
 
         authService.register(user)
@@ -61,7 +61,7 @@ class AuthController(
     fun refreshToken(
         @Valid @RequestBody refreshTokenDTO: TokenPort.RefreshTokenDTO,
         result: BindingResult
-    ): ResponseEntity<MyApiResponseV2<AuthPort.AuthResponse>> {  // Change from MyApiResponse to MyApiResponseV2
+    ): ResponseEntity<MyApiResponse<AuthPort.AuthResponse>> {  // Change from MyApiResponse to MyApiResponseV2
         if (result.hasErrors()) throw MethodArgumentNotValidException(result)
         return ok(
             message = "Refresh token successfully",
@@ -76,7 +76,7 @@ class AuthController(
         description = "Invalidate the current JWT token",
         security = [SecurityRequirement(name = "JavaInUseSecurityScheme")]
     )
-    fun logout(): ResponseEntity<MyApiResponseV2<Nothing?>> {
+    fun logout(): ResponseEntity<MyApiResponse<Nothing?>> {
         val authorizationHeader: String = request.getHeader("Authorization")
 
         if (!authorizationHeader.startsWith("Bearer ")) {
@@ -103,7 +103,7 @@ class AuthController(
     fun generateTokenFromEmail(
         @Valid @RequestBody data: AuthPort.VerifyEmailReq,
         bindingResult: BindingResult
-    ): ResponseEntity<MyApiResponseV2<String>> {
+    ): ResponseEntity<MyApiResponse<String>> {
 
         if (bindingResult.hasErrors()) throw MethodArgumentNotValidException(bindingResult)
 
@@ -120,7 +120,7 @@ class AuthController(
     fun changePassword(
         @Valid @RequestBody data: AuthPort.ChangePasswordReq,
         bindingResult: BindingResult
-    ): ResponseEntity<MyApiResponseV2<Nothing?>> {
+    ): ResponseEntity<MyApiResponse<Nothing?>> {
         if (bindingResult.hasErrors()) throw MethodArgumentNotValidException(bindingResult)
 
         authService.changePassword(data)
@@ -133,7 +133,7 @@ class AuthController(
         summary = "Verify account",
         description = "This link will sent via email, user press to verify account",
     )
-    fun verifyAccount(@RequestParam token: String): ResponseEntity<MyApiResponseV2<Nothing?>> {
+    fun verifyAccount(@RequestParam token: String): ResponseEntity<MyApiResponse<Nothing?>> {
         authService.verifyAccount(token)
         return ok(message = "Verify account successfully" , data = null)
     }

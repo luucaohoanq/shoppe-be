@@ -1,8 +1,9 @@
 package com.lcaohoanq.sp.domains.settings
 
-import BaseEntity
+import com.lcaohoanq.sp.bases.BaseEntity
 import com.fasterxml.jackson.annotation.JsonIgnore
 import com.lcaohoanq.sp.domains.settings.notifications.NotificationSettings
+import com.lcaohoanq.sp.domains.user.User
 import jakarta.persistence.*
 
 @Entity
@@ -10,24 +11,20 @@ import jakarta.persistence.*
 class UserSettings(
 
     @Id
-    @SequenceGenerator(
-        name = "user_settings_seq",
-        sequenceName = "user_settings_id_seq",
-        allocationSize = 1
-    )
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "user_settings_seq")
-    @Column(name = "id", unique = true, nullable = false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", nullable = false, unique = true)
     val id: Long? = null,
 
     @Column(name = "user_id", nullable = false, unique = true)
     @JsonIgnore
     var userId: Long? = null,
+    
+    @OneToOne(mappedBy = "userSettings")
+    @JsonIgnore
+    var user: User? = null,
 
     @Column(name = "two_fa_enabled")
     var twoFaEnabled: Boolean = false,
-
-    @Column(name = "preferred_language")
-    var preferredLanguage: String = "en",
 
     @Column(name = "dark_mode")
     var darkMode: Boolean = false,

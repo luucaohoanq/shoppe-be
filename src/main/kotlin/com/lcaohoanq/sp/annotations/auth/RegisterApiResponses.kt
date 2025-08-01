@@ -1,6 +1,6 @@
 package com.lcaohoanq.sp.annotations.auth
 
-import com.lcaohoanq.sp.apis.MyApiResponseV2
+import com.lcaohoanq.sp.apis.MyApiResponse
 import io.swagger.v3.oas.annotations.media.Content
 import io.swagger.v3.oas.annotations.media.ExampleObject
 import io.swagger.v3.oas.annotations.media.Schema
@@ -18,7 +18,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses
         responseCode = "201", description = "✅ Account created successfully", content = [
             Content(
                 mediaType = "application/json",
-                schema = Schema(implementation = MyApiResponseV2::class),
+                schema = Schema(implementation = MyApiResponse::class),
                 examples = [
                     ExampleObject(
                         name = "Success Response", value = """

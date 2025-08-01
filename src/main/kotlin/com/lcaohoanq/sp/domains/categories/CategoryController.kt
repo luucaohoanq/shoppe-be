@@ -1,6 +1,6 @@
 package com.lcaohoanq.sp.domains.categories
 
-import com.lcaohoanq.sp.apis.MyApiResponseV2
+import com.lcaohoanq.sp.apis.MyApiResponse
 import com.lcaohoanq.sp.apis.PageResponse
 import com.lcaohoanq.sp.bases.BaseController
 import com.lcaohoanq.sp.metadata.QueryCriteria
@@ -29,9 +29,9 @@ class CategoryController(
         summary = "Get all categories",
         description = "Retrieve a list of all categories in the system."
     )
-    fun getAllCategories(): ResponseEntity<MyApiResponseV2<Any>> {
+    fun getAllCategories(): ResponseEntity<MyApiResponse<Any>> {
         val categories = categoryRepository.findAll()
-        return MyApiResponseV2.success(data = categories)
+        return MyApiResponse.success(data = categories)
     }
 
     @Operation(

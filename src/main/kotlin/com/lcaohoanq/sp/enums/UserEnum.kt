@@ -3,7 +3,7 @@ package com.lcaohoanq.sp.enums
 class UserEnum {
 
     enum class Status {
-        UNVERIFIED, VERIFIED, BLOCKED
+        UNVERIFIED, VERIFIED, BLOCKED, DEACTIVATED
     }
 
     enum class Role {

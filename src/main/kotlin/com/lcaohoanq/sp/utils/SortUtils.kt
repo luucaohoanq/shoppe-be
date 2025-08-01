@@ -36,7 +36,14 @@ interface Sortable {
         ID("id"),
         NAME("name"),
         PRICE("price"),
-        QUANTITY("quantity"),
-        CREATED_AT("createdAt")
+        STOCK("stock"),
+        CATEGORY_ID("categoryId"),
+        SHOP_ID("shopId"),
+        STATUS("status"),
+        RATING("rating"),
+        REVIEW_COUNT("reviewCount"),
+        SOLD_COUNT("soldCount"),
+        CREATED_AT("createdAt"),
+        UPDATED_AT("updatedAt")
     }
 }

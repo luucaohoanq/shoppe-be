@@ -1,3 +1,5 @@
+package com.lcaohoanq.sp.bases
+
 import com.fasterxml.jackson.annotation.JsonFormat
 import com.fasterxml.jackson.databind.annotation.JsonSerialize
 import com.fasterxml.jackson.databind.ser.std.DateSerializer
