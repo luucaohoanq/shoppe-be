@@ -24,7 +24,7 @@ import org.springframework.context.annotation.Configuration
     type = SecuritySchemeType.OPENIDCONNECT,
     scheme = "bearer",
     `in` = SecuritySchemeIn.HEADER,
-    openIdConnectUrl = "\${KEYCLOAK_OPENID_CONFIG_URL:http://localhost:9098/realms/shoppe/.well-known/openid-configuration}"
+    openIdConnectUrl = "\${KEYCLOAK_OPENID_CONFIG_URL:http://localhost:9099/realms/shoppe/.well-known/openid-configuration}"
 )
 class OpenAPIConfig {
     companion object {

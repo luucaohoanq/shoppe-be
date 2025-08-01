@@ -54,25 +54,7 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri: http://localhost:9099/realms/shoppe-dev
-#          jwk-set-uri: http://localhost:9099/realms/shoppe-dev/protocol/openid-connect/certs
-
-      client:
-        registration:
-          google:
-            clientId: 57725428107-3ppj4bcq83ls8b7jlojbka02glmhn4ed.apps.googleusercontent.com
-            clientSecret: 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
-            redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}" #baseUrl = http://localhost:4006
-            scope:
-             - email
-             - profile
-          github:
-            clientId: Ov23ct8O84y482bV5Cjr
-            clientSecret: 7f1cfd8c2afcea44c2a9d1486fe128df8fc9b668
-            redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}" #baseUrl = http://localhost:4006
-            scope:
-             - user:email
-             - read:user
+          issuer-uri: ${ISSUER_URI:http://localhost:9099/realms/shoppe}
 
 eureka:
   client:
@@ -88,10 +70,6 @@ feign:
         connectTimeout: 60000
         readTimeout: 10000
         retryer: com.lcaohoanq.authservicespring.configs.CustomRetryer
-
-keycloak:
-  url: http://localhost:9099/realms/shoppe-dev/protocol/openid-connect/token
-  client-id: react-app
 
 springdoc:
   swagger-ui:

@@ -22,6 +22,9 @@ springdoc:
     doc-expansion: none
     enabled: true
     path: /swagger-ui.html
+    oauth:
+      client-id: ${KC_SHOPPE_BE_CLIENT_ID:shoppe-be}
+      client-secret: ${KC_SHOPPE_BE_SECRET_KEY:WwlQqs5mYFF5IxNrz42ijId1DPwTowGV}
 
 # Logging configuration
 logging:
@@ -47,6 +50,16 @@ logging:
   pattern:
     console: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %highlight(%-5level) %cyan(%logger{36}) %X{requestId:--} - %msg%n"
     file: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} %X{requestId:--} - %msg%n"
+
+# Keycloak configuration
+keycloak:
+  server-url: ${KEYCLOAK_SERVER_URL:http://localhost:9099}
+  realm: ${KEYCLOAK_REALM_NAME:shoppe}
+  client-id: ${KC_SHOPPE_BE_CLIENT_ID:shoppe-be}
+  client-secret: ${KEYCLOAK_SECRET:default-secret}
+  grant-type: client_credentials
+  username: ${KEYCLOAK_INIT_USERNAME:user}
+  password: ${KEYCLOAK_INIT_PASSWORD:1}
 
 #health check
 management:

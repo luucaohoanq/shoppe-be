@@ -1,18 +1,20 @@
 package com.lcaohoanq.sp.configs
 
+import org.keycloak.OAuth2Constants.CLIENT_CREDENTIALS
 import org.keycloak.admin.client.Keycloak
 import org.keycloak.admin.client.KeycloakBuilder
 import org.springframework.boot.context.properties.ConfigurationProperties
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 
+
 @Configuration
 class KeycloakClientConfig(
- private val keycloakPropsConfig:  KeycloakPropsConfig
+    private val keycloakPropsConfig: KeycloakPropsConfig
 ) {
 
     @Bean
-    fun keycloak(): Keycloak{
+    fun keycloak(): Keycloak {
         return KeycloakBuilder.builder()
             .serverUrl(keycloakPropsConfig.serverUrl)
             .realm(keycloakPropsConfig.realm)
@@ -25,17 +27,15 @@ class KeycloakClientConfig(
     }
 
 }
+
 @Configuration
 @ConfigurationProperties(prefix = "keycloak")
 data class KeycloakPropsConfig(
-
-    var url: String = "",
     var serverUrl: String = "",
     var realm: String = "",
     var clientId: String = "",
-    var grantType: String = "password",
+    var clientSecret: String = "",
+    var grantType: String = CLIENT_CREDENTIALS,
     var password: String = "",
     var username: String = "",
-    var clientSecret: String = ""
-
 ) {}

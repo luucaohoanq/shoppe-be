@@ -12,6 +12,7 @@ import com.lcaohoanq.sp.entities.ShippingMethod
 import com.lcaohoanq.sp.enums.Currency
 import com.lcaohoanq.sp.enums.UserEnum
 import com.lcaohoanq.sp.repositories.*
+import kotlinx.coroutines.runBlocking
 import org.springframework.boot.CommandLineRunner
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -654,7 +655,7 @@ class DataInitializer(
     //App tài chính, API cung cấp tỉ giá đa dạng, cần truy xuất nhanh	Cách 1 (lưu 2 chiều)
     fun initCurrencyRates(currencyRateRepository: CurrencyRateRepository) {
         val baseCurrency = Currency.USD
-        val response = thirdPartyService.getBaseCurrencyRate(baseCurrency)
+        val response = runBlocking { thirdPartyService.getBaseCurrencyRate(baseCurrency) }
 
         val supportedCurrencies =
             listOf(Currency.USD, Currency.VND, Currency.JPY) // hoặc lấy từ enum
