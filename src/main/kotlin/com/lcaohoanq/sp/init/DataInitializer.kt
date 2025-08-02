@@ -172,13 +172,11 @@ class DataInitializer(
                     description = "Latest smartphone with advanced features",
                     price = 799.99,
                     stock = 50,
-                    categoryId = it.id!!,
                     imageUrl = "https://example.com/images/smartphone-x.jpg",
                     sku = "ELEC-SP-001",
                     weight = 0.2,
                     dimensions = "15x7x1 cm",
                     featured = true,
-                    active = true
                 )
             )
             products.add(
@@ -187,13 +185,11 @@ class DataInitializer(
                     description = "High-performance laptop for professionals",
                     price = 1299.99,
                     stock = 30,
-                    categoryId = it.id!!,
                     imageUrl = "https://example.com/images/laptop-pro.jpg",
                     sku = "ELEC-LP-002",
                     weight = 2.0,
                     dimensions = "35x25x2 cm",
                     featured = true,
-                    active = true
                 )
             )
             products.add(
@@ -202,13 +198,11 @@ class DataInitializer(
                     description = "Premium wireless earbuds with noise cancellation",
                     price = 149.99,
                     stock = 100,
-                    categoryId = it.id!!,
                     imageUrl = "https://example.com/images/wireless-earbuds.jpg",
                     sku = "ELEC-WE-003",
                     weight = 0.05,
                     dimensions = "5x5x3 cm",
                     featured = false,
-                    active = true
                 )
             )
         }
@@ -222,13 +216,11 @@ class DataInitializer(
                     description = "Comfortable cotton casual shirt for men",
                     price = 39.99,
                     stock = 200,
-                    categoryId = it.id!!,
                     imageUrl = "https://example.com/images/mens-shirt.jpg",
                     sku = "CLOTH-MS-001",
                     weight = 0.3,
                     dimensions = "30x20x2 cm",
                     featured = false,
-                    active = true
                 )
             )
             products.add(
@@ -237,13 +229,11 @@ class DataInitializer(
                     description = "Elegant dress for women",
                     price = 59.99,
                     stock = 150,
-                    categoryId = it.id!!,
                     imageUrl = "https://example.com/images/womens-dress.jpg",
                     sku = "CLOTH-WD-002",
                     weight = 0.4,
                     dimensions = "40x30x2 cm",
                     featured = true,
-                    active = true
                 )
             )
         }
@@ -257,13 +247,11 @@ class DataInitializer(
                     description = "Automatic coffee maker with timer",
                     price = 89.99,
                     stock = 75,
-                    categoryId = it.id!!,
                     imageUrl = "https://example.com/images/coffee-maker.jpg",
                     sku = "HOME-CM-001",
                     weight = 3.0,
                     dimensions = "25x20x30 cm",
                     featured = false,
-                    active = true
                 )
             )
             products.add(
@@ -272,13 +260,11 @@ class DataInitializer(
                     description = "High-speed blender for smoothies and more",
                     price = 69.99,
                     stock = 60,
-                    categoryId = it.id!!,
                     imageUrl = "https://example.com/images/blender.jpg",
                     sku = "HOME-BL-002",
                     weight = 2.5,
                     dimensions = "20x15x35 cm",
                     featured = false,
-                    active = true
                 )
             )
         }
@@ -292,13 +278,11 @@ class DataInitializer(
                     description = "Bestselling fiction novel",
                     price = 14.99,
                     stock = 300,
-                    categoryId = it.id!!,
                     imageUrl = "https://example.com/images/great-novel.jpg",
                     sku = "BOOK-GN-001",
                     weight = 0.5,
                     dimensions = "20x15x3 cm",
                     featured = false,
-                    active = true
                 )
             )
             products.add(
@@ -307,13 +291,11 @@ class DataInitializer(
                     description = "Comprehensive cookbook for all skill levels",
                     price = 24.99,
                     stock = 150,
-                    categoryId = it.id!!,
                     imageUrl = "https://example.com/images/cookbook.jpg",
                     sku = "BOOK-CM-002",
                     weight = 0.8,
                     dimensions = "25x20x2 cm",
                     featured = true,
-                    active = true
                 )
             )
         }
@@ -327,13 +309,11 @@ class DataInitializer(
                     description = "Gentle facial cleanser for all skin types",
                     price = 19.99,
                     stock = 200,
-                    categoryId = it.id!!,
                     imageUrl = "https://example.com/images/facial-cleanser.jpg",
                     sku = "BEAUTY-FC-001",
                     weight = 0.3,
                     dimensions = "10x5x15 cm",
                     featured = false,
-                    active = true
                 )
             )
             products.add(
@@ -342,13 +322,11 @@ class DataInitializer(
                     description = "Premium fragrance for special occasions",
                     price = 79.99,
                     stock = 50,
-                    categoryId = it.id!!,
                     imageUrl = "https://example.com/images/perfume.jpg",
                     sku = "BEAUTY-LP-002",
                     weight = 0.2,
                     dimensions = "8x8x15 cm",
                     featured = true,
-                    active = true
                 )
             )
         }

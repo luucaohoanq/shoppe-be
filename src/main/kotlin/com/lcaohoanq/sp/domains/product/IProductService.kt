@@ -12,7 +12,7 @@ interface IProductService {
     fun createProduct(request: ProductPort.ProductRequest): ProductPort.ProductResponse
     fun getProductById(id: Long): ProductPort.ProductResponse
     fun getAllProducts(): List<ProductPort.ProductResponse>
-    fun getAll(pageable: Pageable): Page<Product>
+    fun getAll(pageable: Pageable): Page<ProductPort.ProductResponse>
     fun getAllProducts(pageable: Pageable): PageResponse<ProductPort.ProductResponse>
     fun getAllProducts(pageable: Pageable, queryCriteria: QueryCriteria<Sortable.ProductSortField>): PageResponse<ProductPort.ProductResponse>
     fun updateProduct(id: Long, request: ProductPort.ProductUpdateRequest): ProductPort.ProductResponse

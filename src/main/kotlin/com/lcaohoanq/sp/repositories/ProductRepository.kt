@@ -19,7 +19,7 @@ interface ProductRepository : JpaRepository<Product, Long>, JpaSpecificationExec
     fun findByCategoryId(categoryId: Long): List<Product>
     fun findByShopId(shopId: Long): List<Product>
     fun findByStatus(status: Product.ProductStatus): List<Product>
-    
+
     // Price range queries
     fun findByPriceBetween(minPrice: Double, maxPrice: Double): List<Product>
     fun findByPriceGreaterThanEqual(price: Double): List<Product>
@@ -48,7 +48,7 @@ interface ProductRepository : JpaRepository<Product, Long>, JpaSpecificationExec
     @Query("SELECT p FROM Product p WHERE p.stock > 0 AND p.status = 'ACTIVE'")
     fun findAvailableProducts(pageable: Pageable): Page<Product>
     
-    @Query("SELECT p FROM Product p WHERE p.categoryId = :categoryId AND p.stock > 0 AND p.status = 'ACTIVE'")
+    @Query("SELECT p FROM Product p WHERE p.category.id = :categoryId AND p.stock > 0 AND p.status = 'ACTIVE'")
     fun findAvailableProductsByCategory(@Param("categoryId") categoryId: Long): List<Product>
     
     @Query("SELECT p FROM Product p WHERE p.shopId = :shopId AND p.stock > 0 AND p.status = 'ACTIVE'")
@@ -88,7 +88,7 @@ interface ProductRepository : JpaRepository<Product, Long>, JpaSpecificationExec
     @Query("SELECT SUM(p.price * p.stock) FROM Product p WHERE p.status = 'ACTIVE'")
     fun getTotalInventoryValue(): Double?
     
-    @Query("SELECT COUNT(p) FROM Product p WHERE p.categoryId = :categoryId")
+    @Query("SELECT COUNT(p) FROM Product p WHERE p.category.id = :categoryId")
     fun countByCategory(@Param("categoryId") categoryId: Long): Long
     
     @Query("SELECT COUNT(p) FROM Product p WHERE p.shopId = :shopId")
@@ -98,7 +98,7 @@ interface ProductRepository : JpaRepository<Product, Long>, JpaSpecificationExec
     @Query("""
         SELECT p FROM Product p 
         WHERE (:name IS NULL OR LOWER(p.name) LIKE LOWER(CONCAT('%', :name, '%')))
-        AND (:categoryId IS NULL OR p.categoryId = :categoryId)
+        AND (:categoryId IS NULL OR p.category.id = :categoryId)
         AND (:shopId IS NULL OR p.shopId = :shopId)
         AND (:minPrice IS NULL OR p.price >= :minPrice)
         AND (:maxPrice IS NULL OR p.price <= :maxPrice)
@@ -107,7 +107,6 @@ interface ProductRepository : JpaRepository<Product, Long>, JpaSpecificationExec
     """)
     fun findProductsWithFilters(
         @Param("name") name: String?,
-        @Param("categoryId") categoryId: Long?,
         @Param("shopId") shopId: Long?,
         @Param("minPrice") minPrice: Double?,
         @Param("maxPrice") maxPrice: Double?,
@@ -123,4 +122,6 @@ interface ProductRepository : JpaRepository<Product, Long>, JpaSpecificationExec
     // Find products with low stock
     @Query("SELECT p FROM Product p WHERE p.stock <= :threshold AND p.status = 'ACTIVE'")
     fun findLowStockProducts(@Param("threshold") threshold: Int): List<Product>
+
+    fun existsByName(name: String): Boolean
 }

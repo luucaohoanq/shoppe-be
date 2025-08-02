@@ -6,20 +6,20 @@ import java.time.LocalDateTime
 object CartPort {
 
     data class AddToCartRequest(
-        @field:NotNull(message = "Product ID is required")
-        @field:Positive(message = "Product ID must be positive")
+        @NotNull(message = "Product ID is required")
+        @Positive(message = "Product ID must be positive")
         val productId: Long,
 
-        @field:NotNull(message = "Quantity is required")
-        @field:Min(value = 1, message = "Quantity must be at least 1")
-        @field:Max(value = 999, message = "Quantity cannot exceed 999")
+        @NotNull(message = "Quantity is required")
+        @Min(value = 1, message = "Quantity must be at least 1")
+        @Max(value = 999, message = "Quantity cannot exceed 999")
         val quantity: Int
     )
 
     data class UpdateCartItemRequest(
-        @field:NotNull(message = "Quantity is required")
-        @field:Min(value = 1, message = "Quantity must be at least 1")
-        @field:Max(value = 999, message = "Quantity cannot exceed 999")
+        @NotNull(message = "Quantity is required")
+        @Min(value = 1, message = "Quantity must be at least 1")
+        @Max(value = 999, message = "Quantity cannot exceed 999")
         val quantity: Int
     )
 
@@ -54,7 +54,7 @@ object CartPort {
     )
 
     data class MoveToCartRequest(
-        @field:NotEmpty(message = "Product IDs cannot be empty")
+        @NotEmpty(message = "Product IDs cannot be empty")
         val productIds: List<Long>
     )
 }

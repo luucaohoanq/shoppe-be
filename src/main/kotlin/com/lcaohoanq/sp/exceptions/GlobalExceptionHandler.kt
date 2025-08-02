@@ -81,7 +81,7 @@ class GlobalExceptionHandler {
         val errors: MutableMap<String, String?> = HashMap()
         ex.bindingResult.allErrors.forEach(Consumer { error: ObjectError ->
             val fieldName = (error as FieldError).field
-            val errorMessage = error.getDefaultMessage()
+            val errorMessage = error.defaultMessage
             errors[fieldName] = errorMessage
         })
         return ResponseEntity(errors, HttpStatus.BAD_REQUEST)

@@ -12,7 +12,6 @@ fun Product.toProductResponse(): ProductPort.ProductResponse {
         description = this.description,
         price = this.price,
         stock = this.stock,
-        categoryId = this.categoryId,
         shopId = this.shopId,
         imageUrl = this.imageUrl,
         status = this.status,
@@ -34,10 +33,8 @@ fun ProductPort.ProductRequest.toProduct(): Product {
         description = this.description,
         price = this.price,
         stock = this.stock,
-        categoryId = this.categoryId,
         shopId = this.shopId,
         imageUrl = this.imageUrl,
-        status = this.status,
         weight = this.weight,
         dimensions = this.dimensions
     )
@@ -48,7 +45,6 @@ fun Product.updateFromRequest(request: ProductPort.ProductUpdateRequest): Produc
     request.description?.let { this.description = it }
     request.price?.let { this.price = it }
     request.stock?.let { this.stock = it }
-    request.categoryId?.let { this.categoryId = it }
     request.imageUrl?.let { this.imageUrl = it }
     request.weight?.let { this.weight = it }
     request.dimensions?.let { this.dimensions = it }

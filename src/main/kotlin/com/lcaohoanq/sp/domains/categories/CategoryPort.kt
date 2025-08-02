@@ -22,4 +22,18 @@ interface CategoryPort {
         var lastModifiedOn: Timestamp? = null,
     )
 
+
+    data class CategoryTreeResponse(
+        val id: Long,
+        val name: String,
+        val description: String? = null,
+        val img: String? = null,
+        val subcategories: List<SubCategoryResponse>
+    )
+
+    data class SubCategoryResponse(
+        val id: Long,
+        val name: String
+    )
+
 }

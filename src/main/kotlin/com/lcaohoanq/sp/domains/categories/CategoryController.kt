@@ -4,7 +4,6 @@ import com.lcaohoanq.sp.apis.MyApiResponse
 import com.lcaohoanq.sp.apis.PageResponse
 import com.lcaohoanq.sp.bases.BaseController
 import com.lcaohoanq.sp.metadata.QueryCriteria
-import com.lcaohoanq.sp.repositories.CategoryRepository
 import com.lcaohoanq.sp.utils.SortOrder
 import com.lcaohoanq.sp.utils.Sortable
 import com.lcaohoanq.sp.utils.createPageRequest
@@ -12,7 +11,6 @@ import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
-import org.springframework.data.domain.Sort
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
@@ -20,19 +18,18 @@ import org.springframework.web.bind.annotation.*
 @RequestMapping("\${api.prefix}/categories")
 @Tag(name = "categories", description = "Category API")
 class CategoryController(
-    private val categoryRepository: CategoryRepository,
     private val categoryService: CategoryService
 ) : BaseController() {
 
+
     @GetMapping("/all")
     @Operation(
-        summary = "Get all categories",
-        description = "Retrieve a list of all categories in the system."
+        summary = "Get all categories for fast access ease for frontend",
+        description = "Retrieve a list of all categories and their subcategories in a tree structure."
     )
-    fun getAllCategories(): ResponseEntity<MyApiResponse<Any>> {
-        val categories = categoryRepository.findAll()
-        return MyApiResponse.success(data = categories)
-    }
+    fun getAllCategories(): ResponseEntity<MyApiResponse<List<CategoryPort.CategoryTreeResponse>>> =
+        ok(data = categoryService.getAll())
+
 
     @Operation(
         summary = "Get paginated categories",
@@ -64,11 +61,19 @@ class CategoryController(
     }
 
     @GetMapping("/parents")
+    @Operation(
+        summary = "Get parent categories",
+        description = "Retrieve a list of all parent categories in the system."
+    )
     fun getParentCategories(): ResponseEntity<MyApiResponse<List<Category>>> =
         ok(data = categoryService.getParentCategories())
 
 
     @GetMapping("/{id}/children")
+    @Operation(
+        summary = "Get child categories of a parent category",
+        description = "Retrieve a list of child categories for a given parent category ID."
+    )
     fun getChildrenOfParentCategory(
         @PathVariable id: Long
     ): ResponseEntity<MyApiResponse<List<Category>>> {

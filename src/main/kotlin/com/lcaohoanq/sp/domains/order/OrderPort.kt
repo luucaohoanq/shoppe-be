@@ -8,39 +8,39 @@ import java.time.LocalDateTime
 object OrderPort {
 
     data class CreateOrderRequest(
-        @field:NotNull(message = "Address ID is required")
-        @field:Positive(message = "Address ID must be positive")
+        @NotNull(message = "Address ID is required")
+        @Positive(message = "Address ID must be positive")
         val addressId: Long,
 
-        @field:Positive(message = "Shipping method ID must be positive")
+        @Positive(message = "Shipping method ID must be positive")
         val shippingMethodId: Long? = null,
 
-        @field:Positive(message = "Coupon ID must be positive")
+        @Positive(message = "Coupon ID must be positive")
         val couponId: Long? = null,
 
-        @field:Size(max = 1000, message = "Notes cannot exceed 1000 characters")
+        @Size(max = 1000, message = "Notes cannot exceed 1000 characters")
         val notes: String? = null,
 
-        @field:NotEmpty(message = "Order items cannot be empty")
+        @NotEmpty(message = "Order items cannot be empty")
         val items: List<OrderItemRequest>
     )
 
     data class OrderItemRequest(
-        @field:NotNull(message = "Product ID is required")
-        @field:Positive(message = "Product ID must be positive")
+        @NotNull(message = "Product ID is required")
+        @Positive(message = "Product ID must be positive")
         val productId: Long,
 
-        @field:NotNull(message = "Quantity is required")
-        @field:Min(value = 1, message = "Quantity must be at least 1")
-        @field:Max(value = 999, message = "Quantity cannot exceed 999")
+        @NotNull(message = "Quantity is required")
+        @Min(value = 1, message = "Quantity must be at least 1")
+        @Max(value = 999, message = "Quantity cannot exceed 999")
         val quantity: Int
     )
 
     data class UpdateOrderStatusRequest(
-        @field:NotNull(message = "Status is required")
+        @NotNull(message = "Status is required")
         val status: Order.OrderStatus,
 
-        @field:Size(max = 500, message = "Notes cannot exceed 500 characters")
+        @Size(max = 500, message = "Notes cannot exceed 500 characters")
         val notes: String? = null
     )
 
@@ -137,20 +137,20 @@ object OrderPort {
     )
 
     data class CheckoutRequest(
-        @field:NotNull(message = "Address ID is required")
-        @field:Positive(message = "Address ID must be positive")
+        @NotNull(message = "Address ID is required")
+        @Positive(message = "Address ID must be positive")
         val addressId: Long,
 
-        @field:Positive(message = "Shipping method ID must be positive")
+        @Positive(message = "Shipping method ID must be positive")
         val shippingMethodId: Long? = null,
 
-        @field:Positive(message = "Coupon ID must be positive")
+        @Positive(message = "Coupon ID must be positive")
         val couponId: Long? = null,
 
-        @field:Size(max = 1000, message = "Notes cannot exceed 1000 characters")
+        @Size(max = 1000, message = "Notes cannot exceed 1000 characters")
         val notes: String? = null,
 
-        @field:NotNull(message = "Payment method is required")
+        @NotNull(message = "Payment method is required")
         val paymentMethod: Payment.PaymentMethod = Payment.PaymentMethod.CASH_ON_DELIVERY,
 
         val useCartItems: Boolean = true,

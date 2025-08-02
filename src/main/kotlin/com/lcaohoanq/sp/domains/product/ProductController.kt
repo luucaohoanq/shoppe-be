@@ -87,7 +87,7 @@ class ProductController(
         @RequestParam(defaultValue = "0") page: Int,
         @RequestParam(defaultValue = "20") size: Int,
         @RequestParam(defaultValue = "id,asc") sort: String
-    ): ResponseEntity<MyApiResponse<Page<Product>>> {
+    ): ResponseEntity<MyApiResponse<Page<ProductPort.ProductResponse>>> {
         return ok(data = productService.getAll(createPageRequest(page, size, sort)))
     }
 

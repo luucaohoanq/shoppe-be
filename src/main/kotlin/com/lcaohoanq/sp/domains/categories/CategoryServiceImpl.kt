@@ -18,8 +18,31 @@ import org.springframework.stereotype.Service
 class CategoryServiceImpl(
     private val categoryRepository: CategoryRepository
 ): CategoryService {
-    override fun getAll(): List<Category> {
-        return categoryRepository.findAll()
+    override fun getAll(): List<CategoryPort.CategoryTreeResponse> {
+        val categories = categoryRepository.findAll()
+        return categories.toCategoryTreeResponses()
+    }
+
+    fun List<Category>.toCategoryTreeResponses(): List<CategoryPort.CategoryTreeResponse> {
+        val categoryBySlug = this.groupBy { it.parentSlug }
+
+        fun buildCategoryTree(category: Category): CategoryPort.CategoryTreeResponse {
+            return CategoryPort.CategoryTreeResponse(
+                id = category.id!!,
+                name = category.name,
+                description = category.description,
+                img = category.imageUrl,
+                subcategories = categoryBySlug[category.slug]
+                    ?.sortedBy { it.id } // sort subcategories by id
+                    ?.map { CategoryPort.SubCategoryResponse(it.id!!, it.name) }
+                    ?: emptyList()
+            )
+        }
+
+        return categoryBySlug[null]
+            ?.sortedBy { it.id } // sort root categories by id
+            ?.map { buildCategoryTree(it) }
+            ?: emptyList()
     }
 
     override fun getAll(

@@ -19,6 +19,7 @@ import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.Sort
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import kotlin.random.Random
 
 @Service
 @Transactional
@@ -31,15 +32,27 @@ class ProductService(
 
     override fun createProduct(request: ProductPort.ProductRequest): ProductPort.ProductResponse {
         log.info { "Creating new product with name: ${request.name}" }
-        
+
         // Validate category exists
         if (!categoryRepository.existsById(request.categoryId)) {
             throw DataNotFoundException("Category with ID ${request.categoryId} not found")
         }
 
+        if(productRepository.existsByName(request.name)) {
+            throw IllegalArgumentException("Product with name '${request.name}' already exists")
+        }
+
         val product = request.toProduct()
+
+        product.sku = "PROD-${System.currentTimeMillis().toString().takeLast(6)}-${
+            Random.nextInt(
+                100,
+                999
+            )
+        }" // Generate a unique SKU
+
         val savedProduct = productRepository.save(product)
-        
+
         log.info { "Product created successfully with ID: ${savedProduct.id}" }
         return savedProduct.toProductResponse()
     }
@@ -47,10 +60,10 @@ class ProductService(
     @Transactional(readOnly = true)
     override fun getProductById(id: Long): ProductPort.ProductResponse {
         log.info { "Fetching product with ID: $id" }
-        
+
         val product = productRepository.findById(id)
             .orElseThrow { DataNotFoundException("Product with ID $id not found") }
-        
+
         return product.toProductResponse()
     }
 
@@ -60,12 +73,13 @@ class ProductService(
         return productRepository.findAll().map { it.toProductResponse() }
     }
 
-    override fun getAll(pageable: Pageable): Page<Product> = productRepository.findAll(pageable)
+    override fun getAll(pageable: Pageable): Page<ProductPort.ProductResponse> =
+        productRepository.findAll(pageable).map(Product::toProductResponse)
 
     @Transactional(readOnly = true)
     override fun getAllProducts(pageable: Pageable): PageResponse<ProductPort.ProductResponse> {
         log.info { "Fetching paginated products" }
-        
+
         val pageResult = productRepository.findAll(pageable)
         val productResponses = pageResult.content.map { it.toProductResponse() }
 
@@ -87,10 +101,11 @@ class ProductService(
         queryCriteria: QueryCriteria<Sortable.ProductSortField>
     ): PageResponse<ProductPort.ProductResponse> {
         log.info { "Fetching products with search criteria: ${queryCriteria.search}" }
-        
+
         val searchSpecification = ProductSpecification(queryCriteria.search)
         val sortField = queryCriteria.sortBy.field
-        val sortOrder = if (queryCriteria.sortOrder == SortOrder.ASC) Sort.Direction.ASC else Sort.Direction.DESC
+        val sortOrder =
+            if (queryCriteria.sortOrder == SortOrder.ASC) Sort.Direction.ASC else Sort.Direction.DESC
         val sortedPageable = PageRequest.of(
             pageable.pageNumber,
             pageable.pageSize,
@@ -117,9 +132,12 @@ class ProductService(
         )
     }
 
-    override fun updateProduct(id: Long, request: ProductPort.ProductUpdateRequest): ProductPort.ProductResponse {
+    override fun updateProduct(
+        id: Long,
+        request: ProductPort.ProductUpdateRequest
+    ): ProductPort.ProductResponse {
         log.info { "Updating product with ID: $id" }
-        
+
         val product = productRepository.findById(id)
             .orElseThrow { DataNotFoundException("Product with ID $id not found") }
 
@@ -132,25 +150,28 @@ class ProductService(
 
         product.updateFromRequest(request)
         val updatedProduct = productRepository.save(product)
-        
+
         log.info { "Product updated successfully with ID: ${updatedProduct.id}" }
         return updatedProduct.toProductResponse()
     }
 
     override fun deleteProduct(id: Long) {
         log.info { "Deleting product with ID: $id" }
-        
+
         if (!productRepository.existsById(id)) {
             throw DataNotFoundException("Product with ID $id not found")
         }
-        
+
         productRepository.deleteById(id)
         log.info { "Product deleted successfully with ID: $id" }
     }
 
-    override fun updateStock(id: Long, request: ProductPort.ProductStockUpdateRequest): ProductPort.ProductResponse {
+    override fun updateStock(
+        id: Long,
+        request: ProductPort.ProductStockUpdateRequest
+    ): ProductPort.ProductResponse {
         log.info { "Updating stock for product ID: $id, operation: ${request.operation}, quantity: ${request.quantity}" }
-        
+
         val product = productRepository.findById(id)
             .orElseThrow { DataNotFoundException("Product with ID $id not found") }
 
@@ -186,7 +207,7 @@ class ProductService(
         pageable: Pageable
     ): PageResponse<ProductPort.ProductResponse> {
         log.info { "Searching products with filters" }
-        
+
         val specification = ProductSpecification.withFilters(
             request.name,
             request.categoryId,
@@ -198,7 +219,8 @@ class ProductService(
         )
 
         val sortField = request.sortBy.field
-        val sortOrder = if (request.sortOrder.uppercase() == "ASC") Sort.Direction.ASC else Sort.Direction.DESC
+        val sortOrder =
+            if (request.sortOrder.uppercase() == "ASC") Sort.Direction.ASC else Sort.Direction.DESC
         val sortedPageable = PageRequest.of(
             pageable.pageNumber,
             pageable.pageSize,
@@ -221,9 +243,12 @@ class ProductService(
     }
 
     @Transactional(readOnly = true)
-    override fun searchProductsByName(name: String, pageable: Pageable): PageResponse<ProductPort.ProductResponse> {
+    override fun searchProductsByName(
+        name: String,
+        pageable: Pageable
+    ): PageResponse<ProductPort.ProductResponse> {
         log.info { "Searching products by name: $name" }
-        
+
         val pageResult = productRepository.findByNameContainingIgnoreCase(name, pageable)
         val productResponses = pageResult.content.map { it.toProductResponse() }
 
@@ -240,9 +265,12 @@ class ProductService(
     }
 
     @Transactional(readOnly = true)
-    override fun getProductsByCategory(categoryId: Long, pageable: Pageable): PageResponse<ProductPort.ProductResponse> {
+    override fun getProductsByCategory(
+        categoryId: Long,
+        pageable: Pageable
+    ): PageResponse<ProductPort.ProductResponse> {
         log.info { "Fetching products by category ID: $categoryId" }
-        
+
         val pageResult = productRepository.findByCategoryId(categoryId, pageable)
         val productResponses = pageResult.content.map { it.toProductResponse() }
 
@@ -259,9 +287,12 @@ class ProductService(
     }
 
     @Transactional(readOnly = true)
-    override fun getProductsByShop(shopId: Long, pageable: Pageable): PageResponse<ProductPort.ProductResponse> {
+    override fun getProductsByShop(
+        shopId: Long,
+        pageable: Pageable
+    ): PageResponse<ProductPort.ProductResponse> {
         log.info { "Fetching products by shop ID: $shopId" }
-        
+
         val pageResult = productRepository.findByShopId(shopId, pageable)
         val productResponses = pageResult.content.map { it.toProductResponse() }
 
@@ -284,7 +315,7 @@ class ProductService(
         pageable: Pageable
     ): PageResponse<ProductPort.ProductResponse> {
         log.info { "Fetching products by price range: $minPrice - $maxPrice" }
-        
+
         val products = productRepository.findByPriceBetween(minPrice, maxPrice)
         val productResponses = products.map { it.toProductResponse() }
 
@@ -319,15 +350,18 @@ class ProductService(
         return setProductStatus(id, Product.ProductStatus.INACTIVE)
     }
 
-    override fun setProductStatus(id: Long, status: Product.ProductStatus): ProductPort.ProductResponse {
+    override fun setProductStatus(
+        id: Long,
+        status: Product.ProductStatus
+    ): ProductPort.ProductResponse {
         log.info { "Setting product status for ID: $id to $status" }
-        
+
         val product = productRepository.findById(id)
             .orElseThrow { DataNotFoundException("Product with ID $id not found") }
 
         product.status = status
         val updatedProduct = productRepository.save(product)
-        
+
         log.info { "Product status updated successfully for ID: $id" }
         return updatedProduct.toProductResponse()
     }
@@ -335,7 +369,7 @@ class ProductService(
     @Transactional(readOnly = true)
     override fun getAvailableProducts(pageable: Pageable): PageResponse<ProductPort.ProductResponse> {
         log.info { "Fetching available products" }
-        
+
         val pageResult = productRepository.findAvailableProducts(pageable)
         val productResponses = pageResult.content.map { it.toProductResponse() }
 
@@ -354,7 +388,7 @@ class ProductService(
     @Transactional(readOnly = true)
     override fun getTopSellingProducts(pageable: Pageable): PageResponse<ProductPort.ProductResponse> {
         log.info { "Fetching top selling products" }
-        
+
         val pageResult = productRepository.findTopSellingProducts(pageable)
         val productResponses = pageResult.content.map { it.toProductResponse() }
 
@@ -373,7 +407,7 @@ class ProductService(
     @Transactional(readOnly = true)
     override fun getTopRatedProducts(pageable: Pageable): PageResponse<ProductPort.ProductResponse> {
         log.info { "Fetching top rated products" }
-        
+
         val pageResult = productRepository.findTopRatedProducts(pageable)
         val productResponses = pageResult.content.map { it.toProductResponse() }
 
@@ -392,7 +426,7 @@ class ProductService(
     @Transactional(readOnly = true)
     override fun getRecentProducts(pageable: Pageable): PageResponse<ProductPort.ProductResponse> {
         log.info { "Fetching recent products" }
-        
+
         val pageResult = productRepository.findRecentProducts(pageable)
         val productResponses = pageResult.content.map { it.toProductResponse() }
 
@@ -411,7 +445,7 @@ class ProductService(
     @Transactional(readOnly = true)
     override fun getLowStockProducts(threshold: Int): List<ProductPort.ProductResponse> {
         log.info { "Fetching low stock products with threshold: $threshold" }
-        
+
         val products = productRepository.findLowStockProducts(threshold)
         return products.map { it.toProductResponse() }
     }
@@ -423,26 +457,26 @@ class ProductService(
 
     override fun updateRating(id: Long, rating: Double): ProductPort.ProductResponse {
         log.info { "Updating rating for product ID: $id with rating: $rating" }
-        
+
         val product = productRepository.findById(id)
             .orElseThrow { DataNotFoundException("Product with ID $id not found") }
 
         product.updateRating(rating)
         val updatedProduct = productRepository.save(product)
-        
+
         log.info { "Rating updated successfully for product ID: $id" }
         return updatedProduct.toProductResponse()
     }
 
     override fun incrementSoldCount(id: Long, quantity: Int): ProductPort.ProductResponse {
         log.info { "Incrementing sold count for product ID: $id with quantity: $quantity" }
-        
+
         val product = productRepository.findById(id)
             .orElseThrow { DataNotFoundException("Product with ID $id not found") }
 
         product.soldCount += quantity
         val updatedProduct = productRepository.save(product)
-        
+
         log.info { "Sold count updated successfully for product ID: $id" }
         return updatedProduct.toProductResponse()
     }
@@ -450,7 +484,7 @@ class ProductService(
     @Transactional(readOnly = true)
     override fun getProductSummary(): ProductPort.ProductSummaryResponse {
         log.info { "Generating product summary" }
-        
+
         val totalProducts = productRepository.count()
         val activeProducts = productRepository.countByStatus(Product.ProductStatus.ACTIVE)
         val outOfStockProducts = productRepository.countOutOfStock()

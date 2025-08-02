@@ -2,8 +2,10 @@ package com.lcaohoanq.sp.domains.product
 
 import com.lcaohoanq.sp.bases.BaseEntity
 import com.lcaohoanq.sp.domains.categories.Category
+import com.lcaohoanq.sp.extension.toCategoryResponse
 import com.lcaohoanq.sp.extension.toProductResponse
 import jakarta.persistence.*
+import net.minidev.json.annotate.JsonIgnore
 
 @Entity
 @Table(name = "products")
@@ -24,9 +26,6 @@ class Product(
 
     @Column(name = "stock", nullable = false)
     var stock: Int = 0,
-
-    @Column(name = "category_id", nullable = false)
-    var categoryId: Long = 0,
 
     @Column(name = "shop_id", nullable = false)
     var shopId: Long = 0,
@@ -53,11 +52,11 @@ class Product(
     @Column(name = "dimensions")
     var dimensions: String? = null,
 
+    @Column(name = "sku", unique = true, nullable = true)
     var sku: String? = null,
 
+    @Column(name = "featured", nullable = true)
     var featured: Boolean? = false,
-
-    var active: Boolean? = true,
 
     // Relationship with Category
     @ManyToOne(fetch = FetchType.LAZY)
@@ -68,10 +67,6 @@ class Product(
 
     enum class ProductStatus {
         ACTIVE, INACTIVE, OUT_OF_STOCK, DISCONTINUED
-    }
-
-    fun toProductResponse(): ProductPort.ProductResponse {
-        return toProductResponse()
     }
 
     fun updateStock(quantity: Int) {

@@ -8,56 +8,58 @@ import java.time.LocalDateTime
 object ProductPort {
 
     data class ProductRequest(
-        @field:NotBlank(message = "Product name is required")
-        @field:Size(min = 1, max = 200, message = "Product name must be between 1 and 200 characters")
+        @NotBlank(message = "Product name is required")
+        @Size(min = 1, max = 200, message = "Product name must be between 1 and 200 characters")
         val name: String,
 
-        @field:Size(max = 2000, message = "Description cannot exceed 2000 characters")
+        @Size(max = 2000, message = "Description cannot exceed 2000 characters")
         val description: String = "",
 
-        @field:NotNull(message = "Price is required")
-        @field:DecimalMin(value = "0.0", inclusive = false, message = "Price must be greater than 0")
-        @field:DecimalMax(value = "999999.99", message = "Price cannot exceed 999,999.99")
+        @NotNull(message = "Price is required")
+        @DecimalMin(value = "0.0", inclusive = false, message = "Price must be greater than 0")
+        @DecimalMax(value = "999999.99", message = "Price cannot exceed 999,999.99")
         val price: Double,
 
-        @field:NotNull(message = "Stock is required")
-        @field:Min(value = 0, message = "Stock cannot be negative")
-        @field:Max(value = 999999, message = "Stock cannot exceed 999,999")
+        @NotNull(message = "Stock is required")
+        @Min(value = 0, message = "Stock cannot be negative")
+        @Max(value = 999999, message = "Stock cannot exceed 999,999")
         val stock: Int,
 
-        @field:NotNull(message = "Category ID is required")
-        @field:Positive(message = "Category ID must be positive")
+        @NotNull(message = "Category ID is required")
+        @Positive(message = "Category ID must be positive")
         val categoryId: Long,
 
-        @field:NotNull(message = "Shop ID is required")
-        @field:Positive(message = "Shop ID must be positive")
+        @NotNull(message = "Shop ID is required")
+        @Positive(message = "Shop ID must be positive")
         val shopId: Long,
 
         val imageUrl: String? = null,
 
+        @DecimalMin(value = "0.0", inclusive = false, message = "Weight must be greater than 0")
+        @DecimalMax(value = "9999.99", message = "Weight cannot exceed 9999.99")
+        @PositiveOrZero(message = "Weight must be zero or positive")
         val weight: Double? = null,
 
+        @Size(max = 100, message = "Dimensions cannot exceed 100 characters")
         val dimensions: String? = null,
-
-        val status: Product.ProductStatus = Product.ProductStatus.ACTIVE
     )
 
     data class ProductUpdateRequest(
-        @field:Size(min = 1, max = 200, message = "Product name must be between 1 and 200 characters")
+        @Size(min = 1, max = 200, message = "Product name must be between 1 and 200 characters")
         val name: String?,
 
-        @field:Size(max = 2000, message = "Description cannot exceed 2000 characters")
+        @Size(max = 2000, message = "Description cannot exceed 2000 characters")
         val description: String?,
 
-        @field:DecimalMin(value = "0.0", inclusive = false, message = "Price must be greater than 0")
-        @field:DecimalMax(value = "999999.99", message = "Price cannot exceed 999,999.99")
+        @DecimalMin(value = "0.0", inclusive = false, message = "Price must be greater than 0")
+        @DecimalMax(value = "999999.99", message = "Price cannot exceed 999,999.99")
         val price: Double?,
 
-        @field:Min(value = 0, message = "Stock cannot be negative")
-        @field:Max(value = 999999, message = "Stock cannot exceed 999,999")
+        @Min(value = 0, message = "Stock cannot be negative")
+        @Max(value = 999999, message = "Stock cannot exceed 999,999")
         val stock: Int?,
 
-        @field:Positive(message = "Category ID must be positive")
+        @Positive(message = "Category ID must be positive")
         val categoryId: Long?,
 
         val imageUrl: String?,
@@ -75,7 +77,6 @@ object ProductPort {
         val description: String,
         val price: Double,
         val stock: Int,
-        val categoryId: Long,
         val shopId: Long,
         val imageUrl: String?,
         val status: Product.ProductStatus,
@@ -84,6 +85,8 @@ object ProductPort {
         val soldCount: Int,
         val weight: Double?,
         val dimensions: String?,
+        val sku: String? = null,
+        val featured: Boolean? = false,
         val category: CategoryPort.CategoryRes?,
         val createdAt: LocalDateTime?,
         val updatedAt: LocalDateTime?,
@@ -91,12 +94,12 @@ object ProductPort {
     )
 
     data class ProductStockUpdateRequest(
-        @field:NotNull(message = "Quantity is required")
-        @field:Min(value = 1, message = "Quantity must be positive")
+        @NotNull(message = "Quantity is required")
+        @Min(value = 1, message = "Quantity must be positive")
         val quantity: Int,
 
-        @field:NotBlank(message = "Operation type is required")
-        @field:Pattern(regexp = "ADD|SUBTRACT", message = "Operation must be ADD or SUBTRACT")
+        @NotBlank(message = "Operation type is required")
+        @Pattern(regexp = "ADD|SUBTRACT", message = "Operation must be ADD or SUBTRACT")
         val operation: String
     )
 
