@@ -61,6 +61,12 @@ keycloak:
   username: ${KEYCLOAK_INIT_USERNAME:user}
   password: ${KEYCLOAK_INIT_PASSWORD:1}
 
+app:
+  cors:
+    allowed-origins:
+      - http://localhost:4000
+      - http://localhost:4003
+
 #health check
 management:
   health:

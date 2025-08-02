@@ -100,7 +100,8 @@ class WebSecurityConfigV2(
             .cors { it.configurationSource(corsConfigurationSource()) }
             .csrf { it.disable() }
             .authorizeHttpRequests { auth ->
-                auth.anyRequest().permitAll()
+                auth.requestMatchers("/api/v1/categories/all").permitAll()
+                .anyRequest().authenticated()
             }
             .sessionManagement { it.sessionCreationPolicy(SessionCreationPolicy.STATELESS) }
             .oauth2ResourceServer { oauth2 ->

@@ -69,12 +69,6 @@ jwt:
   expiration-refresh-token: ${JWT_EXPIRATION_REFRESH_TOKEN:5184000}
   secretKey: ${JWT_SECRET_KEY:TaqlmGv1iEDMRiFp/pHuID1+T84IABfuA0xXh4GhiUI=}
 
-app:
-  cors:
-    allowed-origins:
-      - http://localhost:4000
-      - http://localhost:4003
-
 logging:
   level:
     root: DEBUG
