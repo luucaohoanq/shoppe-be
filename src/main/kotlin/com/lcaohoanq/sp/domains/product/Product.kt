@@ -2,8 +2,7 @@ package com.lcaohoanq.sp.domains.product
 
 import com.lcaohoanq.sp.bases.BaseEntity
 import com.lcaohoanq.sp.domains.categories.Category
-import com.lcaohoanq.sp.extension.toCategoryResponse
-import com.lcaohoanq.sp.extension.toProductResponse
+import com.lcaohoanq.sp.domains.discount.ProductVoucher
 import jakarta.persistence.*
 import net.minidev.json.annotate.JsonIgnore
 
@@ -33,6 +32,9 @@ class Product(
     @Column(name = "image_url")
     var imageUrl: String? = null,
 
+    @Column(name = "images")
+    var images: List<String>? = null,
+
     @Column(name = "status")
     @Enumerated(EnumType.STRING)
     var status: ProductStatus = ProductStatus.ACTIVE,
@@ -61,9 +63,13 @@ class Product(
     // Relationship with Category
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id", insertable = false, updatable = false)
-    var category: Category? = null
+    var category: Category? = null,
 
-) : BaseEntity() {
+    @OneToMany(mappedBy = "product", cascade = [CascadeType.ALL])
+    @JsonIgnore
+    var productVouchers: MutableSet<ProductVoucher> = mutableSetOf()
+
+    ) : BaseEntity() {
 
     enum class ProductStatus {
         ACTIVE, INACTIVE, OUT_OF_STOCK, DISCONTINUED

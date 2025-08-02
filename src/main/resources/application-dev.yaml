@@ -12,11 +12,6 @@ api:
 spring:
   application:
     name: shoppe-be
-    security-config-version: v2
-    cors:
-      allowed-origins:
-        - http://localhost:4000
-        - http://localhost:4003
 
   output:
     ansi:
@@ -46,30 +41,11 @@ spring:
     basename: i18n/messages
     encoding: UTF-8
 
-  cloud:
-    discovery:
-      enabled: true
-
   security:
     oauth2:
       resourceserver:
         jwt:
           issuer-uri: ${ISSUER_URI:http://localhost:9099/realms/shoppe}
-
-eureka:
-  client:
-    service-url:
-      defaultZone: http://localhost:8761/eureka
-    register-with-eureka: true
-    fetch-registry: true
-
-feign:
-  client:
-    config:
-      default:
-        connectTimeout: 60000
-        readTimeout: 10000
-        retryer: com.lcaohoanq.authservicespring.configs.CustomRetryer
 
 springdoc:
   swagger-ui:

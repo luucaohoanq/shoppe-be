@@ -166,6 +166,12 @@ class ProductService(
         log.info { "Product deleted successfully with ID: $id" }
     }
 
+    override fun existsById(id: Long): Boolean {
+        return productRepository.existsById(id).also {
+            log.info { "Checking existence of product with ID: $id, exists: $it" }
+        }
+    }
+
     override fun updateStock(
         id: Long,
         request: ProductPort.ProductStockUpdateRequest

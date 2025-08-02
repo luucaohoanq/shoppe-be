@@ -13,6 +13,7 @@ fun Product.toProductResponse(): ProductPort.ProductResponse {
         price = this.price,
         stock = this.stock,
         shopId = this.shopId,
+        images = this.images,
         imageUrl = this.imageUrl,
         status = this.status,
         rating = this.rating,
@@ -21,8 +22,8 @@ fun Product.toProductResponse(): ProductPort.ProductResponse {
         weight = this.weight,
         dimensions = this.dimensions,
         category = this.category?.toCategoryResponse(),
-        createdAt = this.createdAt?.toLocalDateTime(),
-        updatedAt = this.lastModifiedOn?.toLocalDateTime(),
+        createdAt = this.createdAt,
+        updatedAt = this.lastModifiedOn,
         isAvailable = this.isAvailable()
     )
 }
@@ -35,6 +36,7 @@ fun ProductPort.ProductRequest.toProduct(): Product {
         stock = this.stock,
         shopId = this.shopId,
         imageUrl = this.imageUrl,
+        images = this.images,
         weight = this.weight,
         dimensions = this.dimensions
     )
@@ -50,8 +52,4 @@ fun Product.updateFromRequest(request: ProductPort.ProductUpdateRequest): Produc
     request.dimensions?.let { this.dimensions = it }
     request.status?.let { this.status = it }
     return this
-}
-
-private fun Timestamp.toLocalDateTime(): LocalDateTime {
-    return this.toInstant().atZone(java.time.ZoneId.systemDefault()).toLocalDateTime()
 }

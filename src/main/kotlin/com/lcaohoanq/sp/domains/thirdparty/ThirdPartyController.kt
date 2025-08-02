@@ -6,6 +6,7 @@ import com.lcaohoanq.sp.enums.Currency
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag
 import org.springframework.http.ResponseEntity
+import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestMapping
@@ -23,6 +24,7 @@ class ThirdPartyController(
         summary = "Get base currency rate from api.exchangerate-api.com",
         description = "Get the exchange rates for a specific base currency"
     )
+    @PreAuthorize("hasAnyRole('ROLE_CUSTOMER', 'ROLE_ADMIN', 'ROLE_SHOP', 'ROLE_STAFF', 'ROLE_MANAGER')")
     @GetMapping("/base/{base}")
     suspend fun getBaseCurrencyRate(@PathVariable base: Currency): ResponseEntity<MyApiResponse<Any>> {
         val data = thirdPartyService.getBaseCurrencyRate(base)

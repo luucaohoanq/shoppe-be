@@ -1,8 +1,10 @@
 package com.lcaohoanq.sp.domains.product
 
 import com.lcaohoanq.sp.domains.categories.CategoryPort
+import com.lcaohoanq.sp.domains.discount.Voucher
 import com.lcaohoanq.sp.utils.Sortable
 import jakarta.validation.constraints.*
+import java.sql.Timestamp
 import java.time.LocalDateTime
 
 object ProductPort {
@@ -34,6 +36,8 @@ object ProductPort {
         val shopId: Long,
 
         val imageUrl: String? = null,
+
+        val images: List<String>? = null,
 
         @DecimalMin(value = "0.0", inclusive = false, message = "Weight must be greater than 0")
         @DecimalMax(value = "9999.99", message = "Weight cannot exceed 9999.99")
@@ -79,6 +83,7 @@ object ProductPort {
         val stock: Int,
         val shopId: Long,
         val imageUrl: String?,
+        val images: List<String>?,
         val status: Product.ProductStatus,
         val rating: Double,
         val reviewCount: Int,
@@ -88,9 +93,10 @@ object ProductPort {
         val sku: String? = null,
         val featured: Boolean? = false,
         val category: CategoryPort.CategoryRes?,
-        val createdAt: LocalDateTime?,
-        val updatedAt: LocalDateTime?,
-        val isAvailable: Boolean = status == Product.ProductStatus.ACTIVE && stock > 0
+        val isAvailable: Boolean = status == Product.ProductStatus.ACTIVE && stock > 0,
+        val vouchers: List<Voucher>? = null,
+        val createdAt: Timestamp?, 
+        val updatedAt: Timestamp?,
     )
 
     data class ProductStockUpdateRequest(

@@ -17,6 +17,7 @@ interface IProductService {
     fun getAllProducts(pageable: Pageable, queryCriteria: QueryCriteria<Sortable.ProductSortField>): PageResponse<ProductPort.ProductResponse>
     fun updateProduct(id: Long, request: ProductPort.ProductUpdateRequest): ProductPort.ProductResponse
     fun deleteProduct(id: Long)
+    fun existsById(id: Long): Boolean
     
     // Stock management
     fun updateStock(id: Long, request: ProductPort.ProductStockUpdateRequest): ProductPort.ProductResponse

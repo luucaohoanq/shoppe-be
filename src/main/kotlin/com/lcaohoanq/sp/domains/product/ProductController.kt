@@ -3,6 +3,9 @@ package com.lcaohoanq.sp.domains.product
 import com.lcaohoanq.sp.apis.MyApiResponse
 import com.lcaohoanq.sp.apis.PageResponse
 import com.lcaohoanq.sp.bases.BaseController
+import com.lcaohoanq.sp.domains.discount.ProductVoucher
+import com.lcaohoanq.sp.domains.discount.Voucher
+import com.lcaohoanq.sp.domains.discount.VoucherService
 import com.lcaohoanq.sp.exceptions.MethodArgumentNotValidException
 import com.lcaohoanq.sp.metadata.QueryCriteria
 import com.lcaohoanq.sp.utils.SortOrder
@@ -26,7 +29,8 @@ import org.springframework.web.bind.annotation.*
 @RequestMapping("\${api.prefix}/products")
 @Tag(name = "products", description = "🛍️ Product API - Manage products in the system")
 class ProductController(
-    private val productService: IProductService
+    private val productService: IProductService,
+    private val voucherService: VoucherService,
 ) : BaseController() {
 
     @Operation(
@@ -498,5 +502,14 @@ class ProductController(
     ): ResponseEntity<MyApiResponse<Long>> {
         val count = productService.getProductCountByShop(shopId)
         return ok("Product count by shop retrieved successfully", count)
+    }
+
+    @GetMapping("/{id}/vouchers")
+    fun getProductVouchers(
+        @Parameter(description = "Product ID", required = true)
+        @PathVariable id: Long
+    ): ResponseEntity<MyApiResponse<List<Voucher>>> {
+        val vouchers = voucherService.getVouchersByProductId(id)
+        return ok("Product vouchers retrieved successfully", vouchers)
     }
 }

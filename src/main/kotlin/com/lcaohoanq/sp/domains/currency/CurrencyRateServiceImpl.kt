@@ -1,11 +1,9 @@
 package com.lcaohoanq.sp.domains.currency
 
 import com.lcaohoanq.sp.repositories.CurrencyRateRepository
-import lombok.extern.slf4j.Slf4j
 import org.springframework.stereotype.Service
 
 @Service
-@Slf4j
 class CurrencyRateServiceImpl(
     private val currencyRateRepository: CurrencyRateRepository
 ):CurrencyRateService {

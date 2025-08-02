@@ -12,11 +12,6 @@ api:
 spring:
   application:
     name: shoppe-be
-    security-config-version: v2
-    cors:
-      allowed-origins:
-        - http://localhost:4000
-        - http://localhost:4003
 
   output:
     ansi:

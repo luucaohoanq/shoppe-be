@@ -1,4 +1,37 @@
 services:
+
+  pgadmin:
+    container_name: ms_pgadmin
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:-pgadmin4@pgadmin.org}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:-admin}
+      PGADMIN_CONFIG_SERVER_MODE: 'False'
+    volumes:
+      - pgadmin:/var/lib/pgadmin
+    ports:
+      - "5050:80"
+    networks:
+      - sp-net
+    restart: unless-stopped
+
+  postgresql:
+    container_name: ms_pg_sql
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+      PGDATA: /data/postgres
+    volumes:
+      - pgdata_sql:/data/postgres
+      - ./postgres_init.sql:/docker-entrypoint-initdb.d/postgres_init.sql
+    hostname: postgresql
+    ports:
+      - "5432:5432"
+    networks:
+      - sp-net
+    restart: unless-stopped
+
   keycloak:
     container_name: keycloak-ms
     image: quay.io/keycloak/keycloak:26.2.4
@@ -14,6 +47,29 @@ services:
     volumes:
       - ./identity/realm-export.json:/opt/keycloak/data/import/realm-export.json
 
+  api-server:
+    build: .
+    container_name: api-server
+    image: api-server:latest
+    hostname: "${API_SERVER_HOST-api-server}"
+    ports:
+      - "${API_SERVER_PORT-4006}:4006"
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://api-server:4006/actuator/health" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    env_file:
+      - .env
+    networks:
+      - sp-net
+
 networks:
   sp-net:
     driver: bridge
+
+volumes:
+  pgdata_sql:
+  pgadmin:

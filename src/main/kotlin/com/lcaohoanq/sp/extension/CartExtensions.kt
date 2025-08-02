@@ -60,7 +60,3 @@ class CartItemExtensions @Autowired constructor(
         )
     }
 }
-
-private fun Timestamp.toLocalDateTime(): LocalDateTime {
-    return this.toInstant().atZone(java.time.ZoneId.systemDefault()).toLocalDateTime()
-}
