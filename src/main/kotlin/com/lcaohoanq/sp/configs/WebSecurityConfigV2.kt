@@ -101,9 +101,8 @@ class WebSecurityConfigV2(
             .cors { it.configurationSource(corsConfigurationSource()) }
             .csrf { it.disable() }
             .authorizeHttpRequests { auth ->
-                // Allow OPTIONS requests for CORS preflight
                 auth.requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                auth.requestMatchers("$apiPrefix/categories/all").permitAll()
+                auth.requestMatchers("/api/v1/categories/all").permitAll()
                 .anyRequest().authenticated()
             }
             .sessionManagement { it.sessionCreationPolicy(SessionCreationPolicy.STATELESS) }
