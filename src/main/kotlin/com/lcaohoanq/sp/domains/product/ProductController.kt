@@ -31,6 +31,7 @@ import org.springframework.web.bind.annotation.*
 class ProductController(
     private val productService: IProductService,
     private val voucherService: VoucherService,
+    private val productDiscountService: ProductDiscountService
 ) : BaseController() {
 
     @Operation(

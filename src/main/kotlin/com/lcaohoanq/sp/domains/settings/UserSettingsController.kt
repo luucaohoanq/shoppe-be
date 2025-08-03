@@ -33,7 +33,7 @@ class UserSettingsController(
         @RequestBody updates: UpdateUserSettingsDto
     ): ResponseEntity<MyApiResponse<UserPort.UserSettingsResponse>> {
         val updatedSettings = userSettingsService.updateUserSettings(userId, updates)
-        return updated(message = "User settings have been successfully updated", data = updatedSettings)
+        return updated(data = updatedSettings)
     }
 
 }

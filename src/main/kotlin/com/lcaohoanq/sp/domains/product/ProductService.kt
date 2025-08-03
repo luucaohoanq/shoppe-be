@@ -3,7 +3,6 @@ package com.lcaohoanq.sp.domains.product
 import com.lcaohoanq.sp.apis.PageResponse
 import com.lcaohoanq.sp.exceptions.base.DataNotFoundException
 import com.lcaohoanq.sp.extension.toProduct
-import com.lcaohoanq.sp.extension.toProductResponse
 import com.lcaohoanq.sp.extension.updateFromRequest
 import com.lcaohoanq.sp.metadata.PaginationMeta
 import com.lcaohoanq.sp.metadata.QueryCriteria
@@ -25,7 +24,8 @@ import kotlin.random.Random
 @Transactional
 class ProductService(
     private val productRepository: ProductRepository,
-    private val categoryRepository: CategoryRepository
+    private val categoryRepository: CategoryRepository,
+    private val productDiscountService: ProductDiscountService
 ) : IProductService {
 
     private val log = KotlinLogging.logger {}
@@ -54,7 +54,8 @@ class ProductService(
         val savedProduct = productRepository.save(product)
 
         log.info { "Product created successfully with ID: ${savedProduct.id}" }
-        return savedProduct.toProductResponse()
+        val productResponse = productDiscountService.calculateProductWithDiscount(savedProduct)
+        return productResponse.toPortResponse()
     }
 
     @Transactional(readOnly = true)
@@ -64,24 +65,34 @@ class ProductService(
         val product = productRepository.findById(id)
             .orElseThrow { DataNotFoundException("Product with ID $id not found") }
 
-        return product.toProductResponse()
+        val productResponse = productDiscountService.calculateProductWithDiscount(product)
+        return productResponse.toPortResponse()
     }
 
     @Transactional(readOnly = true)
     override fun getAllProducts(): List<ProductPort.ProductResponse> {
         log.info { "Fetching all products" }
-        return productRepository.findAll().map { it.toProductResponse() }
+        val products = productRepository.findAll()
+        val discountedProducts = productDiscountService.calculateProductsWithDiscounts(products)
+        return discountedProducts.map { it.toPortResponse() }
     }
 
-    override fun getAll(pageable: Pageable): Page<ProductPort.ProductResponse> =
-        productRepository.findAll(pageable).map(Product::toProductResponse)
+    override fun getAll(pageable: Pageable): Page<ProductPort.ProductResponse> {
+        val pageResult = productRepository.findAll(pageable)
+        val discountedProducts = productDiscountService.calculateProductsWithDiscounts(pageResult.content)
+        return pageResult.map { product ->
+            discountedProducts.find { it.id == product.id }?.toPortResponse() 
+                ?: productDiscountService.calculateProductWithDiscount(product).toPortResponse()
+        }
+    }
 
     @Transactional(readOnly = true)
     override fun getAllProducts(pageable: Pageable): PageResponse<ProductPort.ProductResponse> {
         log.info { "Fetching paginated products" }
 
         val pageResult = productRepository.findAll(pageable)
-        val productResponses = pageResult.content.map { it.toProductResponse() }
+        val discountedProducts = productDiscountService.calculateProductsWithDiscounts(pageResult.content)
+        val productResponses = discountedProducts.map { it.toPortResponse() }
 
         return PageResponse(
             message = "Get products successfully",
@@ -113,7 +124,8 @@ class ProductService(
         )
 
         val pageResult = productRepository.findAll(searchSpecification, sortedPageable)
-        val productResponses = pageResult.content.map { it.toProductResponse() }
+        val discountedProducts = productDiscountService.calculateProductsWithDiscounts(pageResult.content)
+        val productResponses = discountedProducts.map { it.toPortResponse() }
 
         return PageResponse(
             message = "Get products successfully with query",
@@ -152,7 +164,8 @@ class ProductService(
         val updatedProduct = productRepository.save(product)
 
         log.info { "Product updated successfully with ID: ${updatedProduct.id}" }
-        return updatedProduct.toProductResponse()
+        val productResponse = productDiscountService.calculateProductWithDiscount(updatedProduct)
+        return productResponse.toPortResponse()
     }
 
     override fun deleteProduct(id: Long) {
@@ -189,7 +202,8 @@ class ProductService(
 
         val updatedProduct = productRepository.save(product)
         log.info { "Stock updated successfully for product ID: $id, new stock: ${updatedProduct.stock}" }
-        return updatedProduct.toProductResponse()
+        val productResponse = productDiscountService.calculateProductWithDiscount(updatedProduct)
+        return productResponse.toPortResponse()
     }
 
     override fun addStock(id: Long, quantity: Int): ProductPort.ProductResponse {
@@ -234,7 +248,8 @@ class ProductService(
         )
 
         val pageResult = productRepository.findAll(specification, sortedPageable)
-        val productResponses = pageResult.content.map { it.toProductResponse() }
+        val discountedProducts = productDiscountService.calculateProductsWithDiscounts(pageResult.content)
+        val productResponses = discountedProducts.map { it.toPortResponse() }
 
         return PageResponse(
             message = "Search products successfully",
@@ -256,7 +271,8 @@ class ProductService(
         log.info { "Searching products by name: $name" }
 
         val pageResult = productRepository.findByNameContainingIgnoreCase(name, pageable)
-        val productResponses = pageResult.content.map { it.toProductResponse() }
+        val discountedProducts = productDiscountService.calculateProductsWithDiscounts(pageResult.content)
+        val productResponses = discountedProducts.map { it.toPortResponse() }
 
         return PageResponse(
             message = "Search products by name successfully",
@@ -278,7 +294,8 @@ class ProductService(
         log.info { "Fetching products by category ID: $categoryId" }
 
         val pageResult = productRepository.findByCategoryId(categoryId, pageable)
-        val productResponses = pageResult.content.map { it.toProductResponse() }
+        val discountedProducts = productDiscountService.calculateProductsWithDiscounts(pageResult.content)
+        val productResponses = discountedProducts.map { it.toPortResponse() }
 
         return PageResponse(
             message = "Get products by category successfully",
@@ -300,7 +317,8 @@ class ProductService(
         log.info { "Fetching products by shop ID: $shopId" }
 
         val pageResult = productRepository.findByShopId(shopId, pageable)
-        val productResponses = pageResult.content.map { it.toProductResponse() }
+        val discountedProducts = productDiscountService.calculateProductsWithDiscounts(pageResult.content)
+        val productResponses = discountedProducts.map { it.toPortResponse() }
 
         return PageResponse(
             message = "Get products by shop successfully",
@@ -323,7 +341,8 @@ class ProductService(
         log.info { "Fetching products by price range: $minPrice - $maxPrice" }
 
         val products = productRepository.findByPriceBetween(minPrice, maxPrice)
-        val productResponses = products.map { it.toProductResponse() }
+        val discountedProducts = productDiscountService.calculateProductsWithDiscounts(products)
+        val productResponses = discountedProducts.map { it.toPortResponse() }
 
         // Manual pagination for non-pageable repository methods
         val startIndex = pageable.pageNumber * pageable.pageSize
@@ -369,7 +388,8 @@ class ProductService(
         val updatedProduct = productRepository.save(product)
 
         log.info { "Product status updated successfully for ID: $id" }
-        return updatedProduct.toProductResponse()
+        val productResponse = productDiscountService.calculateProductWithDiscount(updatedProduct)
+        return productResponse.toPortResponse()
     }
 
     @Transactional(readOnly = true)
@@ -377,7 +397,8 @@ class ProductService(
         log.info { "Fetching available products" }
 
         val pageResult = productRepository.findAvailableProducts(pageable)
-        val productResponses = pageResult.content.map { it.toProductResponse() }
+        val discountedProducts = productDiscountService.calculateProductsWithDiscounts(pageResult.content)
+        val productResponses = discountedProducts.map { it.toPortResponse() }
 
         return PageResponse(
             message = "Get available products successfully",
@@ -396,7 +417,8 @@ class ProductService(
         log.info { "Fetching top selling products" }
 
         val pageResult = productRepository.findTopSellingProducts(pageable)
-        val productResponses = pageResult.content.map { it.toProductResponse() }
+        val discountedProducts = productDiscountService.calculateProductsWithDiscounts(pageResult.content)
+        val productResponses = discountedProducts.map { it.toPortResponse() }
 
         return PageResponse(
             message = "Get top selling products successfully",
@@ -415,7 +437,8 @@ class ProductService(
         log.info { "Fetching top rated products" }
 
         val pageResult = productRepository.findTopRatedProducts(pageable)
-        val productResponses = pageResult.content.map { it.toProductResponse() }
+        val discountedProducts = productDiscountService.calculateProductsWithDiscounts(pageResult.content)
+        val productResponses = discountedProducts.map { it.toPortResponse() }
 
         return PageResponse(
             message = "Get top rated products successfully",
@@ -434,7 +457,8 @@ class ProductService(
         log.info { "Fetching recent products" }
 
         val pageResult = productRepository.findRecentProducts(pageable)
-        val productResponses = pageResult.content.map { it.toProductResponse() }
+        val discountedProducts = productDiscountService.calculateProductsWithDiscounts(pageResult.content)
+        val productResponses = discountedProducts.map { it.toPortResponse() }
 
         return PageResponse(
             message = "Get recent products successfully",
@@ -453,7 +477,8 @@ class ProductService(
         log.info { "Fetching low stock products with threshold: $threshold" }
 
         val products = productRepository.findLowStockProducts(threshold)
-        return products.map { it.toProductResponse() }
+        val discountedProducts = productDiscountService.calculateProductsWithDiscounts(products)
+        return discountedProducts.map { it.toPortResponse() }
     }
 
     @Transactional(readOnly = true)
@@ -471,7 +496,8 @@ class ProductService(
         val updatedProduct = productRepository.save(product)
 
         log.info { "Rating updated successfully for product ID: $id" }
-        return updatedProduct.toProductResponse()
+        val productResponse = productDiscountService.calculateProductWithDiscount(updatedProduct)
+        return productResponse.toPortResponse()
     }
 
     override fun incrementSoldCount(id: Long, quantity: Int): ProductPort.ProductResponse {
@@ -484,7 +510,8 @@ class ProductService(
         val updatedProduct = productRepository.save(product)
 
         log.info { "Sold count updated successfully for product ID: $id" }
-        return updatedProduct.toProductResponse()
+        val productResponse = productDiscountService.calculateProductWithDiscount(updatedProduct)
+        return productResponse.toPortResponse()
     }
 
     @Transactional(readOnly = true)

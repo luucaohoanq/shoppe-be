@@ -36,6 +36,14 @@ class JwtTokenUtils(
         //this.generateSecretKey();
         claims["email"] = user.email
         claims["userId"] = user.id!!.toString()
+        claims["user_id"] = user.id!!.toString() // Alternative claim name
+        claims["preferred_username"] = user.email
+        claims["name"] = user.name
+        
+        // Add role information in Keycloak format
+        val realmAccess = mapOf("roles" to listOf(user.role?.name ?:  "USER" ))
+        claims["realm_access"] = realmAccess
+        
         try {
             //how to extract claims from this ?
             return Jwts.builder()

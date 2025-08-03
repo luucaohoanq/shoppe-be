@@ -1,6 +1,6 @@
 package com.lcaohoanq.sp.configs
 
-//import com.lcaohoanq.authservice.filters.JwtTokenFilter
+import com.lcaohoanq.sp.security.JwtAuthConverter
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -11,9 +11,6 @@ import org.springframework.security.config.http.SessionCreationPolicy
 import org.springframework.security.web.AuthenticationEntryPoint
 import org.springframework.security.web.SecurityFilterChain
 import org.springframework.security.web.access.AccessDeniedHandler
-import org.springframework.web.cors.CorsConfiguration
-import org.springframework.web.cors.CorsConfigurationSource
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource
 import org.springframework.web.servlet.config.annotation.EnableWebMvc
 
 @Configuration
@@ -23,7 +20,8 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc
 class WebSecurityConfig(
     private val authenticationEntryPoint: AuthenticationEntryPoint,
     private val accessDeniedHandler: AccessDeniedHandler,
-//    private val jwtTokenFilter: JwtTokenFilter
+    private val corsConfig: CorsConfig,
+    private val jwtAuthConverter: JwtAuthConverter
 ) {
     @Value("\${api.prefix}")
     private lateinit var apiPrefix: String
@@ -39,7 +37,11 @@ class WebSecurityConfig(
             "/v3/api-docs/**",
             "/v3/api-docs.yaml",
             "/swagger-ui/**",
-            "/swagger-ui.html"
+            "/swagger-ui.html",
+            "/api/v1/auth/**",
+            "/api/v1/categories/all",
+            "/api/v1/categories/parents",
+            "/api/v1/categories/*/children"
         )
     }
 
@@ -48,41 +50,19 @@ class WebSecurityConfig(
     fun securityFilterChain(http: HttpSecurity): SecurityFilterChain {
         http
             .cors { cors ->
-                cors.configurationSource(corsConfigurationSource())
+                cors.configurationSource(corsConfig.corsConfigurationSource())
             }
             .sessionManagement { session ->
                 session.sessionCreationPolicy(SessionCreationPolicy.STATELESS) // Stateless session
             }
-            // .addFilter(jwtTokenFilter)
-            // We remove the JWT filter since it's handled by the Gateway now
             .authorizeHttpRequests { auth ->
-                // Public authentication endpoints
-                auth.requestMatchers(
-                    "$apiPrefix/auth/**",
-                    "$apiPrefix/users/**",
-                    "$apiPrefix/students/**",
-                    "$apiPrefix/products/**",
-                    "$apiPrefix/categories/**",
-                    "$apiPrefix/experiments/**",
-                    "$apiPrefix/notifications/**",
-                    "$apiPrefix/otp/**",
-                    "$apiPrefix/tokens/**",
-                    "$apiPrefix/oauth2/**",
-                    "$apiPrefix/ip/**",
-                    "$apiPrefix/user-settings/**",
-                    "$apiPrefix/vouchers/**",
-                    ).permitAll()
-
-                // Swagger and public documentation endpoints
                 auth.requestMatchers(*PUBLIC_ENDPOINTS).permitAll()
-
-                // Role-based security for specific user roles
-//                auth.requestMatchers("$apiPrefix/users/**").hasAnyRole("ADMIN", "STAFF")
-//                auth.requestMatchers("$apiPrefix/categories/**").hasAnyRole("ADMIN", "MANAGER")
-//                auth.requestMatchers("$apiPrefix/experiments/**").hasRole("USER")
-
-                // All other endpoints require authentication
-                auth.anyRequest().authenticated()
+                auth.anyRequest().permitAll()
+            }
+            .oauth2ResourceServer { oauth2 ->
+                oauth2.jwt { jwt ->
+                    jwt.jwtAuthenticationConverter(jwtAuthConverter)
+                }
             }
             .csrf { it.disable() }
             .exceptionHandling { ex ->
@@ -91,20 +71,5 @@ class WebSecurityConfig(
             }
 
         return http.build()
-    }
-
-    @Bean
-    fun corsConfigurationSource(): CorsConfigurationSource {
-        val configuration = CorsConfiguration()
-        configuration.allowedOrigins = mutableListOf("http://localhost:4000")
-        configuration.allowedMethods =
-            mutableListOf("*")
-        configuration.addAllowedHeader("*")
-        configuration.allowCredentials = true
-        configuration.maxAge = 3600
-
-        val source = UrlBasedCorsConfigurationSource()
-        source.registerCorsConfiguration("/**", configuration)
-        return source
     }
 }

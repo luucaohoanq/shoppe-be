@@ -16,7 +16,6 @@ import com.lcaohoanq.sp.dto.UpdateZaloNotificationSettingsDto
  */
 fun UserSettings.applyUpdates(updates: UpdateUserSettingsDto): UserSettings {
     updates.twoFaEnabled?.let { this.twoFaEnabled = it }
-    updates.preferredLanguage?.let { this.preferredLanguage = it }
     updates.darkMode?.let { this.darkMode = it }
     updates.loginAlerts?.let { this.loginAlerts = it }
     updates.requestDisableAccount?.let { this.requestDisableAccount = it }

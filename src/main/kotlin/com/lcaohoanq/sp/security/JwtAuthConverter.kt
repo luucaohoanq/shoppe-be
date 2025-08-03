@@ -21,13 +21,31 @@ class JwtAuthConverter(
 
     override fun convert(jwt: Jwt): AbstractAuthenticationToken {
         val authorities = mutableSetOf<GrantedAuthority>()
+        
+        // Add authorities from default JWT converter
         authorities += jwtGrantedAuthoritiesConverter.convert(jwt).orEmpty()
+        
+        // Add authorities from Keycloak realm_access
+        authorities += extractRealmRoles(jwt)
+        
+        // Add authorities from Keycloak resource_access
         authorities += extractResourceRoles(jwt)
 
+        // Determine the principal - use preferred_username if available, otherwise sub
         val principalClaim = properties.principalAttribute ?: JwtClaimNames.SUB
-        val principal = jwt.getClaim<String>(principalClaim)
+        val principal = jwt.getClaim<String>(principalClaim) 
+            ?: jwt.getClaim<String>("preferred_username")
+            ?: jwt.getClaim<String>("email")
+            ?: jwt.subject
 
         return JwtAuthenticationToken(jwt, authorities, principal)
+    }
+
+    private fun extractRealmRoles(jwt: Jwt): Collection<GrantedAuthority> {
+        val realmAccess = jwt.getClaim<Map<String, Any>?>("realm_access") ?: return emptySet()
+        val roles = realmAccess["roles"] as? Collection<*> ?: return emptySet()
+        
+        return roles.filterIsInstance<String>().map { SimpleGrantedAuthority("ROLE_$it") }.toSet()
     }
 
     private fun extractResourceRoles(jwt: Jwt): Collection<GrantedAuthority> {

@@ -33,6 +33,7 @@ import org.springframework.security.authentication.DisabledException
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.crypto.password.PasswordEncoder
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -190,9 +191,22 @@ class AuthService(
     }
 
     override fun getCurrentAuthenticatedUser(): User {
-        return userService.findByEmail(
-            SecurityContextHolder.getContext().authentication.name
-        ) ?: throw DataNotFoundException("User not found")
+        val authentication = SecurityContextHolder.getContext().authentication
+        
+        // Handle both custom JWT tokens and Keycloak tokens
+        val email = when {
+            authentication.name != null -> authentication.name
+            authentication is JwtAuthenticationToken -> {
+                val jwt = authentication.token
+                jwt.getClaim<String>("email") 
+                    ?: jwt.getClaim<String>("preferred_username")
+                    ?: jwt.subject
+            }
+            else -> throw DataNotFoundException("Unable to extract user information from authentication")
+        }
+        
+        return userService.findByEmail(email)
+            ?: throw DataNotFoundException("User not found with email: $email")
     }
 
     override fun refreshToken(refreshTokenDTO: TokenPort.RefreshTokenDTO): AuthPort.AuthResponse {
