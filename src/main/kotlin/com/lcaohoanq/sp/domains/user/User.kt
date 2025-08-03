@@ -3,6 +3,8 @@ package com.lcaohoanq.sp.domains.user
 import com.lcaohoanq.sp.bases.BaseEntity
 import com.lcaohoanq.sp.domains.loginhistory.LoginHistory
 import com.lcaohoanq.sp.domains.settings.UserSettings
+import com.lcaohoanq.sp.entities.NotificationEntity
+import com.lcaohoanq.sp.entities.UserDeviceToken
 import com.lcaohoanq.sp.enums.UserEnum
 import jakarta.persistence.*
 import org.springframework.security.core.GrantedAuthority
@@ -46,6 +48,12 @@ class User(
 
     @OneToMany(mappedBy = "user", cascade = [CascadeType.ALL], orphanRemoval = true)
     var address: MutableList<Address> = mutableListOf(),
+
+    @OneToMany(mappedBy = "user", cascade = [CascadeType.ALL], orphanRemoval = true)
+    var notificationEntities: MutableList<NotificationEntity> = mutableListOf(),
+
+    @OneToMany(mappedBy = "user", cascade = [CascadeType.ALL], orphanRemoval = true)
+    var deviceTokens: MutableSet<UserDeviceToken> = mutableSetOf(),
 
     val cartId: String,
 

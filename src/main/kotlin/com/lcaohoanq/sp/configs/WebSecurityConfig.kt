@@ -65,6 +65,7 @@ class WebSecurityConfig(
                     "$apiPrefix/products/**",
                     "$apiPrefix/categories/**",
                     "$apiPrefix/experiments/**",
+                    "$apiPrefix/notifications/**",
                     "$apiPrefix/otp/**",
                     "$apiPrefix/tokens/**",
                     "$apiPrefix/oauth2/**",

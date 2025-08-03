@@ -31,6 +31,9 @@ class DataInitializer(
     private val adminSettingRepository: AdminSettingRepository,
     private val currencyRateRepository: CurrencyRateRepository,
     private val voucherRepository: VoucherRepository,
+    private val notificationRepository: NotificationRepository,
+    private val userDeviceTokenRepository: UserDeviceTokenRepository,
+
     private val passwordEncoder: PasswordEncoder
 ) {
 
@@ -79,6 +82,21 @@ class DataInitializer(
             } else {
                 println("Users already exist, skipping initialization")
                 userRepository.findAll()
+            }
+
+            val userDeviceTokens = if(users.isNotEmpty() && userDeviceTokenRepository.count() == 0L) {
+                println("Initializing user device tokens...")
+                initUserDeviceTokens(users, userDeviceTokenRepository)
+            } else {
+                println("User device tokens already exist, skipping initialization")
+            }
+
+            // Initialize notifications
+            val notifications = if (users.isNotEmpty() && notificationRepository.count() == 0L) {
+                println("Initializing notifications...")
+                initNotifications(users, notificationRepository)
+            } else {
+                println("No users found, skipping notification initialization")
             }
 
             // Initialize shipping methods

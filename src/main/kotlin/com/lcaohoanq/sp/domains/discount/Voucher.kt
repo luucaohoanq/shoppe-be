@@ -13,6 +13,7 @@ import java.util.*
 class Voucher(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", nullable = false, unique = true)
     val id: Long? = null,
 
     val code: String,
@@ -59,17 +60,21 @@ class Voucher(
                     details.add("Maximum discount: ${formatCurrency(it)}")
                 }
             }
+
             DiscountType.AMOUNT -> {
                 details.add("Get ${formatCurrency(discountValue)} off")
             }
+
             DiscountType.FREE_SHIPPING -> {
                 details.add("Enjoy free shipping")
             }
+
             DiscountType.BUY_X_GET_Y -> {
                 val buyX = condition.buyQuantityX ?: 1
                 val getY = condition.getQuantityY ?: 1
                 details.add("Buy $buyX get $getY free")
             }
+
             DiscountType.FREE_GIFT -> {
                 details.add("Receive a free gift with your purchase")
                 condition.giftProductId?.let {
@@ -111,12 +116,17 @@ class Voucher(
             validFrom?.isAfter(now) == true -> {
                 details.add("⏰ Valid from: ${validFrom?.toLocalDate()}")
             }
+
             validUntil?.isBefore(now) == true -> {
                 details.add("❌ Expired on: ${validUntil?.toLocalDate()}")
             }
+
             else -> {
                 validUntil?.let { until ->
-                    val daysLeft = java.time.temporal.ChronoUnit.DAYS.between(now.toLocalDate(), until.toLocalDate())
+                    val daysLeft = java.time.temporal.ChronoUnit.DAYS.between(
+                        now.toLocalDate(),
+                        until.toLocalDate()
+                    )
                     when {
                         daysLeft <= 0 -> details.add("⚠️ Expires today")
                         daysLeft <= 3 -> details.add("⚠️ Expires in $daysLeft days (${until.toLocalDate()})")
@@ -163,7 +173,8 @@ class Voucher(
 
     fun getShortDescription(): String {
         val discount = getDiscountDescription()
-        val minPurchase = condition.minPurchaseAmount?.let { " on orders over ${formatCurrency(it)}" } ?: ""
+        val minPurchase =
+            condition.minPurchaseAmount?.let { " on orders over ${formatCurrency(it)}" } ?: ""
         return "$discount$minPurchase"
     }
 }
