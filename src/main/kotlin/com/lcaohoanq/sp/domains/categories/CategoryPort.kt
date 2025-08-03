@@ -2,7 +2,7 @@ package com.lcaohoanq.sp.domains.categories
 
 import com.fasterxml.jackson.annotation.JsonFormat
 import com.fasterxml.jackson.annotation.JsonInclude
-import java.sql.Timestamp
+import java.time.LocalDateTime
 
 interface CategoryPort {
 
@@ -14,12 +14,12 @@ interface CategoryPort {
         val parentId: Long? = null,
 
         @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
-        val createdAt: Timestamp? = null,
+        val createdAt: LocalDateTime? = null,
         val createdBy: String? = null,
         val lastModifiedBy: String? = null,
 
         @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
-        var lastModifiedOn: Timestamp? = null,
+        var lastModifiedOn: LocalDateTime? = null,
     )
 
 

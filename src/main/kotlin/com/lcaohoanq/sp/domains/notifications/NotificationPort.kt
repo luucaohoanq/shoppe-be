@@ -3,7 +3,8 @@ package com.lcaohoanq.sp.domains.notifications
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.lcaohoanq.sp.entities.NotificationEntity
 import com.lcaohoanq.sp.enums.NotificationEnum.*
-import java.sql.Timestamp
+import java.time.LocalDateTime
+
 
 interface NotificationPort {
     @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -12,7 +13,7 @@ interface NotificationPort {
         val type: NotificationType?,
         val title: String?,
         val description: String?,
-        val time: Timestamp?,
+        val time: LocalDateTime?,
         val read: Boolean?,
         val iconName: NotificationIcon?,
         val iconColorHex: NotificationColor?,

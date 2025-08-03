@@ -2,6 +2,8 @@ package com.lcaohoanq.sp.domains.user
 
 import com.lcaohoanq.sp.apis.PageResponse
 import com.lcaohoanq.sp.components.JwtTokenUtils
+import com.lcaohoanq.sp.entities.UserDeviceToken
+import com.lcaohoanq.sp.exceptions.ExpiredTokenException
 import com.lcaohoanq.sp.exceptions.UserNotFoundException
 import com.lcaohoanq.sp.exceptions.base.DataNotFoundException
 import com.lcaohoanq.sp.extension.UserResponseOptions
@@ -12,6 +14,7 @@ import com.lcaohoanq.sp.metadata.PaginationMeta
 import com.lcaohoanq.sp.metadata.QueryCriteria
 import com.lcaohoanq.sp.repositories.LoginHistoryRepository
 import com.lcaohoanq.sp.repositories.TokenRepository
+import com.lcaohoanq.sp.repositories.UserExtraRepository
 import com.lcaohoanq.sp.repositories.UserRepository
 import com.lcaohoanq.sp.repositories.UserSettingsRepository
 import com.lcaohoanq.sp.utils.SortCriterion
@@ -31,6 +34,7 @@ class UserService(
     private val tokenRepository: TokenRepository,
     private val loginHistoryRepository: LoginHistoryRepository,
     private val userSettingsRepository: UserSettingsRepository,
+    private val userExtraRepository: UserExtraRepository
 ) : IUserService {
 
     private val log = KotlinLogging.logger {}
@@ -122,7 +126,7 @@ class UserService(
     }
 
     override fun getUserDetailsFromAccessToken(at: String): User {
-        if (jwtTokenUtils.isTokenExpired(at)) throw com.lcaohoanq.sp.exceptions.ExpiredTokenException(
+        if (jwtTokenUtils.isTokenExpired(at)) throw ExpiredTokenException(
             "Token is expired"
         )
         val email = jwtTokenUtils.extractEmail(at)
@@ -160,5 +164,12 @@ class UserService(
 
     override fun getUserExtra(username: String): Optional<User> = userRepository.findByUserName(username)
 
-    override fun saveUserExtra(user: User): User = userRepository.save(user)
+    override fun saveUserExtra(userExtra: UserPort.UserExtraInfo){
+        userExtraRepository.save(UserExtra(
+            user = userRepository.findById(userExtra.userId)
+                .orElseThrow { DataNotFoundException("User with ID ${userExtra.userId} not found") },
+            avatar = userExtra.avatar,
+            dateOfBirth = userExtra.dateOfBirth ?: ""
+        ))
+    }
 }

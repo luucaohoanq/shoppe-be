@@ -4,7 +4,7 @@ import com.lcaohoanq.sp.domains.categories.CategoryPort
 import com.lcaohoanq.sp.domains.discount.Voucher
 import com.lcaohoanq.sp.utils.Sortable
 import jakarta.validation.constraints.*
-import java.sql.Timestamp
+
 import java.time.LocalDateTime
 
 object ProductPort {
@@ -95,8 +95,8 @@ object ProductPort {
         val category: CategoryPort.CategoryRes?,
         val isAvailable: Boolean = status == Product.ProductStatus.ACTIVE && stock > 0,
         val vouchers: List<Voucher>? = null,
-        val createdAt: Timestamp?, 
-        val updatedAt: Timestamp?,
+        val createdAt: LocalDateTime?,
+        val updatedAt: LocalDateTime?,
     )
 
     data class ProductStockUpdateRequest(

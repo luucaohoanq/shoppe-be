@@ -19,6 +19,6 @@ interface IUserService {
 
     fun validateAndGetUserExtra(username: String): User
     fun getUserExtra(username: String): Optional<User>
-    fun saveUserExtra(user: User): User
+    fun saveUserExtra(userExtra: UserPort.UserExtraInfo)
 
 }

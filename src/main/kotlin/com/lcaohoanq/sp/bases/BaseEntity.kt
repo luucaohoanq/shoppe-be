@@ -7,15 +7,15 @@ import jakarta.persistence.PrePersist
 import jakarta.persistence.PreUpdate
 import org.hibernate.annotations.CreationTimestamp
 import org.hibernate.annotations.UpdateTimestamp
-import java.sql.Timestamp
 import java.time.LocalDateTime
 
 @MappedSuperclass
-class BaseEntity(
-    @Column(name = "created_at", nullable = false, columnDefinition="TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+open class BaseEntity(
+
+    @Column(name = "created_at", nullable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     @CreationTimestamp
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", timezone = "Asia/Ho_Chi_Minh")
-    var createdAt: Timestamp? = null,
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Ho_Chi_Minh")
+    var createdAt: LocalDateTime? = null,
 
     @Column(name = "created_by", nullable = true)
     var createdBy: String? = null,
@@ -23,14 +23,14 @@ class BaseEntity(
     @Column(name = "last_modified_by", nullable = true)
     var lastModifiedBy: String? = null,
 
-    @Column(name = "last_modified_on", nullable = false, columnDefinition="TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+    @Column(name = "last_modified_on", nullable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     @UpdateTimestamp
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", timezone = "Asia/Ho_Chi_Minh")
-    var lastModifiedOn: Timestamp? = null
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Ho_Chi_Minh")
+    var lastModifiedOn: LocalDateTime? = null
 ) {
     @PrePersist
     fun onCreate() {
-        val now = Timestamp.valueOf(LocalDateTime.now())
+        val now = LocalDateTime.now()
         if (createdAt == null) {
             createdAt = now
         }
@@ -39,6 +39,6 @@ class BaseEntity(
 
     @PreUpdate
     fun onUpdate() {
-        lastModifiedOn = Timestamp.valueOf(LocalDateTime.now())
+        lastModifiedOn = LocalDateTime.now()
     }
 }

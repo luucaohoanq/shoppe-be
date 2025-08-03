@@ -2,7 +2,7 @@ package com.lcaohoanq.sp.domains.order
 
 import com.lcaohoanq.sp.domains.payment.Payment
 import jakarta.validation.constraints.*
-import java.sql.Timestamp
+
 import java.time.LocalDateTime
 
 object OrderPort {
@@ -63,8 +63,8 @@ object OrderPort {
         val address: AddressResponse?,
         val shippingMethod: ShippingMethodResponse?,
         val couponId: Long?,
-        val createdAt: Timestamp?,
-        val updatedAt: Timestamp?,
+        val createdAt: LocalDateTime?,
+        val updatedAt: LocalDateTime?,
         val canBeCancelled: Boolean,
         val canBeModified: Boolean,
         val isCompleted: Boolean,
@@ -112,7 +112,7 @@ object OrderPort {
         val status: Order.OrderStatus,
         val totalAmount: Double,
         val totalItems: Int,
-        val createdAt: Timestamp?
+        val createdAt: LocalDateTime?
     )
 
     data class OrderSearchRequest(

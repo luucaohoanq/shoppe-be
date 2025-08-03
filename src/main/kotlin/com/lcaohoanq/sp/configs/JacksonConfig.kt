@@ -1,58 +1,34 @@
 package com.lcaohoanq.sp.configs
 
-import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.SerializationFeature
+import com.fasterxml.jackson.databind.module.SimpleModule
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer
-import com.fasterxml.jackson.module.kotlin.KotlinModule
-import org.springframework.boot.autoconfigure.jackson.Jackson2ObjectMapperBuilderCustomizer
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter
+import org.springframework.context.annotation.Primary
+import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
-import java.util.*
 
 @Configuration
 class JacksonConfig {
 
-    /**
-     * Configure ObjectMapper with Kotlin support
-     */
+    private val dateTimePattern = "yyyy-MM-dd HH:mm:ss"
+    private val dateTimeFormatter = DateTimeFormatter.ofPattern(dateTimePattern)
+
     @Bean
+    @Primary
     fun objectMapper(): ObjectMapper {
-        return ObjectMapper()
-            .registerModule(KotlinModule.Builder().build())
-            .registerModule(JavaTimeModule())
-            .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
-            .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
-    }
+        val module = SimpleModule()
+        module.addSerializer(LocalDateTime::class.java, LocalDateTimeSerializer(dateTimeFormatter))
+        module.addDeserializer(LocalDateTime::class.java, LocalDateTimeDeserializer(dateTimeFormatter))
 
-    /**
-     * Register the custom ObjectMapper with Spring's HTTP message converters
-     */
-    @Bean
-    fun mappingJackson2HttpMessageConverter(objectMapper: ObjectMapper): MappingJackson2HttpMessageConverter {
-        return MappingJackson2HttpMessageConverter(objectMapper)
-    }
-
-    @Bean
-    fun jacksonCustomizer(): Jackson2ObjectMapperBuilderCustomizer {
-        return Jackson2ObjectMapperBuilderCustomizer { builder ->
-            builder.simpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
-            builder.timeZone(TimeZone.getTimeZone("Asia/Ho_Chi_Minh"))
-
-            // Định nghĩa formatter riêng cho Java 8 Time
-            val module = JavaTimeModule()
-            module.addSerializer(LocalDateTime::class.java,
-                LocalDateTimeSerializer(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"))
-            )
-            module.addDeserializer(LocalDateTime::class.java,
-                LocalDateTimeDeserializer(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"))
-            )
-            builder.modules(module)
-        }
+        return Jackson2ObjectMapperBuilder.json()
+            .modules(module, JavaTimeModule())
+            .featuresToDisable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
+            .build()
     }
 }

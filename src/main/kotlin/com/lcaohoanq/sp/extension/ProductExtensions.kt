@@ -2,7 +2,7 @@ package com.lcaohoanq.sp.extension
 
 import com.lcaohoanq.sp.domains.product.Product
 import com.lcaohoanq.sp.domains.product.ProductPort
-import java.sql.Timestamp
+
 import java.time.LocalDateTime
 
 fun Product.toProductResponse(): ProductPort.ProductResponse {

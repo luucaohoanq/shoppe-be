@@ -35,7 +35,6 @@ fun User.toUserResponse(
         } else UserPort.UserSettingsResponse(),
 
         role = role!!,
-        avatar = avatar,
         address = address.map { it.toAddressResponse() }.toMutableList(),
         createdAt = createdAt,
         updatedAt = lastModifiedOn

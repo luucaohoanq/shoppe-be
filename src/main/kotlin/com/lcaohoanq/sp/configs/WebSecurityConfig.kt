@@ -23,7 +23,6 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc
 class WebSecurityConfig(
     private val authenticationEntryPoint: AuthenticationEntryPoint,
     private val accessDeniedHandler: AccessDeniedHandler,
-    private val oAuth2LoginHandler: OAuth2LoginHandler,
 //    private val jwtTokenFilter: JwtTokenFilter
 ) {
     @Value("\${api.prefix}")

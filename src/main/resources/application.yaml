@@ -1,10 +1,14 @@
 spring:
   application:
     name: shoppe-be
-  security:
 
   profiles:
     active: dev
+
+  jackson:
+    serialization:
+      WRITE_DATES_AS_TIMESTAMPS: false # Use ISO-8601 date format
+      FAIL_ON_EMPTY_BEANS: false # Avoid serialization errors on empty beans
 
   #  data:
   #    redis:

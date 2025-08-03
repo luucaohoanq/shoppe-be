@@ -42,10 +42,6 @@ class User(
     @Enumerated(EnumType.ORDINAL)
     var status: UserEnum.Status? = UserEnum.Status.UNVERIFIED,
 
-    val dateOfBirth: String? = "",
-
-    val avatar: String = "",
-
     @OneToMany(mappedBy = "user", cascade = [CascadeType.ALL], orphanRemoval = true)
     var address: MutableList<Address> = mutableListOf(),
 
@@ -54,6 +50,9 @@ class User(
 
     @OneToMany(mappedBy = "user", cascade = [CascadeType.ALL], orphanRemoval = true)
     var deviceTokens: MutableSet<UserDeviceToken> = mutableSetOf(),
+
+    @OneToOne(cascade = [CascadeType.ALL], orphanRemoval = true)
+    var userExtra: UserExtra? = null,
 
     val cartId: String,
 
