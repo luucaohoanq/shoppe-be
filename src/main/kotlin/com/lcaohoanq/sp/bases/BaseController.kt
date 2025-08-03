@@ -41,4 +41,8 @@ open class BaseController {
         return MyApiResponse.validationError(errors)
     }
 
+    fun <T> unauthorized(reason: String): ResponseEntity<MyApiResponse<T>> {
+        return MyApiResponse.unauthorized(reason)
+    }
+
 }
