@@ -1,6 +1,6 @@
 package com.lcaohoanq.sp.domains.payment
 
-import java.sql.Timestamp
+
 import java.time.LocalDateTime
 
 object PaymentPort {
@@ -21,8 +21,8 @@ object PaymentPort {
         val transactionId: String?,
         val paymentUrl: String?,
         val description: String?,
-        val createdAt: Timestamp?,
-        val updatedAt: Timestamp?
+        val createdAt: LocalDateTime?,
+        val updatedAt: LocalDateTime?
     )
     
     data class PaymentResult(

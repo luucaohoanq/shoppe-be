@@ -11,7 +11,7 @@ import mu.KotlinLogging
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import java.sql.Timestamp
+
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
@@ -93,7 +93,7 @@ class PaymentService(
         val success = simulatePaymentProcessing(payment.paymentMethod)
         
         payment.status = if (success) Payment.PaymentStatus.COMPLETED else Payment.PaymentStatus.FAILED
-        payment.lastModifiedOn = Timestamp.valueOf(LocalDateTime.now())
+        payment.lastModifiedOn = LocalDateTime.now()
         
         val processedPayment = paymentRepository.save(payment)
         
@@ -126,7 +126,7 @@ class PaymentService(
             .orElseThrow { DataNotFoundException("Payment not found") }
         
         payment.status = request.status
-        payment.lastModifiedOn = Timestamp.valueOf(LocalDateTime.now())
+        payment.lastModifiedOn = LocalDateTime.now()
         request.transactionId?.let { payment.transactionId = it }
         request.notes?.let { 
             payment.description = "${payment.description ?: ""}\nNotes: $it"
@@ -149,7 +149,7 @@ class PaymentService(
         }
         
         payment.status = Payment.PaymentStatus.REFUNDED
-        payment.lastModifiedOn = Timestamp.valueOf(LocalDateTime.now())
+        payment.lastModifiedOn = LocalDateTime.now()
         reason?.let {
             payment.description = "${payment.description ?: ""}\nRefund reason: $it"
         }
@@ -236,7 +236,7 @@ class PaymentService(
             ?: throw DataNotFoundException("Payment not found for transaction: $transactionId")
         
         payment.status = status
-        payment.lastModifiedOn = Timestamp.valueOf(LocalDateTime.now())
+        payment.lastModifiedOn = LocalDateTime.now()
         
         paymentRepository.save(payment)
         
@@ -255,7 +255,7 @@ class PaymentService(
         }
         
         payment.status = Payment.PaymentStatus.CANCELLED
-        payment.lastModifiedOn = Timestamp.valueOf(LocalDateTime.now())
+        payment.lastModifiedOn = LocalDateTime.now()
         
         val cancelledPayment = paymentRepository.save(payment)
         

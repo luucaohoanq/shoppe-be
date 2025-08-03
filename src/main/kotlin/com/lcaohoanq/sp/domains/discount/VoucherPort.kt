@@ -1,7 +1,7 @@
 package com.lcaohoanq.sp.domains.discount
 
 import com.lcaohoanq.sp.enums.DiscountType
-import java.sql.Timestamp
+
 import java.time.LocalDateTime
 
 interface VoucherPort {
@@ -19,10 +19,10 @@ interface VoucherPort {
         val usageLimit: Int?,
         val usedCount: Int,
         val active: Boolean,
-        val createdAt: Timestamp,
+        val createdAt: LocalDateTime,
         val createdBy: String?,
         val lastModifiedBy: String?,
-        val lastModifiedOn: Timestamp?
+        val lastModifiedOn: LocalDateTime?
     )
 
 }

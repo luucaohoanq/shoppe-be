@@ -69,6 +69,14 @@ class UserController(
     fun getUserById(@PathVariable id: Long): ResponseEntity<MyApiResponse<UserPort.UserResponse?>> =
         ok("Get user info successfully", userService.getById(id))
 
+    @PostMapping("/extra-info")
+    fun saveUserExtraInfo(
+        @RequestBody userExtraInfo: UserPort.UserExtraInfo
+    ): ResponseEntity<MyApiResponse<Any>> {
+        val userExtra = userService.saveUserExtra(userExtraInfo)
+        return ok("Save user extra info successfully", userExtra)
+    }
+
     /**
      * Get current authenticated user via Spring Security JWT
      * @return User

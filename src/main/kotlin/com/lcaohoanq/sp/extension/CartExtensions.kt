@@ -7,8 +7,6 @@ import com.lcaohoanq.sp.domains.product.Product
 import com.lcaohoanq.sp.repositories.ProductRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
-import java.sql.Timestamp
-import java.time.LocalDateTime
 
 fun Cart.toCartResponse(): CartPort.CartResponse {
     return CartPort.CartResponse(
@@ -18,8 +16,8 @@ fun Cart.toCartResponse(): CartPort.CartResponse {
         totalAmount = this.getTotalAmount(),
         totalItems = this.getTotalItems(),
         isEmpty = this.isEmpty(),
-        createdAt = this.createdAt?.toLocalDateTime(),
-        updatedAt = this.lastModifiedOn?.toLocalDateTime()
+        createdAt = this.createdAt,
+        updatedAt = this.lastModifiedOn
     )
 }
 

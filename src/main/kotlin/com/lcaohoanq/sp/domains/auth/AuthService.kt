@@ -138,7 +138,6 @@ class AuthService(
             status = UserEnum.Status.UNVERIFIED,
             userName = "",
             phone = "",
-            avatar = "https://api.dicebear.com/9.x/adventurer/svg?seed=${newAccount.email}",
             cartId = "cart-${newAccount.email}",
             walletId = "wallet-${newAccount.email}"
             // No userSettings reference needed here

@@ -1,7 +1,8 @@
 package com.lcaohoanq.sp.domains.settings
 
 import com.fasterxml.jackson.annotation.JsonFormat
-import java.sql.Timestamp
+import java.time.LocalDateTime
+
 
 object AdminSettingPort {
     
@@ -10,9 +11,9 @@ object AdminSettingPort {
         val settingKey: String,
         val settingValue: String,
         @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", timezone = "Asia/Ho_Chi_Minh")
-        val createdAt: Timestamp?,
+        val createdAt: LocalDateTime?,
         @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", timezone = "Asia/Ho_Chi_Minh")
-        val updatedAt: Timestamp?
+        val updatedAt: LocalDateTime?
     )
     
     data class AdminSettingUpdateRequest(val value: String)
