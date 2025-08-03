@@ -3,31 +3,6 @@ package com.lcaohoanq.sp.extension
 import com.lcaohoanq.sp.domains.product.Product
 import com.lcaohoanq.sp.domains.product.ProductPort
 
-import java.time.LocalDateTime
-
-fun Product.toProductResponse(): ProductPort.ProductResponse {
-    return ProductPort.ProductResponse(
-        id = this.id ?: 0L,
-        name = this.name,
-        description = this.description,
-        price = this.price,
-        stock = this.stock,
-        shopId = this.shopId,
-        images = this.images,
-        imageUrl = this.imageUrl,
-        status = this.status,
-        rating = this.rating,
-        reviewCount = this.reviewCount,
-        soldCount = this.soldCount,
-        weight = this.weight,
-        dimensions = this.dimensions,
-        category = this.category?.toCategoryResponse(),
-        createdAt = this.createdAt,
-        updatedAt = this.lastModifiedOn,
-        isAvailable = this.isAvailable()
-    )
-}
-
 fun ProductPort.ProductRequest.toProduct(): Product {
     return Product(
         name = this.name,

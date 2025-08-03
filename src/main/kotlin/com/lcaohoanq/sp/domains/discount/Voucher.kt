@@ -29,12 +29,12 @@ class Voucher(
     @Embedded
     val condition: VoucherCondition = VoucherCondition(),
 
-    val validFrom: LocalDateTime? = LocalDateTime.now(),
-    val validUntil: LocalDateTime? = LocalDateTime.now().plusDays(5),
+    val validFrom: LocalDateTime = LocalDateTime.now(),
+    val validUntil: LocalDateTime = LocalDateTime.now().plusDays(5),
 
     var expired: Boolean = false,
     var active: Boolean = true,
-    var usageLimit: Int? = 1,
+    var usageLimit: Int = 1,
     var usedCount: Int = 0,
 
     @OneToMany(mappedBy = "voucher", cascade = [CascadeType.ALL])

@@ -1,6 +1,7 @@
 package com.lcaohoanq.sp.init
 
 import com.lcaohoanq.sp.domains.currency.CurrencyRate
+import com.lcaohoanq.sp.domains.headquarters.HeadquartersRepository
 import com.lcaohoanq.sp.domains.thirdparty.ThirdPartyService
 import com.lcaohoanq.sp.domains.wallet.WalletService
 import com.lcaohoanq.sp.enums.Currency
@@ -31,8 +32,10 @@ class DataInitializer(
     private val adminSettingRepository: AdminSettingRepository,
     private val currencyRateRepository: CurrencyRateRepository,
     private val voucherRepository: VoucherRepository,
+    private val productVoucherRepository: ProductVoucherRepository,
     private val notificationRepository: NotificationRepository,
     private val userDeviceTokenRepository: UserDeviceTokenRepository,
+    private val headquartersRepository: HeadquartersRepository,
 
     private val passwordEncoder: PasswordEncoder
 ) {
@@ -41,6 +44,14 @@ class DataInitializer(
     fun initData(): CommandLineRunner {
         return CommandLineRunner {
             println("Starting data initialization...")
+
+            if(headquartersRepository.count() == 0L) {
+                println("Initializing headquarters...")
+                // Initialize headquarters if needed
+                initHeadquarters(headquartersRepository)
+            } else {
+                println("Headquarters already exist, skipping initialization")
+            }
 
             if (voucherRepository.count() == 0L) {
                 println("Initializing vouchers...")
@@ -68,11 +79,26 @@ class DataInitializer(
             }
 
             // Initialize products (depends on categories)
-            if (productRepository.count() == 0L) {
+            val products = if (productRepository.count() == 0L) {
                 println("Initializing products...")
                 initProducts(productRepository, categories)
+                productRepository.findAll()
             } else {
                 println("Products already exist, skipping initialization")
+                productRepository.findAll()
+            }
+
+            // Initialize product-voucher relationships (depends on products and vouchers)
+            if (productVoucherRepository.count() == 0L && products.isNotEmpty()) {
+                println("Initializing product-voucher relationships...")
+                val vouchers = voucherRepository.findAll()
+                if (vouchers.isNotEmpty()) {
+                    initProductVoucherRelationships(productVoucherRepository, products, vouchers)
+                } else {
+                    println("No vouchers available, skipping product-voucher relationships")
+                }
+            } else {
+                println("Product-voucher relationships already exist, skipping initialization")
             }
 
             // Initialize users

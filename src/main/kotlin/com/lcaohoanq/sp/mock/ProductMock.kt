@@ -17,6 +17,7 @@ fun initProducts(productRepository: ProductRepository, categories: List<Category
                 price = 799.99,
                 rating = 5.0,
                 stock = 50,
+                soldCount = 245, // Add sold count
                 imageUrl = "https://example.com/images/smartphone-x.jpg",
                 images = listOf(
                     "https://api-ecom.duthanhduoc.com/images/08b79b1d-169d-4de1-85a2-4e5e8ff535b7.jpg",
@@ -39,6 +40,7 @@ fun initProducts(productRepository: ProductRepository, categories: List<Category
                 description = "High-performance laptop for professionals",
                 price = 1299.99,
                 stock = 30,
+                soldCount = 89, // Add sold count
                 imageUrl = "https://example.com/images/laptop-pro.jpg",
                 sku = "ELEC-LP-002",
                 weight = 2.0,
@@ -52,6 +54,7 @@ fun initProducts(productRepository: ProductRepository, categories: List<Category
                 description = "Premium wireless earbuds with noise cancellation",
                 price = 149.99,
                 stock = 100,
+                soldCount = 187, // Add sold count
                 imageUrl = "https://example.com/images/wireless-earbuds.jpg",
                 sku = "ELEC-WE-003",
                 weight = 0.05,
@@ -70,6 +73,7 @@ fun initProducts(productRepository: ProductRepository, categories: List<Category
                 description = "Comfortable cotton casual shirt for men",
                 price = 39.99,
                 stock = 200,
+                soldCount = 324, // Add sold count
                 imageUrl = "https://example.com/images/mens-shirt.jpg",
                 sku = "CLOTH-MS-001",
                 weight = 0.3,
@@ -83,6 +87,7 @@ fun initProducts(productRepository: ProductRepository, categories: List<Category
                 description = "Elegant dress for women",
                 price = 59.99,
                 stock = 150,
+                soldCount = 156, // Add sold count
                 imageUrl = "https://example.com/images/womens-dress.jpg",
                 sku = "CLOTH-WD-002",
                 weight = 0.4,
@@ -101,6 +106,7 @@ fun initProducts(productRepository: ProductRepository, categories: List<Category
                 description = "Automatic coffee maker with timer",
                 price = 89.99,
                 stock = 75,
+                soldCount = 67, // Add sold count
                 imageUrl = "https://example.com/images/coffee-maker.jpg",
                 sku = "HOME-CM-001",
                 weight = 3.0,
@@ -114,6 +120,7 @@ fun initProducts(productRepository: ProductRepository, categories: List<Category
                 description = "High-speed blender for smoothies and more",
                 price = 69.99,
                 stock = 60,
+                soldCount = 43, // Add sold count
                 imageUrl = "https://example.com/images/blender.jpg",
                 sku = "HOME-BL-002",
                 weight = 2.5,
@@ -132,6 +139,7 @@ fun initProducts(productRepository: ProductRepository, categories: List<Category
                 description = "Bestselling fiction novel",
                 price = 14.99,
                 stock = 300,
+                soldCount = 512, // Add sold count
                 imageUrl = "https://example.com/images/great-novel.jpg",
                 sku = "BOOK-GN-001",
                 weight = 0.5,
@@ -145,6 +153,7 @@ fun initProducts(productRepository: ProductRepository, categories: List<Category
                 description = "Comprehensive cookbook for all skill levels",
                 price = 24.99,
                 stock = 150,
+                soldCount = 89, // Add sold count
                 imageUrl = "https://example.com/images/cookbook.jpg",
                 sku = "BOOK-CM-002",
                 weight = 0.8,
@@ -163,6 +172,7 @@ fun initProducts(productRepository: ProductRepository, categories: List<Category
                 description = "Gentle facial cleanser for all skin types",
                 price = 19.99,
                 stock = 200,
+                soldCount = 298, // Add sold count
                 imageUrl = "https://example.com/images/facial-cleanser.jpg",
                 sku = "BEAUTY-FC-001",
                 weight = 0.3,
@@ -176,6 +186,7 @@ fun initProducts(productRepository: ProductRepository, categories: List<Category
                 description = "Premium fragrance for special occasions",
                 price = 79.99,
                 stock = 50,
+                soldCount = 76, // Add sold count
                 imageUrl = "https://example.com/images/perfume.jpg",
                 sku = "BEAUTY-LP-002",
                 weight = 0.2,

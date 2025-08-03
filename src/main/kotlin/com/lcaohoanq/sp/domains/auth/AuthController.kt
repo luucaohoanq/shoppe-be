@@ -8,12 +8,14 @@ import com.lcaohoanq.sp.domains.user.IUserService
 import com.lcaohoanq.sp.dto.AuthPort
 import com.lcaohoanq.sp.dto.TokenPort
 import com.lcaohoanq.sp.exceptions.MethodArgumentNotValidException
+import com.lcaohoanq.sp.utils.AuthenticationUtils
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.validation.Valid
 import mu.KotlinLogging
+import org.apache.coyote.Response
 import org.springframework.http.ResponseEntity
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.security.core.context.SecurityContextHolder
@@ -32,6 +34,31 @@ class AuthController(
 ) : BaseController() {
 
     private val log = KotlinLogging.logger {}
+
+    @GetMapping("/test")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_MEMBER', 'ROLE_STAFF', 'ROLE_CUSTOMER')")
+    @Operation(
+        summary = "Test authenticated endpoint",
+        description = "Test endpoint to verify authentication is working",
+        security = [SecurityRequirement(name = "keycloak")]
+    )
+    fun test(): ResponseEntity<Any> {
+        log.info { "Test endpoint hit" }
+        
+        val userId = AuthenticationUtils.getUserId()
+        val userEmail = AuthenticationUtils.getUserEmail()
+        val authentication = SecurityContextHolder.getContext().authentication
+        
+        val responseData = mapOf(
+            "userId" to userId,
+            "userEmail" to userEmail,
+            "authenticationType" to authentication.javaClass.simpleName,
+            "authorities" to authentication.authorities.map { it.authority },
+            "principalName" to authentication.name
+        )
+        
+        return ResponseEntity.ok(responseData)
+    }
 
     @LoginOperation
     @LoginApiResponses

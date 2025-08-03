@@ -80,6 +80,7 @@ object ProductPort {
         val name: String,
         val description: String,
         val price: Double,
+        val price_before_discount: Double,
         val stock: Int,
         val shopId: Long,
         val imageUrl: String?,
@@ -88,6 +89,7 @@ object ProductPort {
         val rating: Double,
         val reviewCount: Int,
         val soldCount: Int,
+        val sold: Int, // Alias for soldCount for frontend compatibility
         val weight: Double?,
         val dimensions: String?,
         val sku: String? = null,
@@ -95,6 +97,8 @@ object ProductPort {
         val category: CategoryPort.CategoryRes?,
         val isAvailable: Boolean = status == Product.ProductStatus.ACTIVE && stock > 0,
         val vouchers: List<Voucher>? = null,
+        val hasDiscount: Boolean = false,
+        val discountPercentage: Double? = null,
         val createdAt: LocalDateTime?,
         val updatedAt: LocalDateTime?,
     )

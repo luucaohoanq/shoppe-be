@@ -12,6 +12,8 @@ interface CategoryPort {
         val name: String,
         val description: String? = null,
         val parentId: Long? = null,
+        val imageUrl: String? = null,
+        val active: Boolean = true,
 
         @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
         val createdAt: LocalDateTime? = null,

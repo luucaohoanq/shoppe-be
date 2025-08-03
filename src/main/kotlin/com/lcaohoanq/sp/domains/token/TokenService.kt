@@ -7,7 +7,6 @@ import com.lcaohoanq.sp.dto.TokenPort
 import com.lcaohoanq.sp.extension.toTokenResponse
 import com.lcaohoanq.sp.repositories.TokenRepository
 import com.lcaohoanq.sp.repositories.UserRepository
-import com.lcaohoanq.sp.utils.Identifiable
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.transaction.Transactional
 import org.springframework.beans.factory.annotation.Value
@@ -23,7 +22,7 @@ class TokenService(
     private val tokenRepository: TokenRepository, // Note: Changed from UserRepository
     private val jwtTokenUtil: JwtTokenUtils,
     private val request: HttpServletRequest
-) : ITokenService, Identifiable {
+) : ITokenService {
 
     companion object {
         private const val MAX_TOKENS = 3
@@ -59,7 +58,8 @@ class TokenService(
 
         val expirationDateTime = LocalDateTime.now().plusSeconds(expiration)
 
-        val isMobileDevice = isMobileDevice(request.getHeader("User-Agent"))
+
+        val isMobileDevice = request.getHeader("User-Agent")?.lowercase()?.contains("mobile") ?: false
 
         return Token(
             user = user,
